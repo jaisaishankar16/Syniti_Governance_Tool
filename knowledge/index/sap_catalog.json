@@ -1,0 +1,6668 @@
+[
+  {
+    "table": "KONV",
+    "descriptions": [
+      "Conditions for Transaction Data",
+      "Conditions (Transaction Data)"
+    ],
+    "sections": [
+      "Sales and Distribution Tables",
+      "PM \\ SD Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "KONP",
+    "descriptions": [
+      "Conditions for Items",
+      "Conditions (Item)"
+    ],
+    "sections": [
+      "Sales and Distribution Tables",
+      "PM \\ SD Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "LIKP",
+    "descriptions": [
+      "Delivery Header Data"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "LIPS",
+    "descriptions": [
+      "Delivery: Item data"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBAK",
+    "descriptions": [
+      "Sales Document: Header Data"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBAP",
+    "descriptions": [
+      "Sales Document: Item Data"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBBE",
+    "descriptions": [
+      "Sales Requirements: Individual Records"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBEH",
+    "descriptions": [
+      "Schedule line history"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBEP",
+    "descriptions": [
+      "Sales Document: Schedule Line Data"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBFA",
+    "descriptions": [
+      "Sales Document Flow"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBLB",
+    "descriptions": [
+      "Sales document: Release order data"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBLK",
+    "descriptions": [
+      "SD Document: Delivery Note Header"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBPA",
+    "descriptions": [
+      "Sales Document: Partner"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBRK",
+    "descriptions": [
+      "Billing: Header Data"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBRP",
+    "descriptions": [
+      "Billing: Item Data"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBUK",
+    "descriptions": [
+      "Sales Document: Header Status and Administrative Data"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBUP",
+    "descriptions": [
+      "Sales Document: Item Status"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VEKP",
+    "descriptions": [
+      "Handling Unit - Header Table"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VEPO",
+    "descriptions": [
+      "Packing: Handling Unit Item (Contents)"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VEPVG",
+    "descriptions": [
+      "Delivery Due Index"
+    ],
+    "sections": [
+      "Sales and Distribution Tables"
+    ],
+    "module": "SD",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EINA",
+    "descriptions": [
+      "Purchasing Info Record- General Data"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EINE",
+    "descriptions": [
+      "Purchasing Info Record- Purchasing Organization Data"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MAKT",
+    "descriptions": [
+      "Material Descriptions"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MARA",
+    "descriptions": [
+      "General Material Data"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MARC",
+    "descriptions": [
+      "Plant Data for Material"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MARD",
+    "descriptions": [
+      "Storage Location Data for Material"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MAST",
+    "descriptions": [
+      "Material to BOM Link",
+      "Material BOM"
+    ],
+    "sections": [
+      "Materials Management Tables",
+      "Production Planning"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MBEW",
+    "descriptions": [
+      "Material Valuation"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MKPF",
+    "descriptions": [
+      "Header- Material Document"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MSEG",
+    "descriptions": [
+      "Document Segment- Material"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MVER",
+    "descriptions": [
+      "Material Consumption"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MVKE",
+    "descriptions": [
+      "Sales Data for materials"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "RKPF",
+    "descriptions": [
+      "Document Header- Reservation"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T023",
+    "descriptions": [
+      "Mat. groups"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T024",
+    "descriptions": [
+      "Purchasing Groups"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T156",
+    "descriptions": [
+      "Movement Type"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T157H",
+    "descriptions": [
+      "Help Texts for Movement Types"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MOFF",
+    "descriptions": [
+      "Lists what views have not been created"
+    ],
+    "sections": [
+      "Materials Management Tables"
+    ],
+    "module": "MM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "A501",
+    "descriptions": [
+      "Plant/Material"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EBAN",
+    "descriptions": [
+      "Purchase Requisition"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EBKN",
+    "descriptions": [
+      "Purchase Requisition Account Assignment"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EKAB",
+    "descriptions": [
+      "Release Documentation"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EKBE",
+    "descriptions": [
+      "History per Purchasing Document"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EKET",
+    "descriptions": [
+      "Scheduling Agreement Schedule Lines"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EKKN",
+    "descriptions": [
+      "Account Assignment in Purchasing Document"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EKKO",
+    "descriptions": [
+      "Purchasing Document Header"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EKPO",
+    "descriptions": [
+      "Purchasing Document Item"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IKPF",
+    "descriptions": [
+      "Header- Physical Inventory Document"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ISEG",
+    "descriptions": [
+      "Physical Inventory Document Items"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "LFA1",
+    "descriptions": [
+      "Vendor Master (General section)"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "LFB1",
+    "descriptions": [
+      "Vendor Master (Company Code)"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "NRIV",
+    "descriptions": [
+      "Number range intervals"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "RESB",
+    "descriptions": [
+      "Reservation/dependent requirements"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T161T",
+    "descriptions": [
+      "Texts for Purchasing Document Types"
+    ],
+    "sections": [
+      "Purchasing Tables"
+    ],
+    "module": "MM-PUR",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AGKO",
+    "descriptions": [
+      "Cleared Accounts"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ANAR",
+    "descriptions": [
+      "Asset Types"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ANAT",
+    "descriptions": [
+      "Asset type text"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ANEK",
+    "descriptions": [
+      "Document Header Asset Posting"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ANEP",
+    "descriptions": [
+      "Asset Line Items"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ANEV",
+    "descriptions": [
+      "Asset down payment settlement"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ANKT",
+    "descriptions": [
+      "Asset classes- Description"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ANLA",
+    "descriptions": [
+      "Asset Master Record Segment"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ANLB",
+    "descriptions": [
+      "Depreciation terms"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ANLC",
+    "descriptions": [
+      "Asset Value Fields"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ANLH",
+    "descriptions": [
+      "Main asset number"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AT02T",
+    "descriptions": [
+      "Transaction Activity Category- Description"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AT02A",
+    "descriptions": [
+      "Transaction Code for Menu TIMN"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AT10",
+    "descriptions": [
+      "Transaction type"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AT10T",
+    "descriptions": [
+      "Name of Transaction Type"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BKDF",
+    "descriptions": [
+      "Document Header Supplement for Recurring Entry"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BKORM",
+    "descriptions": [
+      "Accounting Correspondence Requests"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BKPF",
+    "descriptions": [
+      "Accounting Document Header"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BLPK",
+    "descriptions": [
+      "Document log header"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BLPP",
+    "descriptions": [
+      "Document log item"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BLPR",
+    "descriptions": [
+      "Document Log Index and Planned Order (Backflush)"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BNKA",
+    "descriptions": [
+      "Bank master record"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BP000",
+    "descriptions": [
+      "Business Partner Master (General Data)"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BPBK",
+    "descriptions": [
+      "Doc. Header Controlling Obj."
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BPEG",
+    "descriptions": [
+      "Line Item Total Values Controlling Obj."
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BPEJ",
+    "descriptions": [
+      "Line Item Annual Values Controlling Obj."
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BPEP",
+    "descriptions": [
+      "Line Item Period Values Controlling Obj."
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BPGE",
+    "descriptions": [
+      "Totals Record for Total Value Controlling obj."
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BPJA",
+    "descriptions": [
+      "Totals Record for Annual Total Controlling Obj."
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BSAD",
+    "descriptions": [
+      "Accounting- Secondary Index for Customers (Cleared Items)"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BSAK",
+    "descriptions": [
+      "Accounting- Secondary Index for Vendors (Cleared Items)"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BSAS",
+    "descriptions": [
+      "Accounting- Secondary Index for G/L Accounts (Cleared Items)"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BSEC",
+    "descriptions": [
+      "One-Time Account Data Document Segment"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BSEG",
+    "descriptions": [
+      "Accounting Document Segment"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BSID",
+    "descriptions": [
+      "Accounting- Secondary Index for Customers"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BSIK",
+    "descriptions": [
+      "Accounting- Secondary Index for Vendors"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BSIM",
+    "descriptions": [
+      "Secondary Index, Documents for Material"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BSIS",
+    "descriptions": [
+      "Accounting- Secondary Index for G/L Accounts"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "CEPC",
+    "descriptions": [
+      "Profit Center Master Data Table"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "CEPCT",
+    "descriptions": [
+      "Texts for Profit Center Master Data"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "COBRA",
+    "descriptions": [
+      "Settlement Rule for Order Settlement"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "COBRB",
+    "descriptions": [
+      "Distribution Rules Settlement Rule Order Settlement"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "COKA",
+    "descriptions": [
+      "CO Object- Control Data for Cost Elements"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "COSP",
+    "descriptions": [
+      "CO Object- Cost Totals for External Postings"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "COSS",
+    "descriptions": [
+      "CO Object- Cost Totals for Internal Postings"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "CRCO",
+    "descriptions": [
+      "Assignment of Work Center to Cost Center"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "CSKA",
+    "descriptions": [
+      "Cost Elements (Data Dependent on Chart of Accounts)"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "CSKB",
+    "descriptions": [
+      "Cost Elements (Data Dependent on Controlling Area)"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "CSLA",
+    "descriptions": [
+      "Activity master"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "FEBEP",
+    "descriptions": [
+      "Electronic Bank Statement Line Items"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "FPLA",
+    "descriptions": [
+      "Billing Plan"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "FPLT",
+    "descriptions": [
+      "Billing Plan- Dates"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "GLPCT",
+    "descriptions": [
+      "EC-PCA- Totals Table"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "KNA1",
+    "descriptions": [
+      "General Data in Customer Master"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "KOMK",
+    "descriptions": [
+      "Pricing Communication Header"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MAHNV",
+    "descriptions": [
+      "Management Records for the Dunning Program"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "REGUT",
+    "descriptions": [
+      "TemSe - Administration Data"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "SKA1",
+    "descriptions": [
+      "G/L Account Master (Chart of Accounts)"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "SKAT",
+    "descriptions": [
+      "G/L Account Master Record (Chart of Accounts- Description)"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "SKB1",
+    "descriptions": [
+      "G/L account master (company code)"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T003T",
+    "descriptions": [
+      "Document Type Texts"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T007S",
+    "descriptions": [
+      "Tax Code Names"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T087J",
+    "descriptions": [
+      "Text"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TAPRFT",
+    "descriptions": [
+      "Text tab. for investment profile"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TKA01",
+    "descriptions": [
+      "Controlling Areas"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TKA09",
+    "descriptions": [
+      "Basic Settings for Versions"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TKVS",
+    "descriptions": [
+      "CO Versions"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TZB0T",
+    "descriptions": [
+      "Flow types text table"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TZPAT",
+    "descriptions": [
+      "Financial Assets Management product type texts"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VBSEGS",
+    "descriptions": [
+      "Document Segment for G/L Accounts Document Parking"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VTBFHA",
+    "descriptions": [
+      "Transaction"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VTBFHAPO",
+    "descriptions": [
+      "Transaction Flow"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VTBFHAZU",
+    "descriptions": [
+      "Transaction Activity"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VTBFINKO",
+    "descriptions": [
+      "Transaction Condition"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VTIDERI",
+    "descriptions": [
+      "Master Data Listed Options and Futures"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VTIFHA",
+    "descriptions": [
+      "Underlying transaction"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VTIFHAPO",
+    "descriptions": [
+      "Underlying transaction flows"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VTIFHAZU",
+    "descriptions": [
+      "Underlying transaction status table"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VTIOF",
+    "descriptions": [
+      "Options Additional Data"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VWPANLA",
+    "descriptions": [
+      "Asset master for securities"
+    ],
+    "sections": [
+      "Finance Tables"
+    ],
+    "module": "FI/CO",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "STKO",
+    "descriptions": [
+      "BOM Header"
+    ],
+    "sections": [
+      "Production Planning"
+    ],
+    "module": "PP",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "STPO",
+    "descriptions": [
+      "BOM Positions (detail)"
+    ],
+    "sections": [
+      "Production Planning"
+    ],
+    "module": "PP",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "MAPL",
+    "descriptions": [
+      "Assignment of Task Lists to Materials"
+    ],
+    "sections": [
+      "Production Planning"
+    ],
+    "module": "PP",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "PLKO",
+    "descriptions": [
+      "Routing Group Header"
+    ],
+    "sections": [
+      "Production Planning"
+    ],
+    "module": "PP",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "PLSO",
+    "descriptions": [
+      "Routing Group Sequence"
+    ],
+    "sections": [
+      "Production Planning"
+    ],
+    "module": "PP",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "PLPO",
+    "descriptions": [
+      "Routing Group Operations"
+    ],
+    "sections": [
+      "Production Planning"
+    ],
+    "module": "PP",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFKO",
+    "descriptions": [
+      "Production Order Header",
+      "Order header data PP orders"
+    ],
+    "sections": [
+      "Production Planning",
+      "PM \\ SD Tables"
+    ],
+    "module": "PP",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFPO",
+    "descriptions": [
+      "Production Order Position (details)",
+      "Order item"
+    ],
+    "sections": [
+      "Production Planning",
+      "PM \\ SD Tables"
+    ],
+    "module": "PP",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IMAK",
+    "descriptions": [
+      "Appropriation requests - general data"
+    ],
+    "sections": [
+      "Project Systems Tables"
+    ],
+    "module": "PS",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IMAV",
+    "descriptions": [
+      "Appropriation request variant"
+    ],
+    "sections": [
+      "Project Systems Tables"
+    ],
+    "module": "PS",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IMPR",
+    "descriptions": [
+      "Investment Program Positions"
+    ],
+    "sections": [
+      "Project Systems Tables"
+    ],
+    "module": "PS",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IMPU",
+    "descriptions": [
+      "Texts for cap. inv. program positions"
+    ],
+    "sections": [
+      "Project Systems Tables"
+    ],
+    "module": "PS",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IMTP",
+    "descriptions": [
+      "Investment programs"
+    ],
+    "sections": [
+      "Project Systems Tables"
+    ],
+    "module": "PS",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IMZO",
+    "descriptions": [
+      "Assignment Table- CO Object - Capital Investment Prog.Pos."
+    ],
+    "sections": [
+      "Project Systems Tables"
+    ],
+    "module": "PS",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "PMCO",
+    "descriptions": [
+      "Cost structure of maintenance order"
+    ],
+    "sections": [
+      "Project Systems Tables"
+    ],
+    "module": "PS",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "PRHI",
+    "descriptions": [
+      "Work Breakdown Structure, Edges (Hierarchy Pointer)"
+    ],
+    "sections": [
+      "Project Systems Tables"
+    ],
+    "module": "PS",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "PROJ",
+    "descriptions": [
+      "Project definition"
+    ],
+    "sections": [
+      "Project Systems Tables"
+    ],
+    "module": "PS",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "PRPS",
+    "descriptions": [
+      "WBS (Work Breakdown Structure) Element Master Data"
+    ],
+    "sections": [
+      "Project Systems Tables"
+    ],
+    "module": "PS",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFAB",
+    "descriptions": [
+      "Network - Relationships"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFFH",
+    "descriptions": [
+      "PRT assignment data for the work order"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFFL",
+    "descriptions": [
+      "Work order sequence"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFFT",
+    "descriptions": [
+      "Order - Process Instructions"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFFV",
+    "descriptions": [
+      "Order - Process Instruction Values"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFFW",
+    "descriptions": [
+      "Goods movements with errors from confirmations"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFIH",
+    "descriptions": [
+      "Maintenance order header"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFRC",
+    "descriptions": [
+      "Incorrect cost calculations from confirmations"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFRD",
+    "descriptions": [
+      "Default values for collective confirmation"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFRH",
+    "descriptions": [
+      "Header information for confirmation pool"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFRU",
+    "descriptions": [
+      "Order completion confirmations"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFRV",
+    "descriptions": [
+      "Confirmations pool"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFVC",
+    "descriptions": [
+      "Operation within an order"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFVU",
+    "descriptions": [
+      "DB structure of the user fields of the operation"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFVV",
+    "descriptions": [
+      "DB structure of the quantities/dates/values in the operation"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AFWI",
+    "descriptions": [
+      "Subsequently posted goods movements for confirmations"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AUFK",
+    "descriptions": [
+      "Order master data"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "AUFM",
+    "descriptions": [
+      "Goods movements for order"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BGMK",
+    "descriptions": [
+      "Master Warranty Header"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BGMP",
+    "descriptions": [
+      "Master Warranty Item"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BGMS",
+    "descriptions": [
+      "Master Warranty Text Item"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BGMT",
+    "descriptions": [
+      "Master Warranty Text"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "BGMZ",
+    "descriptions": [
+      "Warranty Counter"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "CRHD",
+    "descriptions": [
+      "Work Center Header"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "CRTX",
+    "descriptions": [
+      "Text for the Work Center or Production Resource/Tool"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EQKT",
+    "descriptions": [
+      "Equipment Short Texts"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EQST",
+    "descriptions": [
+      "Equipment to BOM Link"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EQUI",
+    "descriptions": [
+      "Equipment master data"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "EQUZ",
+    "descriptions": [
+      "Equipment time segment"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "HIKO",
+    "descriptions": [
+      "Order master data history"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IFLO",
+    "descriptions": [
+      "Table generated for View IFLO"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IFLOT",
+    "descriptions": [
+      "Functional Location (Table)"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IFLOTX",
+    "descriptions": [
+      "Functional Location- Short Texts"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IHGNS",
+    "descriptions": [
+      "Permit Segment for Plant Maintenance"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IHPA",
+    "descriptions": [
+      "Plant Maintenance- Partners"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IHSG",
+    "descriptions": [
+      "Object-Related Permits in Plant Maintenance"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ILOA",
+    "descriptions": [
+      "PM Object Location and Account Assignment"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IMPTT",
+    "descriptions": [
+      "Measuring Point (Table)"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "IMRG",
+    "descriptions": [
+      "Measurement Document"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "KAKO",
+    "descriptions": [
+      "Capacity Header Segment"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "OBJK",
+    "descriptions": [
+      "Plant Maintenance Object List"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "QMEL",
+    "descriptions": [
+      "Quality Notification"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "QMFE",
+    "descriptions": [
+      "Quality notification - items"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "QMIH",
+    "descriptions": [
+      "Quality message - maintenance data excerpt"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "QMMA",
+    "descriptions": [
+      "Quality notification - activities"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "QMSM",
+    "descriptions": [
+      "Quality notification - tasks"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "QMUR",
+    "descriptions": [
+      "Quality notification - causes"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T001",
+    "descriptions": [
+      "Company Codes"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T001L",
+    "descriptions": [
+      "Storage Locations"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T001W",
+    "descriptions": [
+      "Plants/Branches"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T077D",
+    "descriptions": [
+      "Customer account groups"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T003O",
+    "descriptions": [
+      "Order Types"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T352R",
+    "descriptions": [
+      "Maintenance revisions"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T353I_T",
+    "descriptions": [
+      "Maintenance activity type description"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T356",
+    "descriptions": [
+      "Priorities"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T357G",
+    "descriptions": [
+      "Permits"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T357G_T",
+    "descriptions": [
+      "Text for Table 357GT"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "T370A",
+    "descriptions": [
+      "Activity Category for PM Lists"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TINCT",
+    "descriptions": [
+      "Customers- Incoterms- Texts"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TVKO",
+    "descriptions": [
+      "Organizational Unit- Sales Organizations"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TVKOS",
+    "descriptions": [
+      "Organizational Unit- Divisions per Sales Organization"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TVKOV",
+    "descriptions": [
+      "Org. Unit- Distribution Channels per Sales Organization"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "TVTA",
+    "descriptions": [
+      "Organizational Unit- Sales Area(s)"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "VIAUFKST",
+    "descriptions": [
+      "Generated Table for View VIAUFKST"
+    ],
+    "sections": [
+      "PM \\ SD Tables"
+    ],
+    "module": "PM",
+    "category": "business",
+    "level": "table_only"
+  },
+  {
+    "table": "ADCP",
+    "descriptions": [
+      "Person/Address assignment (central address administration)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "ADIRACCESS",
+    "descriptions": [
+      "Table to store keys for TADIR objects"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "ADR2",
+    "descriptions": [
+      "Telephone numbers (central address admin.)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "ADRP",
+    "descriptions": [
+      "Persons (central address administration)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "APQD",
+    "descriptions": [
+      "DATA DEFINITION Queue"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "APQI",
+    "descriptions": [
+      "Queue info definition"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "D010SINF",
+    "descriptions": [
+      "ABAP- Information about ABAP program source code"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "E071",
+    "descriptions": [
+      "Change and Transport System- Object Entries of Requests/Tasks"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "E07T",
+    "descriptions": [
+      "Change and Transport System- Short Texts for Requests/Tasks"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "ENLFDIR",
+    "descriptions": [
+      "Additional Attributes for Function Modules"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "INDX",
+    "descriptions": [
+      "System table INDX"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "NAST",
+    "descriptions": [
+      "Message Status"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "STXH",
+    "descriptions": [
+      "STXD SAPscript text file header"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T005",
+    "descriptions": [
+      "Countries"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T005S",
+    "descriptions": [
+      "Taxes- Region (Province) Key"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T005U",
+    "descriptions": [
+      "Taxes- Region Key- Texts"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T006",
+    "descriptions": [
+      "Units of Measurement"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T015M",
+    "descriptions": [
+      "Names of the months"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T247",
+    "descriptions": [
+      "Month name and short text"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T777A",
+    "descriptions": [
+      "Building Addresses"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TADIR",
+    "descriptions": [
+      "Directory of Repository Objects"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TBTCO",
+    "descriptions": [
+      "Job status overview table"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TBTCP",
+    "descriptions": [
+      "Batch job step overview"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TFDIR",
+    "descriptions": [
+      "Function Module"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TFTIT",
+    "descriptions": [
+      "Function Module Short Text"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TSP03L",
+    "descriptions": [
+      "Spool- Long device names"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TSTC",
+    "descriptions": [
+      "SAP Transaction Codes"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TSTCT",
+    "descriptions": [
+      "Transaction Code Texts"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TUTYP",
+    "descriptions": [
+      "User Types in Current Price List in SAP System"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TUZUS",
+    "descriptions": [
+      "Special versions"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TVARV",
+    "descriptions": [
+      "Table of variables in selection criteria"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TVDIR",
+    "descriptions": [
+      "View Directory"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "US930",
+    "descriptions": [
+      "Data Relevant to Measurement for User Master Record"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR01",
+    "descriptions": [
+      "User master record (runtime data)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR02",
+    "descriptions": [
+      "Logon data"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR04",
+    "descriptions": [
+      "User master authorizations"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR06",
+    "descriptions": [
+      "Additional Data per User"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR14",
+    "descriptions": [
+      "Surchargeable Language Versions per User"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR21",
+    "descriptions": [
+      "Assign user name address key"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "ARCH_OBJ",
+    "descriptions": [
+      "Objects for archiving and reorganization"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "BTCUED",
+    "descriptions": [
+      "Description of user event IDs for background processing"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "BTXSUPB",
+    "descriptions": [
+      "BSI- Upgrade-Information"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "CCCFLOW",
+    "descriptions": [
+      "Client Copy Control Flow"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "DBSTATC",
+    "descriptions": [
+      "DB Optimizer Control (Statistics Creation)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "DEVACCESS",
+    "descriptions": [
+      "Table for development users"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "DEVL",
+    "descriptions": [
+      "OBSOLETE- Do not use (See TCETRAL)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "E070",
+    "descriptions": [
+      "Change and Transport System- Header of Requests/Tasks"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "E070L",
+    "descriptions": [
+      "CTS- Index for Assigning Numbers to Requests/Tasks"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "INSTVERS",
+    "descriptions": [
+      "Documentation for installation Status and History"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "PAT03",
+    "descriptions": [
+      "Patch Directory"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "SDBAC",
+    "descriptions": [
+      "DBA Action Table"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T100",
+    "descriptions": [
+      "Messages"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TAPLT",
+    "descriptions": [
+      "Program Application Long Texts"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TASYS",
+    "descriptions": [
+      "OBSOLETE- Do not use, see TCEDELI"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TDEVC",
+    "descriptions": [
+      "Development Classes"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TEMSE",
+    "descriptions": [
+      "Temp Sequential table."
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TLOCK",
+    "descriptions": [
+      "Change and Transport System- Lock Table"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TNAPR",
+    "descriptions": [
+      "Processing programs for output. Can be very handy to find the print program for a SAPScript."
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TNAST",
+    "descriptions": [
+      "Printed output control table"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TPFET",
+    "descriptions": [
+      "Table of profile parameters"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TPFHT",
+    "descriptions": [
+      "Profile header, administration data for profiles in DB"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TPROT",
+    "descriptions": [
+      "Table contains all DD tables to be logged"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TRBAT",
+    "descriptions": [
+      "Communication Table for Transport Control"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TRDIRT",
+    "descriptions": [
+      "Title texts for programs in TRDIR"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TRESN",
+    "descriptions": [
+      "Table of Naming Conventions in ABAP Workbench"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TRJOB",
+    "descriptions": [
+      "Job ID for Coordinating Batch-ABAP/UNIX for Transports"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TSP03C",
+    "descriptions": [
+      "Spool- Device Description Extension"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TST03",
+    "descriptions": [
+      "TemSe data"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TSYST",
+    "descriptions": [
+      "OBSOLETE- Do not use (see TCESYST)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TWSYS",
+    "descriptions": [
+      "OBSOLETE- Do not use (See TCETRAL)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USOBT",
+    "descriptions": [
+      "Relation transaction - authorization object"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR03",
+    "descriptions": [
+      "User address data"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR05",
+    "descriptions": [
+      "User Master Parameter ID"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR12",
+    "descriptions": [
+      "User master authorization values"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR40",
+    "descriptions": [
+      "Table for illegal passwords"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "USR41",
+    "descriptions": [
+      "User master- Additional data"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "UST04",
+    "descriptions": [
+      "User masters"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "VARIT",
+    "descriptions": [
+      "Variant texts"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "VARID",
+    "descriptions": [
+      "Variant directory"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "D010TAB",
+    "descriptions": [
+      "Table for Use Report---Tables"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02L",
+    "descriptions": [
+      "SAP tables"
+    ],
+    "sections": [
+      "System Tables",
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02T",
+    "descriptions": [
+      "R/3 DD- SAP table texts",
+      "R/3 DD: SAP table texts"
+    ],
+    "sections": [
+      "System Tables",
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03L",
+    "descriptions": [
+      "Table Fields"
+    ],
+    "sections": [
+      "System Tables",
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03T",
+    "descriptions": [
+      "DD- Texts for fields (language dependent)",
+      "DD: Texts for fields (language dependent)"
+    ],
+    "sections": [
+      "System Tables",
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "EDIDC",
+    "descriptions": [
+      "IDOC Control Records"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "EDIDOT",
+    "descriptions": [
+      "Short description of IDoc types"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "EDID2",
+    "descriptions": [
+      "IDOC segments (version 3.1)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "EDID4",
+    "descriptions": [
+      "IDOC segments (version 4.6)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "EDSEA",
+    "descriptions": [
+      "EDI- Table of all segments of current release"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "VRSX2",
+    "descriptions": [
+      "Central Table for Version Management (Report Source)"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "TSE05",
+    "descriptions": [
+      "Can add parameters to the INSERT COMMAND (IC). Then, when you insert command, your info appears in the editor. Useful for comment blocks, common section of code, etc."
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "CDPOS",
+    "descriptions": [
+      "Change document items"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "CDHDR",
+    "descriptions": [
+      "Change document header"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T529A",
+    "descriptions": [
+      "governs the foreground sequence of infotypes the system will use to prompt the user during online and batch processing. You will have to code your BDC to follow that sequence of creating infotypes."
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T588Z",
+    "descriptions": [
+      "governs the dynamic event processing that will only take place during online user inputs. For BDC's you will have to create separate BDC's to handle any infotypes that are inserted dynamically by this table."
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "T588M",
+    "descriptions": [
+      "Infotype Screen Control Original source: abap.mirrorz.com and Schlegel, Martin"
+    ],
+    "sections": [
+      "System Tables"
+    ],
+    "module": "BASIS",
+    "category": "system",
+    "level": "table_only"
+  },
+  {
+    "table": "REKH0004",
+    "descriptions": [
+      "SAP demo program that shows how to do 2D, 3D, and 4D graphics."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RGUGBR00",
+    "descriptions": [
+      "Substitution/Validation utility"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RHGEN00",
+    "descriptions": [
+      "Regen PD and PA inconsistencies"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RHGRENZ0",
+    "descriptions": [
+      "Delimit IT1000 and related 1001s. Program will delete any 1001 infotypes whose start date is after the delimit date."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RHGRENZ1",
+    "descriptions": [
+      "Extend the end date on delimited records. Very useful when you delimit a bunch of records incorrectly, and need to change the end date."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RHGRENZ2",
+    "descriptions": [
+      "Delimit IT1001 only."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RKCTSEAR",
+    "descriptions": [
+      "Search source code for up to two strings. Also see RSRSCAN1 and RPR_ABAP_SOURCE_SCAN."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RPDTRA00",
+    "descriptions": [
+      "List all HR transactions. RPR_ABAP_SOURCE_SCAN Search ABAP code for a string. Has many more options for selecting the ABAPs to search than RSRSCAN1 or RKCTSEAR."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RPUAUD00",
+    "descriptions": [
+      "HR Report to list all logged changes for an employee. Uses the PCL4 Audit Cluster."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RPUAUDDL",
+    "descriptions": [
+      "HR Report to delete audit data from the PCL4 Audit Cluster."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RPUDELPN",
+    "descriptions": [
+      "Delete all info for an employee number, including cluster data and infotypes RPUP1D00/10 View/Delete data from PCL1 Cluster RPUP2D00/10 View/Delete data from PCL2 Cluster RPUP3D00/10 View/Delete data from PCL3 Cluster RPUP4D00/10 View/Delete data from PCL4 Cluster"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSABAPIV",
+    "descriptions": [
+      "Mass print/display of ABAP/4 help text"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSAVGL00",
+    "descriptions": [
+      "Table adjustment across clients"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSBDCBTC",
+    "descriptions": [
+      "Submit a BDC job with an internal batch number and wait for the end of the batch input session."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSBDCDRU",
+    "descriptions": [
+      "Prints the contents of a Batch Input session. No options for error transactions only."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSBDCOS0",
+    "descriptions": [
+      "Execute UNIX commands. Looks similar to the old SAPMSOS0 program that disappeared in 3.0"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSBDCSUB",
+    "descriptions": [
+      "Release batch input sessions automatically"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSBTCDEL",
+    "descriptions": [
+      "Clean the old background job records"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSSDOCTB",
+    "descriptions": [
+      "R/3 Table Manual - prints a list of all fields in the selected tables with the field name and the field documentation."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSCLTCOP",
+    "descriptions": [
+      "Copy tables across clients"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSDBCREO",
+    "descriptions": [
+      "Clean batch input session log"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSINCL00",
+    "descriptions": [
+      "Extended program list"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSNASTED",
+    "descriptions": [
+      "Process message control output for entries in the NAST table"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSORAREL",
+    "descriptions": [
+      "Get the Oracle Release"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSPARAM",
+    "descriptions": [
+      "Display all instance parameters"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSPO0041",
+    "descriptions": [
+      "Removing old spooling objects"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSRSCAN1",
+    "descriptions": [
+      "Search source code for a given string. Will also search includes. Also see RKCTSEAR and RPR_ABAP_SOURCE_SCAN."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSSNAPDL",
+    "descriptions": [
+      "Clean the old ABAP error dumps"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSTBSERV",
+    "descriptions": [
+      "Compare a contents of a table between clients"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSTXFCON",
+    "descriptions": [
+      "Converts SAPScript page formats"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSTXSCRP",
+    "descriptions": [
+      "Save a SAPScript layout set to disk, and load it back into SAP.",
+      "Transport SAPscript files across systems",
+      "Upload and download SAPScript layout sets"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSTXTPDF4",
+    "descriptions": [
+      "Pass the spool number of a report's output to this program to have the output converted to PDF format."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSTXTRAN",
+    "descriptions": [
+      "Add standard texts to a transport so they can be moved between systems."
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSUSR003",
+    "descriptions": [
+      "Check the passwords of users SAP* and DDIC in all clients"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSUSR006",
+    "descriptions": [
+      "List users last login"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSWBO052",
+    "descriptions": [
+      "Change development class of a sapscript (provided by Alan Cecchini)"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "RSWBO060",
+    "descriptions": [
+      "put objects into a request and transport it to any other system Find data in your SAP system and know which tables do what If you do not know the transaction code in which the data is used: then use the Data Dictionary tables, in particular, DD02L and DD02T. Accounts Payable. See examples below. If you do know any transaction in which (related) data is used: 1) start the transaction. 2) position the cursor on the field you want to have info about. 3) press F1, then F9. 4) now you see the technical information of the data element, such as table name and field name. 5) if the table mentioned is what you're looking for, you're done. It is also possible that the data element is in a structure and not in a table. Now you can either analyze the structure via transaction SE11, or you can double click on the 'data element' field. In the next screen, use the 'Where used' button to find the tables in which this data element is used. Additional tip: if you have found the table name, you can use transaction SE36 to see the relationships of this table to other tables. You can use these relationships when defining queries, designing custom ABAP programs, etc. If you're lucky, one or more standard SAP logical database exist which contain the table you found in the previous steps. Proceed as follows: 1) start transaction SE36. 2) use the search help for the logical database name. 3) enter the name of the table in the search help. 4) press enter and, if you're lucky, you'll see a list of logical databases. Select one, press enter, select the radio button 'Structure' and press the view button. Now you'll see how this table is related to other tables. source: by rekha (http://www.saptechies.com)"
+    ],
+    "sections": [
+      "Reports"
+    ],
+    "module": "REPORTS",
+    "category": "report",
+    "level": "table_only"
+  },
+  {
+    "table": "DD0102V",
+    "descriptions": [
+      "Generated table for view DD0102V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD01D",
+    "descriptions": [
+      "Dynpro fields for domain"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD01L",
+    "descriptions": [
+      "Domains"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD01LV",
+    "descriptions": [
+      "Generated table for view DD01LV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD01T",
+    "descriptions": [
+      "R/3 DD: domain texts"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD01TV",
+    "descriptions": [
+      "Versioning: foreign languages for domains"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD01V",
+    "descriptions": [
+      "Generated table for view DD01V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD01VD",
+    "descriptions": [
+      "Version display: Domain"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD01VV",
+    "descriptions": [
+      "Generated table for view DD01VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD01V_OLD",
+    "descriptions": [
+      "DD01V with old names"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02ALL",
+    "descriptions": [
+      "Table Parameters for ALLBASE"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02D",
+    "descriptions": [
+      "Screen Fields for Table"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02DB2",
+    "descriptions": [
+      "DB2/390: Table Parameters"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02DB6",
+    "descriptions": [
+      "Table Parameters for DB2 Version 2"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02INF",
+    "descriptions": [
+      "Table Parameters for INFORMIX, Version 6"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02MSS",
+    "descriptions": [
+      "Table Parameters for Microsoft SQL Server"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02ORA",
+    "descriptions": [
+      "Table parameters for ORACLE, version 6"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02SYB",
+    "descriptions": [
+      "Storage Parameters for Tables in SYBASE"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02TV",
+    "descriptions": [
+      "Versioning: foreign languages for tables"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02V",
+    "descriptions": [
+      "Generated table for view DD02V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02VD",
+    "descriptions": [
+      "Version display: table header"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02VV",
+    "descriptions": [
+      "Generated table for view DD02VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD02V_OLD",
+    "descriptions": [
+      "DD02V with old names"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03D",
+    "descriptions": [
+      "Dynpro fields for table fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03K",
+    "descriptions": [
+      "Generated table for view DD03K"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03L_F",
+    "descriptions": [
+      "BAPI field names for update"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03M",
+    "descriptions": [
+      "Generated table for view DD03M"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03MI",
+    "descriptions": [
+      "Index structure for view DD03M"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03N",
+    "descriptions": [
+      "Generated table for view DD03N"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03P",
+    "descriptions": [
+      "Structure"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03P_D",
+    "descriptions": [
+      "Dictionary Maintenance: Attributes of Structure Fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03TV",
+    "descriptions": [
+      "Versioning: foreign languages for fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03V",
+    "descriptions": [
+      "Table fields view"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03VT",
+    "descriptions": [
+      "Generated Table for View DD03VT"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD03VV",
+    "descriptions": [
+      "Generated Table for View DD03VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD04D",
+    "descriptions": [
+      "Dynpro fields for Data Element"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD04L",
+    "descriptions": [
+      "Data elements"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD04T",
+    "descriptions": [
+      "R/3 DD: Data element texts"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD04TV",
+    "descriptions": [
+      "Versioning: foreign languages for data elements"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD04V",
+    "descriptions": [
+      "Generated Table for View DD04V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD04VD",
+    "descriptions": [
+      "Version display: Data element"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD04VV",
+    "descriptions": [
+      "Generated table for view DD04VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD04VVL",
+    "descriptions": [
+      "Generated table for view DD04VVL"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD04VVT",
+    "descriptions": [
+      "Generated table for view DD04VVT"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD05M",
+    "descriptions": [
+      "Interface Structure for DD_TBFK_GET"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD05P",
+    "descriptions": [
+      "Generated Table for the View DD05P"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD05Q",
+    "descriptions": [
+      "Generated Table for the View DD05Q"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD05S",
+    "descriptions": [
+      "Foreign key fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD05V",
+    "descriptions": [
+      "View on foreign key fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD05VD",
+    "descriptions": [
+      "Version display: Foreign key fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD06D",
+    "descriptions": [
+      "Screen fields for SQL table"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD06L",
+    "descriptions": [
+      "Pool/cluster structures"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD06T",
+    "descriptions": [
+      "R/3 DD: texts on SQL tables"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD06TV",
+    "descriptions": [
+      "Versioning: foreign languages for SQL tables"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD06V",
+    "descriptions": [
+      "Generated table for view DD06V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD06VD",
+    "descriptions": [
+      "Version display: SQL table"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD06VV",
+    "descriptions": [
+      "Generated table for view DD06VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD07D",
+    "descriptions": [
+      "Screen fields for domain values"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD07L",
+    "descriptions": [
+      "R/3 DD: values for the domains"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD07T",
+    "descriptions": [
+      "DD: Texts for Domain Fixed Values (Language-Dependent)"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD07TV",
+    "descriptions": [
+      "Versioning: foreign languages for domain fixed values"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD07V",
+    "descriptions": [
+      "Generated Table for View DD07V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD07VD",
+    "descriptions": [
+      "Version display: Domain fixed values"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD07VT",
+    "descriptions": [
+      "DD: Temp. Replacement Structure for VIEW DD07TV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD08D",
+    "descriptions": [
+      "Screen Fields for Foreign Keys"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD08L",
+    "descriptions": [
+      "R/3 DD: relationship definitions"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD08T",
+    "descriptions": [
+      "Texts on the relationship definitions"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD08TV",
+    "descriptions": [
+      "Texts on the relationship definitions"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD08V",
+    "descriptions": [
+      "Generated table for view DD08V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD08VD",
+    "descriptions": [
+      "Version display: foreign key"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD08VV",
+    "descriptions": [
+      "Generated table for view DD08VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD08VVT",
+    "descriptions": [
+      "Generated table for view DD08VVT"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD092526V",
+    "descriptions": [
+      "Generated table for view DD092526V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD09C",
+    "descriptions": [
+      "ABAP/4: Sytem-dependent attributes of tech. settings"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD09L",
+    "descriptions": [
+      "DD: Technical settings of tables"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD09V",
+    "descriptions": [
+      "Interface: Technical Settings Table/View"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD09VD",
+    "descriptions": [
+      "Version display: Technical settings"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD09VV",
+    "descriptions": [
+      "Generated table for View DD09VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD09VVT",
+    "descriptions": [
+      "Generated table for view DD09VVT"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD10L",
+    "descriptions": [
+      "Lock table for DD activation"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12D",
+    "descriptions": [
+      "Screen fields for index maintenance"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12DB2",
+    "descriptions": [
+      "DB2/390: Index Parameters"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12DB6",
+    "descriptions": [
+      "Index Parameters for DB2 Universal Database Version 2"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12INF",
+    "descriptions": [
+      "Index parameter for INFORMIX"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12L",
+    "descriptions": [
+      "R/3 S_SECINDEX: secondary indexes, header;"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12MSS",
+    "descriptions": [
+      "Index Parameters for MS SQL Server"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12ORA",
+    "descriptions": [
+      "Index Parameters for ORACLE"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12SYB",
+    "descriptions": [
+      "Index Parameters for SYBASE System_10"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12T",
+    "descriptions": [
+      "Text Table for DD12L (Short Descriptions of Sec. Indexes)"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12TV",
+    "descriptions": [
+      "Versioning: foreign languages for secondary indexes"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12V",
+    "descriptions": [
+      "Generated Table for View DD12V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12VD",
+    "descriptions": [
+      "Version display: index"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD12VVT",
+    "descriptions": [
+      "ABAP/4 Repository Information System: Index work structure"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD14S",
+    "descriptions": [
+      "R/3 DD: components of SAP objects"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD14V",
+    "descriptions": [
+      "R/3 DD: view on SAP object structure"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD15L",
+    "descriptions": [
+      "R/3 DD: SAP objects"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD15T",
+    "descriptions": [
+      "R/3 DD: texts on SAP objects"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD15V",
+    "descriptions": [
+      "R/3 DD: view on SAP objects"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD16D",
+    "descriptions": [
+      "Screen fields for SQL table fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD16S",
+    "descriptions": [
+      "R/3 DD: SQL table fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD16V",
+    "descriptions": [
+      "Generated table for view DD16V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD16VD",
+    "descriptions": [
+      "Version display: Fields of SQL tables"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD17S",
+    "descriptions": [
+      "R/3 S_SECINDEX: secondary indexes, fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD17V",
+    "descriptions": [
+      "Secondary index fields with language key"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD20L",
+    "descriptions": [
+      "Matchcode objects"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD20T",
+    "descriptions": [
+      "AS400-T_MCOBJECT: MC Object Texts"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD20TV",
+    "descriptions": [
+      "AS400-T_MCOBJECT: MC Object Texts"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD20V",
+    "descriptions": [
+      "Generated table for DD20V view"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD20VD",
+    "descriptions": [
+      "Version display: matchcode objects"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD20VVT",
+    "descriptions": [
+      "Generated table for view DD20VVT"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD21S",
+    "descriptions": [
+      "S-MCIDTABLE: Tables for a MC ID"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD21V",
+    "descriptions": [
+      "V-MCIDTABLE: View of Tables for a MC ID"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD21V_VAR1",
+    "descriptions": [
+      "Special View on DD21V Tailored to Matchcode ID Generation"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD22V",
+    "descriptions": [
+      "Generated table for view DD22V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD22VD",
+    "descriptions": [
+      "Version display: Lock object header"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD23H",
+    "descriptions": [
+      "Generated table for view DD23H"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD23L",
+    "descriptions": [
+      "Matchcode ID"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD23LS",
+    "descriptions": [
+      "Generated table for View DD23LS"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD23T",
+    "descriptions": [
+      "AS400_L-MCID: Matchcode ID Texts"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD23TV",
+    "descriptions": [
+      "Versioning: foreign languages for matchcode IDs"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD23V",
+    "descriptions": [
+      "Generated table for view DD23V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD23VD",
+    "descriptions": [
+      "Matchcode ID"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD23VVT",
+    "descriptions": [
+      "Generated table for view DD23VVT"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD24A",
+    "descriptions": [
+      "Generated table for view DD24A"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD24H",
+    "descriptions": [
+      "Help System View on Fields of a MC ID"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD24S",
+    "descriptions": [
+      "Fields of a matchcode ID"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD24V",
+    "descriptions": [
+      "S-MCIDFIELD: View of MC ID Fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD2526V",
+    "descriptions": [
+      "Generated table for view DD2526V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD25D",
+    "descriptions": [
+      "Screen fields for view"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD25L",
+    "descriptions": [
+      "Aggregate Header (Views, MC Objects, Lock Objects)"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD25LS",
+    "descriptions": [
+      "Generated table for view DD25LS"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD25T",
+    "descriptions": [
+      "Short Texts for Views and Lock Objects"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD25TV",
+    "descriptions": [
+      "Versioning: foreign languages for views and lock objects"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD25V",
+    "descriptions": [
+      "Generated table for view DD25V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD25VD",
+    "descriptions": [
+      "Version display: View header"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD25VV",
+    "descriptions": [
+      "Generated table for view DD25VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD25VVT",
+    "descriptions": [
+      "Generated table for view DD25VVT"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD25Z",
+    "descriptions": [
+      "Assignment of superview to subview - no longer required -"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD26D",
+    "descriptions": [
+      "Screen fields for lock object maintenance"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD26E",
+    "descriptions": [
+      "Interface Structure for Base Tables of a Lock Object"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD26EVD",
+    "descriptions": [
+      "Version display: base tables of a lock object"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD26I",
+    "descriptions": [
+      "Generated table for view DD26I"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD26S",
+    "descriptions": [
+      "Base tables and foreign key relationships for a view"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD26V",
+    "descriptions": [
+      "V-VIEWTABLE: View of Base Tables of a View"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD26VD",
+    "descriptions": [
+      "Version display: Base tables"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27D",
+    "descriptions": [
+      "Screen fields for view fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27I",
+    "descriptions": [
+      "Generated table for view DD27I"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27M",
+    "descriptions": [
+      "Generated table for view DD27M"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27P",
+    "descriptions": [
+      "View of Fields in an SAP Table View"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27S",
+    "descriptions": [
+      "Fields in an Aggregate (View, MC Object, Lock Object)"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27SV",
+    "descriptions": [
+      "Generated table for view DD27SV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27V",
+    "descriptions": [
+      "V-VIEWFIELD: View of Fields in an SAP View"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27VD",
+    "descriptions": [
+      "Version display: View fields, lock arguments, matchcode fld."
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27VV",
+    "descriptions": [
+      "Generated table for view DD27VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27VVT",
+    "descriptions": [
+      "Generated table for view DD27VVT"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD27VVTSTR",
+    "descriptions": [
+      "Repository Infosystem: Structure via DD27VVT: View fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD28J",
+    "descriptions": [
+      "Internal structure for joins of views"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD28JVD",
+    "descriptions": [
+      "Version display: Joins of views"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD28S",
+    "descriptions": [
+      "Lines of a selection condition"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD28V",
+    "descriptions": [
+      "View on a Selection Condition"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD28VD",
+    "descriptions": [
+      "Version display: Selection conditions"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD29L",
+    "descriptions": [
+      "Selection Condition for Views and MC IDs"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD29T",
+    "descriptions": [
+      "AS400_L-SELCOND: Selection Condition Texts"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD29V",
+    "descriptions": [
+      "V-SELCOND: View on Header for a Selection Condition"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD30L",
+    "descriptions": [
+      "Search helps"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD30T",
+    "descriptions": [
+      "Search help texts"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD30TV",
+    "descriptions": [
+      "Versioning: foreign languages for search helps"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD30V",
+    "descriptions": [
+      "Generated table for view DD30V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD30VD",
+    "descriptions": [
+      "Version Display: General Attributes of Search Helps"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD30VV",
+    "descriptions": [
+      "Generated table for view DD30VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD31D",
+    "descriptions": [
+      "Search help inclusions with texts of included"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD31S",
+    "descriptions": [
+      "Assignment of search helps to collective search helps"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD31V",
+    "descriptions": [
+      "Assignment of search helps to collective search helps"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD32P",
+    "descriptions": [
+      "Interface structure for search help parameters"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD32S",
+    "descriptions": [
+      "Search Help Parameter"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD32V",
+    "descriptions": [
+      "Search help fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD32VD",
+    "descriptions": [
+      "Search help fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD33S",
+    "descriptions": [
+      "Assignment of search help fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD33V",
+    "descriptions": [
+      "Assignment of search help parameters for srch help inclusion"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD35L",
+    "descriptions": [
+      "Search help attachments to structures: Headers"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD35V",
+    "descriptions": [
+      "Assignment of structure fields and search helps: Headers"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD35VD",
+    "descriptions": [
+      "Version display: search help attachm. to structures: header"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD35VV",
+    "descriptions": [
+      "Generated table for view DD35VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD36M",
+    "descriptions": [
+      "Interface structure for field assignments table-search help"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD36Q",
+    "descriptions": [
+      "Generated table for view DD36Q"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD36S",
+    "descriptions": [
+      "Parameter-field assignments for search help attachment"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD36V",
+    "descriptions": [
+      "Assignment of structure fields and search helps: Fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD36VD",
+    "descriptions": [
+      "Version display: parameter-field assignm. for s.h. attachm."
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD40D",
+    "descriptions": [
+      "Screen Fields for Table Types"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD40L",
+    "descriptions": [
+      "Table types (internal tables defined in DD)"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD40T",
+    "descriptions": [
+      "Text on table types"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD40TV",
+    "descriptions": [
+      "Versioning: foreign languages for table types"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD40V",
+    "descriptions": [
+      "DD: Interface structure for table types"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD40VD",
+    "descriptions": [
+      "Version display: table types"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD40VV",
+    "descriptions": [
+      "Generated table for view DD40VV"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD41V",
+    "descriptions": [
+      "Generated table for view DD41V"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD42S",
+    "descriptions": [
+      "Key fields for table types (internal tab. defined in DD)"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD42V",
+    "descriptions": [
+      "DD: Interface structure for table type key fields (TTKF)"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD42VD",
+    "descriptions": [
+      "Version display: table type key fields (TTKF)"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD42V_EXT",
+    "descriptions": [
+      "DD: Key Field of a Table Incl. Further Information"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD50D",
+    "descriptions": [
+      "Screen Fields for Type Groups"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD51D",
+    "descriptions": [
+      "Screen Fields for Lock Objects (Same Fields: DD25D Views)"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD52D",
+    "descriptions": [
+      "Interface Structure for Base Tables of a Lock Object"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD53D",
+    "descriptions": [
+      "Screen Fields for Lock Object Fields"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  },
+  {
+    "table": "DD90L",
+    "descriptions": [
+      "Header Information for External Index"
+    ],
+    "sections": [
+      "ABAP dic list"
+    ],
+    "module": "BASIS",
+    "category": "data_dictionary",
+    "level": "table_only"
+  }
+]

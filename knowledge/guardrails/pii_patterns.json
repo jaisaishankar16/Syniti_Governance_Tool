@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "name": "pii_patterns",
+  "description": "Regex patterns and validators for detecting Personally Identifiable Information",
+  "patterns": [
+    {
+      "id": "PII-EMAIL-01",
+      "name": "Email Address",
+      "regex": "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b",
+      "severity": "low"
+    },
+    {
+      "id": "PII-PHONE-01",
+      "name": "Phone Number",
+      "regex": "\\b(?:\\+?\\d{1,3}[-.\\s]?)?\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}\\b",
+      "severity": "low"
+    },
+    {
+      "id": "PII-SSN-01",
+      "name": "US Social Security Number",
+      "regex": "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+      "severity": "medium"
+    },
+    {
+      "id": "PII-IBAN-01",
+      "name": "International Bank Account Number",
+      "regex": "\\b[A-Z]{2}\\d{2}[A-Z0-9]{11,30}\\b",
+      "severity": "medium"
+    },
+    {
+      "id": "PII-CREDITCARD-01",
+      "name": "Credit Card Number",
+      "regex": "\\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13})\\b",
+      "validator": "luhn",
+      "severity": "high"
+    }
+  ]
+}
+

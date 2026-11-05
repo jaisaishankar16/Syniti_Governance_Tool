@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "overrides": {
+    "VTBFHAPO": "Transaction Flow",
+    "VTBFHAZU": "Transaction Activity",
+    "VTBFINKO": "Transaction Condition",
+    "VTIFHAPO": "Underlying transaction flows",
+    "VTIFHAZU": "Underlying transaction status table",
+    "VIAUFKST": "Generated Table for View VIAUFKST"
+  },
+  "ambiguous_lines": []
+}
+

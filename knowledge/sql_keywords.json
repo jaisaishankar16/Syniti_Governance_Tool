@@ -1,0 +1,1161 @@
+{
+  "schema_version": 1,
+  "keywords": [
+    {
+      "keyword": "INNER JOIN",
+      "category": "Joins",
+      "aliases": [
+        "JOIN"
+      ],
+      "technical_meaning": "Returns rows when there is at least one match in both tables based on join condition.",
+      "tsql_example": "SELECT a.col1, b.col2 FROM TableA a INNER JOIN TableB b ON a.id = b.id",
+      "performance_notes": "Ensure join columns are indexed with compatible data types to avoid implicit conversions.",
+      "common_pitfalls": [
+        "Accidental Cartesian product if ON condition is omitted or incomplete."
+      ],
+      "source_chapter": "Chapter 35: JOIN",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "LEFT JOIN",
+      "category": "Joins",
+      "aliases": [
+        "LEFT OUTER JOIN"
+      ],
+      "technical_meaning": "Returns all rows from the left table, and matching rows from the right table, filling with NULL on mismatch.",
+      "tsql_example": "SELECT a.col1, b.col2 FROM TableA a LEFT JOIN TableB b ON a.id = b.id",
+      "performance_notes": "Placing right-table predicates in WHERE clause effectively converts it into an INNER JOIN.",
+      "common_pitfalls": [
+        "Filtering right table in WHERE clause instead of ON clause."
+      ],
+      "source_chapter": "Chapter 35: JOIN",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "RIGHT JOIN",
+      "category": "Joins",
+      "aliases": [
+        "RIGHT OUTER JOIN"
+      ],
+      "technical_meaning": "Returns all rows from the right table, and matching rows from the left table.",
+      "tsql_example": "SELECT a.col1, b.col2 FROM TableA a RIGHT JOIN TableB b ON a.id = b.id",
+      "performance_notes": "Usually rewritten as LEFT JOIN for consistency and readability.",
+      "common_pitfalls": [
+        "Confusion with table precedence."
+      ],
+      "source_chapter": "Chapter 35: JOIN",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "FULL JOIN",
+      "category": "Joins",
+      "aliases": [
+        "FULL OUTER JOIN"
+      ],
+      "technical_meaning": "Returns all rows when there is a match in one of the tables; unmatched rows contain NULL.",
+      "tsql_example": "SELECT a.col1, b.col2 FROM TableA a FULL OUTER JOIN TableB b ON a.id = b.id",
+      "performance_notes": "Costly execution plan; requires scanning or hash matching both inputs completely.",
+      "common_pitfalls": [
+        "High memory and CPU usage on large datasets."
+      ],
+      "source_chapter": "Chapter 35: JOIN",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "CROSS JOIN",
+      "category": "Joins",
+      "aliases": [
+        "Cartesian Product"
+      ],
+      "technical_meaning": "Produces the Cartesian product of rows from both tables.",
+      "tsql_example": "SELECT a.col1, b.col2 FROM TableA a CROSS JOIN TableB b",
+      "performance_notes": "Results in N x M rows; can severely degrade performance on large tables.",
+      "common_pitfalls": [
+        "Accidental Cartesian joins when WHERE or ON conditions are missing."
+      ],
+      "source_chapter": "Chapter 35: JOIN",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "CROSS APPLY",
+      "category": "Apply Operators",
+      "aliases": [
+        "APPLY"
+      ],
+      "technical_meaning": "Invokes a table-valued function or correlated subquery for each row of the outer table expression.",
+      "tsql_example": "SELECT c.id, recent.OrderDate FROM Customers c CROSS APPLY (SELECT TOP 1 OrderDate FROM Orders o WHERE o.CustId = c.id ORDER BY OrderDate DESC) recent",
+      "performance_notes": "Similar to an inner join but evaluates the right side for each outer row.",
+      "common_pitfalls": [
+        "Rows from outer table are omitted if right side returns empty set."
+      ],
+      "source_chapter": "Chapter 12: cross apply, outer apply",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "OUTER APPLY",
+      "category": "Apply Operators",
+      "aliases": [],
+      "technical_meaning": "Like CROSS APPLY but returns all outer rows, filling NULL if right side returns empty.",
+      "tsql_example": "SELECT c.id, recent.OrderDate FROM Customers c OUTER APPLY (SELECT TOP 1 OrderDate FROM Orders o WHERE o.CustId = c.id ORDER BY OrderDate DESC) recent",
+      "performance_notes": "Preserves outer rows even if correlated subquery yields no records.",
+      "common_pitfalls": [
+        "NULL handling on projected correlated columns."
+      ],
+      "source_chapter": "Chapter 12: cross apply, outer apply",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "WHERE",
+      "category": "Filtering",
+      "aliases": [],
+      "technical_meaning": "Filters rows before grouping or aggregation takes place.",
+      "tsql_example": "SELECT * FROM Orders WHERE Status = 1 AND Amount > 100",
+      "performance_notes": "Sargable predicates enable index seek operations; avoid wrapping filtered columns in scalar functions.",
+      "common_pitfalls": [
+        "Using scalar functions on index columns (e.g. YEAR(date) = 2023)."
+      ],
+      "source_chapter": "Chapter 22: Filter results using WHERE and HAVING",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "HAVING",
+      "category": "Filtering",
+      "aliases": [],
+      "technical_meaning": "Filters groups of rows after GROUP BY aggregation.",
+      "tsql_example": "SELECT DeptId, COUNT(*) FROM Employees GROUP BY DeptId HAVING COUNT(*) > 10",
+      "performance_notes": "Cannot utilize indexes directly; filters after aggregation is computed.",
+      "common_pitfalls": [
+        "Using HAVING for conditions that could be evaluated earlier in WHERE."
+      ],
+      "source_chapter": "Chapter 22: Filter results using WHERE and HAVING",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "GROUP BY",
+      "category": "Aggregation",
+      "aliases": [],
+      "technical_meaning": "Groups rows that have the same values in specified columns into summary rows.",
+      "tsql_example": "SELECT Category, SUM(Sales) FROM Products GROUP BY Category",
+      "performance_notes": "Requires sort or hash match aggregate in execution plan.",
+      "common_pitfalls": [
+        "Selecting columns not included in GROUP BY or aggregate functions."
+      ],
+      "source_chapter": "Chapter 29: GROUP BY",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "DISTINCT",
+      "category": "Projection",
+      "aliases": [
+        "UNIQUE"
+      ],
+      "technical_meaning": "Eliminates duplicate rows from query results.",
+      "tsql_example": "SELECT DISTINCT Country FROM Customers",
+      "performance_notes": "Forces a sort or distinct hash match, which can be expensive.",
+      "common_pitfalls": [
+        "Masking underlying join duplicates instead of fixing join conditions."
+      ],
+      "source_chapter": "Chapter 49: SQL Group By vs Distinct",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "TOP",
+      "category": "Limiting",
+      "aliases": [
+        "LIMIT"
+      ],
+      "technical_meaning": "Limits the number or percentage of rows returned by a query.",
+      "tsql_example": "SELECT TOP 10 * FROM Orders ORDER BY OrderDate DESC",
+      "performance_notes": "Always pair with an ORDER BY for deterministic results.",
+      "common_pitfalls": [
+        "Non-deterministic results if ORDER BY is omitted or ties exist without WITH TIES."
+      ],
+      "source_chapter": "Chapter 45: SELECT",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "OFFSET FETCH",
+      "category": "Pagination",
+      "aliases": [
+        "FETCH NEXT",
+        "OFFSET"
+      ],
+      "technical_meaning": "Standard ANSI SQL paging mechanism skipping N rows and returning next M rows.",
+      "tsql_example": "SELECT * FROM Orders ORDER BY OrderDate DESC OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY",
+      "performance_notes": "Requires an explicit ORDER BY clause.",
+      "common_pitfalls": [
+        "High offset numbers scan and discard previous rows, increasing I/O."
+      ],
+      "source_chapter": "Chapter 47: SKIP TAKE (Pagination)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "ORDER BY",
+      "category": "Sorting",
+      "aliases": [],
+      "technical_meaning": "Sorts query results by one or more columns in ascending (ASC) or descending (DESC) order.",
+      "tsql_example": "SELECT * FROM Customers ORDER BY LastName ASC, FirstName ASC",
+      "performance_notes": "Can spill to tempdb if sort memory grant is exceeded.",
+      "common_pitfalls": [
+        "Relying on physical row order without an explicit ORDER BY."
+      ],
+      "source_chapter": "Chapter 40: ORDER BY",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "CASE",
+      "category": "Conditional Logic",
+      "aliases": [
+        "CASE WHEN",
+        "Searched CASE"
+      ],
+      "technical_meaning": "Evaluates a list of conditions and returns one of multiple possible result expressions.",
+      "tsql_example": "SELECT CASE WHEN Status = 1 THEN 'Active' WHEN Status = 0 THEN 'Inactive' ELSE 'Unknown' END FROM T",
+      "performance_notes": "Evaluated sequentially; order most frequent conditions first.",
+      "common_pitfalls": [
+        "Omitting ELSE branch causes unmatched cases to return NULL."
+      ],
+      "source_chapter": "Chapter 5: CASE",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "ISNULL",
+      "category": "Null Handling",
+      "aliases": [],
+      "technical_meaning": "T-SQL specific function replacing NULL with specified replacement value.",
+      "tsql_example": "SELECT ISNULL(Phone, 'N/A') FROM Contacts",
+      "performance_notes": "Returns datatype of first argument; faster than COALESCE for 2 parameters in T-SQL.",
+      "common_pitfalls": [
+        "Truncates replacement value if its length exceeds datatype of first parameter."
+      ],
+      "source_chapter": "Chapter 39: NULL",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "COALESCE",
+      "category": "Null Handling",
+      "aliases": [],
+      "technical_meaning": "ANSI SQL standard function returning the first non-null expression among its arguments.",
+      "tsql_example": "SELECT COALESCE(Mobile, Home, Work, 'None') FROM Contacts",
+      "performance_notes": "Determines data type based on highest data type precedence among all arguments.",
+      "common_pitfalls": [
+        "Translates internally into a CASE expression, which may evaluate arguments multiple times."
+      ],
+      "source_chapter": "Chapter 39: NULL",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "NULLIF",
+      "category": "Null Handling",
+      "aliases": [],
+      "technical_meaning": "Returns NULL if two expressions are equal; otherwise returns the first expression.",
+      "tsql_example": "SELECT Total / NULLIF(Units, 0) FROM Sales",
+      "performance_notes": "Commonly used to prevent divide-by-zero runtime errors.",
+      "common_pitfalls": [
+        "Forgetting that NULLIF returns NULL on match."
+      ],
+      "source_chapter": "Chapter 39: NULL",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "IIF",
+      "category": "Conditional Logic",
+      "aliases": [],
+      "technical_meaning": "Shorthand function for writing CASE WHEN boolean_expression THEN true_value ELSE false_value END.",
+      "tsql_example": "SELECT IIF(Score >= 50, 'Pass', 'Fail') FROM ExamResults",
+      "performance_notes": "Syntactic sugar over CASE; compiles to CASE in SQL Server.",
+      "common_pitfalls": [
+        "T-SQL specific; not supported in older ANSI or certain other dialects."
+      ],
+      "source_chapter": "Chapter 5: CASE",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "CAST",
+      "category": "Type Conversion",
+      "aliases": [],
+      "technical_meaning": "Converts an expression from one data type to another according to ANSI standard.",
+      "tsql_example": "SELECT CAST(Price AS INT) FROM Products",
+      "performance_notes": "May cause non-sargable query plans if applied to indexed filter columns.",
+      "common_pitfalls": [
+        "Raises query error if conversion is invalid; consider TRY_CAST."
+      ],
+      "source_chapter": "Chapter 13: Data Types",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "CONVERT",
+      "category": "Type Conversion",
+      "aliases": [],
+      "technical_meaning": "T-SQL conversion function supporting style formatting parameters for dates and binary data.",
+      "tsql_example": "SELECT CONVERT(VARCHAR(10), GETDATE(), 120)",
+      "performance_notes": "Style parameter 120 gives canonical ODBC standard YYYY-MM-DD HH:MI:SS.",
+      "common_pitfalls": [
+        "Style codes vary across database versions; raises error on failure."
+      ],
+      "source_chapter": "Chapter 13: Data Types",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "TRY_CAST",
+      "category": "Type Conversion",
+      "aliases": [
+        "TRY_CONVERT"
+      ],
+      "technical_meaning": "Attempts type conversion and returns NULL if conversion fails, avoiding query errors.",
+      "tsql_example": "SELECT TRY_CAST(RawValue AS INT) FROM LegacyData",
+      "performance_notes": "Safeguards ETL data cleansing against malformed string inputs.",
+      "common_pitfalls": [
+        "Returns NULL for both legitimate NULLs and failed conversions."
+      ],
+      "source_chapter": "Chapter 13: Data Types",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "SUBSTRING",
+      "category": "String Functions",
+      "aliases": [
+        "SUBSTR"
+      ],
+      "technical_meaning": "Extracts a portion of a string beginning at specified 1-based character position.",
+      "tsql_example": "SELECT SUBSTRING(PostalCode, 1, 3) FROM Addresses",
+      "performance_notes": "Non-sargable when used on WHERE filter columns.",
+      "common_pitfalls": [
+        "SQL Server string indices are 1-based, not 0-based."
+      ],
+      "source_chapter": "Chapter 52: String Functions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "LEN",
+      "category": "String Functions",
+      "aliases": [
+        "LENGTH"
+      ],
+      "technical_meaning": "Returns number of characters in string expression, excluding trailing blanks.",
+      "tsql_example": "SELECT LEN(ProductName) FROM Products",
+      "performance_notes": "Ignores trailing spaces; use DATALENGTH to include trailing spaces and measure bytes.",
+      "common_pitfalls": [
+        "DATALENGTH returns bytes (double for NVARCHAR), LEN returns characters."
+      ],
+      "source_chapter": "Chapter 52: String Functions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "UPPER",
+      "category": "String Functions",
+      "aliases": [
+        "UCASE"
+      ],
+      "technical_meaning": "Converts lowercase characters in a string to uppercase.",
+      "tsql_example": "SELECT UPPER(LastName) FROM Customers",
+      "performance_notes": "Can prevent index seek unless collation or computed column index is used.",
+      "common_pitfalls": [
+        "Non-sargable predicate if used as UPPER(col) = 'VALUE'."
+      ],
+      "source_chapter": "Chapter 52: String Functions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "LOWER",
+      "category": "String Functions",
+      "aliases": [
+        "LCASE"
+      ],
+      "technical_meaning": "Converts uppercase characters in a string to lowercase.",
+      "tsql_example": "SELECT LOWER(Email) FROM Users",
+      "performance_notes": "Non-sargable predicate when applied to column expressions in WHERE.",
+      "common_pitfalls": [
+        "May affect collation-sensitive comparisons."
+      ],
+      "source_chapter": "Chapter 52: String Functions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "LTRIM",
+      "category": "String Functions",
+      "aliases": [],
+      "technical_meaning": "Removes leading spaces from string expression.",
+      "tsql_example": "SELECT LTRIM(Description) FROM Catalog",
+      "performance_notes": "Used in data cleansing pipelines.",
+      "common_pitfalls": [
+        "Only removes spaces, not tabs or other whitespace characters unless upgraded."
+      ],
+      "source_chapter": "Chapter 52: String Functions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "RTRIM",
+      "category": "String Functions",
+      "aliases": [],
+      "technical_meaning": "Removes trailing spaces from string expression.",
+      "tsql_example": "SELECT RTRIM(LastName) FROM Customers",
+      "performance_notes": "Used before concatenation to prevent extra gaps.",
+      "common_pitfalls": [
+        "Only removes standard spaces."
+      ],
+      "source_chapter": "Chapter 52: String Functions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "CHARINDEX",
+      "category": "String Functions",
+      "aliases": [
+        "INSTR",
+        "POSITION"
+      ],
+      "technical_meaning": "Searches for an expression in another expression and returns its starting 1-based position.",
+      "tsql_example": "SELECT CHARINDEX('@', Email) FROM Contacts",
+      "performance_notes": "Returns 0 if sequence is not found.",
+      "common_pitfalls": [
+        "Arguments order is (search_target, string_to_search)."
+      ],
+      "source_chapter": "Chapter 52: String Functions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "STUFF",
+      "category": "String Functions",
+      "aliases": [],
+      "technical_meaning": "Deletes a specified length of characters and inserts new characters at specified start position.",
+      "tsql_example": "SELECT STUFF(Phone, 1, 3, '***') FROM Users",
+      "performance_notes": "Commonly combined with FOR XML PATH for string aggregation in legacy T-SQL.",
+      "common_pitfalls": [
+        "Negative or 0 start position returns NULL."
+      ],
+      "source_chapter": "Chapter 52: String Functions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "CONCAT",
+      "category": "String Functions",
+      "aliases": [],
+      "technical_meaning": "Concatenates two or more strings, converting NULL arguments to empty strings implicitly.",
+      "tsql_example": "SELECT CONCAT(FirstName, ' ', LastName) FROM Employees",
+      "performance_notes": "Safer than the + operator because it avoids NULL propagation.",
+      "common_pitfalls": [
+        "Requires at least 2 arguments in SQL Server."
+      ],
+      "source_chapter": "Chapter 52: String Functions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "+",
+      "category": "Operators",
+      "aliases": [
+        "Plus Operator",
+        "String Concatenation Operator"
+      ],
+      "technical_meaning": "In T-SQL string context, concatenates two string expressions. In numeric context, performs addition.",
+      "tsql_example": "SELECT FirstName + ' ' + LastName FROM Employees",
+      "performance_notes": "If any operand is NULL, the entire concatenation result is NULL unless CONCAT_NULL_YIELDS_NULL is OFF.",
+      "common_pitfalls": [
+        "NULL propagation trap: 'Hello ' + NULL yields NULL instead of 'Hello '."
+      ],
+      "source_chapter": "Chapter 52: String Functions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "LIKE",
+      "category": "Operators",
+      "aliases": [],
+      "technical_meaning": "Pattern matching operator using % (any sequence) and _ (single character) wildcards.",
+      "tsql_example": "SELECT * FROM Items WHERE Code LIKE 'MM_%'",
+      "performance_notes": "Leading wildcards (e.g. '%term') prevent index seek and cause full table scans.",
+      "common_pitfalls": [
+        "Escape character must be specified when searching for literal underscores or percent signs."
+      ],
+      "source_chapter": "Chapter 36: LIKE operator",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "IN",
+      "category": "Operators",
+      "aliases": [],
+      "technical_meaning": "Determines whether a specified value matches any value in a subquery or a list of literals.",
+      "tsql_example": "SELECT * FROM Customers WHERE Country IN ('US', 'CA', 'MX')",
+      "performance_notes": "Internally converted to a series of OR conditions or semi-join.",
+      "common_pitfalls": [
+        "Very large literal lists (thousands) should be placed into table variables or temp tables."
+      ],
+      "source_chapter": "Chapter 31: IN clause",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "NOT IN",
+      "category": "Operators",
+      "aliases": [],
+      "technical_meaning": "Determines whether a value does not match any value in a list or subquery.",
+      "tsql_example": "SELECT * FROM Customers WHERE Id NOT IN (SELECT CustId FROM BadAccounts WHERE CustId IS NOT NULL)",
+      "performance_notes": "Dangerous with nullable columns: if subquery returns even one NULL, NOT IN evaluates to UNKNOWN and returns zero rows.",
+      "common_pitfalls": [
+        "NULL trap: returns 0 rows if set contains NULL. Prefer NOT EXISTS."
+      ],
+      "source_chapter": "Chapter 31: IN clause",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "EXISTS",
+      "category": "Subqueries",
+      "aliases": [],
+      "technical_meaning": "Tests for existence of any rows in a subquery, returning TRUE as soon as first row is found.",
+      "tsql_example": "SELECT * FROM Orders o WHERE EXISTS (SELECT 1 FROM Payments p WHERE p.OrderId = o.Id)",
+      "performance_notes": "Short-circuits execution; optimizer does not evaluate projected columns in subquery.",
+      "common_pitfalls": [
+        "Writing SELECT * instead of SELECT 1 in EXISTS is fine but SELECT 1 is standard convention."
+      ],
+      "source_chapter": "Chapter 20: EXISTS CLAUSE",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "NOT EXISTS",
+      "category": "Subqueries",
+      "aliases": [],
+      "technical_meaning": "Tests that no rows match the correlated subquery condition.",
+      "tsql_example": "SELECT * FROM Customers c WHERE NOT EXISTS (SELECT 1 FROM Orders o WHERE o.CustId = c.Id)",
+      "performance_notes": "Robust against NULL values, unlike NOT IN; preferred anti-semi-join construct.",
+      "common_pitfalls": [
+        "Failure to correlate subquery leads to checking global existence instead of per-row."
+      ],
+      "source_chapter": "Chapter 20: EXISTS CLAUSE",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "UNION",
+      "category": "Set Operations",
+      "aliases": [],
+      "technical_meaning": "Combines results of two or more queries into single result set, removing duplicate rows.",
+      "tsql_example": "SELECT City FROM Suppliers UNION SELECT City FROM Customers",
+      "performance_notes": "Requires sort or hash match to remove duplicates. Prefer UNION ALL if duplicates are acceptable.",
+      "common_pitfalls": [
+        "Unnecessary performance overhead when rows are known to be distinct."
+      ],
+      "source_chapter": "Chapter 18: EXCEPT",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "UNION ALL",
+      "category": "Set Operations",
+      "aliases": [],
+      "technical_meaning": "Combines results of two or more queries including all duplicate rows without sorting.",
+      "tsql_example": "SELECT PartNo FROM WarehouseA UNION ALL SELECT PartNo FROM WarehouseB",
+      "performance_notes": "Much faster than UNION as it performs no deduplication or sort operations.",
+      "common_pitfalls": [
+        "Accidental duplicates in downstream reporting if inputs overlap."
+      ],
+      "source_chapter": "Chapter 18: EXCEPT",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "EXCEPT",
+      "category": "Set Operations",
+      "aliases": [
+        "MINUS"
+      ],
+      "technical_meaning": "Returns distinct rows from left query that are not output by right query.",
+      "tsql_example": "SELECT CustId FROM ActiveCustomers EXCEPT SELECT CustId FROM InactiveCustomers",
+      "performance_notes": "Deduplicates left side before matching.",
+      "common_pitfalls": [
+        "Order of queries matters; A EXCEPT B is not equal to B EXCEPT A."
+      ],
+      "source_chapter": "Chapter 18: EXCEPT",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "INTERSECT",
+      "category": "Set Operations",
+      "aliases": [],
+      "technical_meaning": "Returns distinct rows that are output by both the left and right input queries.",
+      "tsql_example": "SELECT EmpId FROM TrainingA INTERSECT SELECT EmpId FROM TrainingB",
+      "performance_notes": "Requires matching column count and compatible data types.",
+      "common_pitfalls": [
+        "Omits non-matching rows and deduplicates matches."
+      ],
+      "source_chapter": "Chapter 18: EXCEPT",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "WITH CTE",
+      "category": "Common Table Expressions",
+      "aliases": [
+        "CTE",
+        "WITH"
+      ],
+      "technical_meaning": "Specifies a temporary named result set (Common Table Expression) within execution scope of a statement.",
+      "tsql_example": "WITH SalesSummary AS (SELECT RepId, SUM(Amt) AS Total FROM Sales GROUP BY RepId) SELECT * FROM SalesSummary WHERE Total > 1000",
+      "performance_notes": "In SQL Server, CTEs are inline views and re-evaluated each time referenced unless materialized into temp table.",
+      "common_pitfalls": [
+        "Referencing large non-materialized CTE multiple times re-executes query each time."
+      ],
+      "source_chapter": "Chapter 8: Common Table Expressions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "recursive CTE",
+      "category": "Common Table Expressions",
+      "aliases": [
+        "Recursive Common Table Expression"
+      ],
+      "technical_meaning": "A CTE that references itself, comprising an anchor member and a recursive member joined by UNION ALL.",
+      "tsql_example": "WITH Hierarchy AS (SELECT Id, ManagerId, 0 AS Lvl FROM Emp WHERE ManagerId IS NULL UNION ALL SELECT e.Id, e.ManagerId, h.Lvl+1 FROM Emp e JOIN Hierarchy h ON e.ManagerId = h.Id) SELECT * FROM Hierarchy",
+      "performance_notes": "Subject to MAXRECURSION limit (default 100 in SQL Server). Use OPTION (MAXRECURSION n) if needed.",
+      "common_pitfalls": [
+        "Infinite loops if circular references exist in data without termination condition."
+      ],
+      "source_chapter": "Chapter 8: Common Table Expressions",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "ROW_NUMBER",
+      "category": "Window Functions",
+      "aliases": [],
+      "technical_meaning": "Assigns sequential integer number to each row within partition of result set starting at 1.",
+      "tsql_example": "SELECT Id, Category, ROW_NUMBER() OVER (PARTITION BY Category ORDER BY Sales DESC) AS rn FROM Items",
+      "performance_notes": "Requires an explicit ORDER BY clause inside OVER (...).",
+      "common_pitfalls": [
+        "Non-deterministic numbering if ORDER BY columns are not unique."
+      ],
+      "source_chapter": "Chapter 26: Functions (Analytic)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "RANK",
+      "category": "Window Functions",
+      "aliases": [],
+      "technical_meaning": "Returns rank of each row within partition, leaving gaps in rank values when ties occur.",
+      "tsql_example": "SELECT Id, Score, RANK() OVER (ORDER BY Score DESC) AS rnk FROM Exams",
+      "performance_notes": "Leaves gaps for ties (e.g. 1, 2, 2, 4).",
+      "common_pitfalls": [
+        "Confusion with DENSE_RANK which produces consecutive rankings without gaps."
+      ],
+      "source_chapter": "Chapter 26: Functions (Analytic)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "DENSE_RANK",
+      "category": "Window Functions",
+      "aliases": [],
+      "technical_meaning": "Returns rank of each row within partition without gaps in ranking values for ties.",
+      "tsql_example": "SELECT Id, Score, DENSE_RANK() OVER (ORDER BY Score DESC) AS drnk FROM Exams",
+      "performance_notes": "Produces continuous integer sequences (e.g. 1, 2, 2, 3).",
+      "common_pitfalls": [
+        "Assuming ranks are unique across tie rows."
+      ],
+      "source_chapter": "Chapter 26: Functions (Analytic)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "LAG",
+      "category": "Window Functions",
+      "aliases": [],
+      "technical_meaning": "Accesses data from a previous row in the same result set without using a self-join.",
+      "tsql_example": "SELECT OrderDate, Amount, LAG(Amount, 1, 0) OVER (ORDER BY OrderDate) AS PrevAmt FROM Sales",
+      "performance_notes": "Avoids costly self-joins when computing period-over-period differences.",
+      "common_pitfalls": [
+        "Requires ORDER BY in OVER clause."
+      ],
+      "source_chapter": "Chapter 26: Functions (Analytic)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "LEAD",
+      "category": "Window Functions",
+      "aliases": [],
+      "technical_meaning": "Accesses data from a subsequent row in the same result set without using a self-join.",
+      "tsql_example": "SELECT OrderDate, Amount, LEAD(Amount, 1, 0) OVER (ORDER BY OrderDate) AS NextAmt FROM Sales",
+      "performance_notes": "Avoids self-joins for forward-looking differences.",
+      "common_pitfalls": [
+        "Requires ORDER BY in OVER clause."
+      ],
+      "source_chapter": "Chapter 26: Functions (Analytic)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "NTILE",
+      "category": "Window Functions",
+      "aliases": [
+        "Buckets"
+      ],
+      "technical_meaning": "Distributes rows in an ordered partition into a specified number of named groups.",
+      "tsql_example": "SELECT CustId, Spend, NTILE(4) OVER (ORDER BY Spend DESC) AS Quartile FROM Customers",
+      "performance_notes": "Partitions rows into roughly equal bucket counts.",
+      "common_pitfalls": [
+        "Groups may not have identical counts if total rows are not evenly divisible."
+      ],
+      "source_chapter": "Chapter 26: Functions (Analytic)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "SUM",
+      "category": "Aggregates",
+      "aliases": [],
+      "technical_meaning": "Returns the sum of all values, or only DISTINCT values, in specified expression.",
+      "tsql_example": "SELECT Category, SUM(Price) FROM Products GROUP BY Category",
+      "performance_notes": "Ignores NULL values.",
+      "common_pitfalls": [
+        "Arithmetic overflow error if sum exceeds data type limits (use BIGINT for large totals)."
+      ],
+      "source_chapter": "Chapter 25: Functions (Aggregate)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "COUNT",
+      "category": "Aggregates",
+      "aliases": [],
+      "technical_meaning": "Returns number of items found in group. COUNT(*) returns all rows; COUNT(col) ignores NULLs.",
+      "tsql_example": "SELECT COUNT(*), COUNT(col) FROM TableA",
+      "performance_notes": "COUNT(*) is optimized by query engine to use the narrowest non-clustered index.",
+      "common_pitfalls": [
+        "COUNT(column) does not count NULL rows, whereas COUNT(*) counts all rows."
+      ],
+      "source_chapter": "Chapter 25: Functions (Aggregate)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "AVG",
+      "category": "Aggregates",
+      "aliases": [],
+      "technical_meaning": "Returns average of values in group, ignoring NULL values.",
+      "tsql_example": "SELECT Category, AVG(CAST(Rating AS FLOAT)) FROM Reviews GROUP BY Category",
+      "performance_notes": "Integer division trap: AVG of integer column returns integer truncated result.",
+      "common_pitfalls": [
+        "Divide-by-zero if group is empty; integer truncation on integer columns."
+      ],
+      "source_chapter": "Chapter 25: Functions (Aggregate)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "MIN",
+      "category": "Aggregates",
+      "aliases": [],
+      "technical_meaning": "Returns minimum value in expression.",
+      "tsql_example": "SELECT MIN(OrderDate) FROM Orders",
+      "performance_notes": "Utilizes index seeks if column is leading column of an index.",
+      "common_pitfalls": [
+        "Ignores NULLs."
+      ],
+      "source_chapter": "Chapter 25: Functions (Aggregate)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "MAX",
+      "category": "Aggregates",
+      "aliases": [],
+      "technical_meaning": "Returns maximum value in expression.",
+      "tsql_example": "SELECT MAX(OrderDate) FROM Orders",
+      "performance_notes": "Fast Top/Bottom index seek if index exists.",
+      "common_pitfalls": [
+        "Ignores NULLs."
+      ],
+      "source_chapter": "Chapter 25: Functions (Aggregate)",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "#temp tables",
+      "category": "Temporary Tables",
+      "aliases": [
+        "#temp",
+        "Local Temp Table"
+      ],
+      "technical_meaning": "Temporary table stored in tempdb visible only to current user session.",
+      "tsql_example": "CREATE TABLE #TempOrders (Id INT PRIMARY KEY, Amt MONEY)",
+      "performance_notes": "Can have indexes, statistics, and constraints, making them superior to large table variables.",
+      "common_pitfalls": [
+        "Dropped automatically when session ends, but should be explicitly dropped when done."
+      ],
+      "source_chapter": "Chapter 17: Example Databases and Tables",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "##temp tables",
+      "category": "Temporary Tables",
+      "aliases": [
+        "##temp",
+        "Global Temp Table"
+      ],
+      "technical_meaning": "Global temporary table in tempdb visible to all sessions across SQL Server.",
+      "tsql_example": "SELECT * INTO ##GlobalCache FROM MasterData",
+      "performance_notes": "Shared across sessions; risk of concurrent name collisions.",
+      "common_pitfalls": [
+        "Dropped when last session referencing it disconnects."
+      ],
+      "source_chapter": "Chapter 17: Example Databases and Tables",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "SELECT INTO",
+      "category": "DDL/DML",
+      "aliases": [],
+      "technical_meaning": "Creates a new table and inserts resulting rows from query into it in a single operation.",
+      "tsql_example": "SELECT * INTO #ActiveProducts FROM Products WHERE Discontinued = 0",
+      "performance_notes": "Minimally logged under Bulk-Logged or Simple recovery model.",
+      "common_pitfalls": [
+        "Fails if destination table already exists; copies columns without constraints or indexes."
+      ],
+      "source_chapter": "Chapter 45: SELECT",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "MERGE",
+      "category": "DML",
+      "aliases": [
+        "UPSERT"
+      ],
+      "technical_meaning": "Performs insert, update, or delete operations on target table based on results of join with source.",
+      "tsql_example": "MERGE TargetTable AS T USING SourceTable AS S ON T.id = S.id WHEN MATCHED THEN UPDATE SET T.v = S.v WHEN NOT MATCHED THEN INSERT (id, v) VALUES (S.id, S.v);",
+      "performance_notes": "Must be terminated with a semicolon in T-SQL.",
+      "common_pitfalls": [
+        "Known concurrency bugs and race conditions in SQL Server under high concurrency."
+      ],
+      "source_chapter": "Chapter 38: MERGE",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "NOLOCK",
+      "category": "Table Hints",
+      "aliases": [
+        "READUNCOMMITTED"
+      ],
+      "technical_meaning": "Table hint instructing query optimizer to read uncommitted rows (dirty reads).",
+      "tsql_example": "SELECT * FROM LargeTable WITH (NOLOCK)",
+      "performance_notes": "Avoids shared read locks; risks reading phantom, uncommitted, or duplicated data.",
+      "common_pitfalls": [
+        "Dirty reads, missing records, or reading records twice due to allocation order scans."
+      ],
+      "source_chapter": "Chapter 32: Indexes",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "Order of Execution",
+      "category": "Concepts",
+      "aliases": [
+        "Logical Query Processing"
+      ],
+      "technical_meaning": "The logical sequence in which SQL query clauses are processed: FROM -> ON -> JOIN -> WHERE -> GROUP BY -> WITH CUBE/ROLLUP -> HAVING -> SELECT -> DISTINCT -> ORDER BY -> TOP/OFFSET.",
+      "tsql_example": "FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY",
+      "performance_notes": "Explains why aliases created in SELECT cannot be used directly in WHERE.",
+      "common_pitfalls": [
+        "Attempting to reference SELECT aliases in the WHERE clause."
+      ],
+      "source_chapter": "Chapter 41: Order of Execution",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "DELETE",
+      "category": "DML",
+      "aliases": [],
+      "technical_meaning": "Removes one or more rows from a table or view based on optional WHERE condition.",
+      "tsql_example": "DELETE FROM Orders WHERE Status = 'Cancelled'",
+      "performance_notes": "Fully logged row-by-row operation; consider TRUNCATE for complete wipe.",
+      "common_pitfalls": [
+        "Omitting WHERE clause deletes all records in table."
+      ],
+      "source_chapter": "Chapter 14: DELETE",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "INSERT",
+      "category": "DML",
+      "aliases": [
+        "INSERT INTO"
+      ],
+      "technical_meaning": "Adds one or more rows to a table or view.",
+      "tsql_example": "INSERT INTO Customers (Id, Name) VALUES (1, 'Acme')",
+      "performance_notes": "Batched inserts and INSERT...SELECT are much faster than single row inserts.",
+      "common_pitfalls": [
+        "Column list mismatch or identity insert restriction."
+      ],
+      "source_chapter": "Chapter 34: INSERT",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "ALTER TABLE",
+      "category": "DDL",
+      "aliases": [],
+      "technical_meaning": "Modifies table definition by adding, dropping, or altering columns and constraints.",
+      "tsql_example": "ALTER TABLE Customers ADD Email VARCHAR(100) NULL",
+      "performance_notes": "Adding NOT NULL columns requires default value or table rewrite.",
+      "common_pitfalls": [
+        "Schema locks can block active transaction queues."
+      ],
+      "source_chapter": "Chapter 2: ALTER TABLE",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "CREATE TABLE",
+      "category": "DDL",
+      "aliases": [],
+      "technical_meaning": "Creates a new table in the database schema.",
+      "tsql_example": "CREATE TABLE dbo.Items (Id INT PRIMARY KEY, Code VARCHAR(20) NOT NULL)",
+      "performance_notes": "Define explicit clustered primary keys on high-insert tables.",
+      "common_pitfalls": [
+        "Missing primary keys or incorrect column collation."
+      ],
+      "source_chapter": "Chapter 11: CREATE TABLE",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "CREATE FUNCTION",
+      "category": "Programmability",
+      "aliases": [
+        "UDF",
+        "Scalar Function",
+        "Table-Valued Function"
+      ],
+      "technical_meaning": "Creates a user-defined function returning a scalar value or a table result.",
+      "tsql_example": "CREATE FUNCTION dbo.GetTax (@amount MONEY) RETURNS MONEY AS BEGIN RETURN @amount * 0.1 END",
+      "performance_notes": "Scalar UDFs in WHERE clauses prevent parallel execution and cause row-by-row RBAR overhead.",
+      "common_pitfalls": [
+        "Calling scalar functions in query projection/filters severely hurts execution speed."
+      ],
+      "source_chapter": "Chapter 10: CREATE FUNCTION",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "Stored Procedures",
+      "category": "Programmability",
+      "aliases": [
+        "PROCEDURE",
+        "CREATE PROCEDURE"
+      ],
+      "technical_meaning": "A precompiled collection of one or more SQL statements and procedural control-of-flow logic.",
+      "tsql_example": "CREATE PROCEDURE dbo.UpdateInventory @id INT, @qty INT AS BEGIN UPDATE Stock SET Qty = Qty - @qty WHERE Id = @id END",
+      "performance_notes": "Execution plans are cached and reused; beware of parameter sniffing.",
+      "common_pitfalls": [
+        "Parameter sniffing leading to suboptimal plan cache reuse."
+      ],
+      "source_chapter": "Chapter 51: Stored Procedures",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "CREATE VIEW",
+      "category": "Views",
+      "aliases": [
+        "VIEW"
+      ],
+      "technical_meaning": "Creates a virtual table based on the result-set of an SQL statement.",
+      "tsql_example": "CREATE VIEW dbo.ActiveUsers AS SELECT Id, Name FROM Users WHERE Active = 1",
+      "performance_notes": "Unindexed views do not store data; inner query is expanded and executed at runtime.",
+      "common_pitfalls": [
+        "Nesting views multiple levels deep creates severe query optimization bottlenecks."
+      ],
+      "source_chapter": "Chapter 37: Materialized Views",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "keyword": "ALTER VIEW",
+      "category": "Views",
+      "aliases": [],
+      "technical_meaning": "Modifies a previously created view without changing permissions or affecting dependent stored procedures.",
+      "tsql_example": "ALTER VIEW dbo.ActiveUsers AS SELECT Id, Name, Role FROM Users WHERE Active = 1",
+      "performance_notes": "Maintains view permissions while redefining the underlying query.",
+      "common_pitfalls": [
+        "Column definitions and ordering may shift if SELECT * was used."
+      ],
+      "source_chapter": "Chapter 37: Materialized Views",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "Comments",
+      "category": "Syntax",
+      "aliases": [
+        "--",
+        "/* */"
+      ],
+      "technical_meaning": "Non-executable descriptive text embedded in SQL scripts; line comments (--) or block comments (/* */).",
+      "tsql_example": "-- Single line comment\n/* Multi-line\ncomment */",
+      "performance_notes": "Stripped during parser normalization; untrusted in multi-agent environments.",
+      "common_pitfalls": [
+        "Unclosed block comment /* comments out entire remaining script."
+      ],
+      "source_chapter": "Chapter 7: Comments",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "AND",
+      "category": "Logical Operators",
+      "aliases": [],
+      "technical_meaning": "Combines two boolean expressions and returns TRUE when both expressions evaluate to TRUE.",
+      "tsql_example": "SELECT * FROM Orders WHERE Status = 1 AND Amount > 100",
+      "performance_notes": "Short-circuits in SQL Server query execution.",
+      "common_pitfalls": [
+        "Operator precedence: AND binds more tightly than OR."
+      ],
+      "source_chapter": "Chapter 3: AND & OR Operators",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "OR",
+      "category": "Logical Operators",
+      "aliases": [],
+      "technical_meaning": "Combines two boolean expressions and returns TRUE when either expression evaluates to TRUE.",
+      "tsql_example": "SELECT * FROM Orders WHERE Status = 1 OR Flag = 'X'",
+      "performance_notes": "OR conditions on different columns frequently prevent index seeks and force index scans.",
+      "common_pitfalls": [
+        "Mixing AND and OR without explicit parentheses causes logic bugs."
+      ],
+      "source_chapter": "Chapter 3: AND & OR Operators",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "keyword": "subqueries",
+      "category": "Subqueries",
+      "aliases": [
+        "Nested Query",
+        "Inner Query"
+      ],
+      "technical_meaning": "A query nested inside a SELECT, INSERT, UPDATE, or DELETE statement, or inside another subquery.",
+      "tsql_example": "SELECT Name, (SELECT MAX(Salary) FROM Salaries WHERE EmpId = e.Id) FROM Employees e",
+      "performance_notes": "Correlated subqueries execute once per outer row unless optimized into joins.",
+      "common_pitfalls": [
+        "Subqueries in SELECT clause returning more than one scalar value will throw runtime errors."
+      ],
+      "source_chapter": "Chapter 45: SELECT",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    }
+  ]
+}

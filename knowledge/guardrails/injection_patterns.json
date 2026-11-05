@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "name": "injection_patterns",
+  "description": "Weighted patterns for detecting prompt injection, instruction overrides, and template manipulation",
+  "patterns": [
+    {
+      "id": "INJ-OVERRIDE-01",
+      "category": "instruction_override",
+      "regex": "(?i)\\b(ignore|disregard|forget|override|bypass)\\b[\\s\\S]{0,30}\\b(prior|previous|all|above|system)\\b[\\s\\S]{0,30}\\b(instructions?|prompts?|rules?|directives?)\\b",
+      "weight": 1.0,
+      "severity": "critical"
+    },
+    {
+      "id": "INJ-OVERRIDE-02",
+      "category": "instruction_override",
+      "regex": "(?i)\\b(new\\s+instructions?|updated\\s+system\\s+prompt|new\\s+task)\\s*:",
+      "weight": 0.9,
+      "severity": "high"
+    },
+    {
+      "id": "INJ-ROLEPLAY-01",
+      "category": "role_play",
+      "regex": "(?i)\\b(you\\s+are\\s+now|act\\s+as|pretend\\s+to\\s+be|simulate|roleplay\\s+as)\\b[\\s\\S]{0,30}\\b(DAN|jailbreak|unrestricted|evil|admin|developer|root)\\b",
+      "weight": 0.9,
+      "severity": "critical"
+    },
+    {
+      "id": "INJ-ROLEPLAY-02",
+      "category": "role_play",
+      "regex": "(?i)\\b(you\\s+are\\s+now|act\\s+as|pretend\\s+you\\s+are)\\b",
+      "weight": 0.5,
+      "severity": "medium"
+    },
+    {
+      "id": "INJ-SYSTEM-01",
+      "category": "system_prompt",
+      "regex": "(?i)\\b(system\\s+prompt|developer\\s+message|system\\s+message|metaprompt)\\b",
+      "weight": 0.6,
+      "severity": "medium"
+    },
+    {
+      "id": "INJ-EXFIL-01",
+      "category": "exfiltration",
+      "regex": "(?i)\\b(print|reveal|show|dump|repeat|output|exfiltrate|leak|echo)\\b[\\s\\S]{0,30}\\b(system\\s+prompt|instructions?|developer\\s+message|api\\s*key|secret|environment|env\\s+var)\\b",
+      "weight": 1.0,
+      "severity": "critical"
+    },
+    {
+      "id": "INJ-TEMPLATE-01",
+      "category": "chat_template",
+      "regex": "(<\\|im_start\\|>|<\\|im_end\\|>|\\[INST\\]|\\[/INST\\]|<<SYS>>|<</SYS>>|<\\|system\\|>|<\\|user\\|>|<\\|assistant\\|>)",
+      "weight": 1.0,
+      "severity": "critical"
+    },
+    {
+      "id": "INJ-DELIMITER-01",
+      "category": "delimiter_manipulation",
+      "regex": "(?i)</?(task|query_facts|sql_data|knowledge_pack|untrusted_comments|unresolved)>",
+      "weight": 0.8,
+      "severity": "high"
+    },
+    {
+      "id": "INJ-TOOL-01",
+      "category": "tool_trigger",
+      "regex": "(?i)\\b(save_learned_sap_knowledge|search_sap_catalog|search_sql_docs|lookup_sap_knowledge|lookup_sql_keyword)\\b",
+      "weight": 0.8,
+      "severity": "high"
+    },
+    {
+      "id": "INJ-BASE64-01",
+      "category": "obfuscation",
+      "regex": "(?i)\\b(?:[A-Za-z0-9+/]{4}){15,}(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?\\b",
+      "weight": 0.7,
+      "severity": "medium"
+    }
+  ]
+}
+

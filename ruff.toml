@@ -1,0 +1,7 @@
+target-version = "py310"
+line-length = 100
+
+[lint]
+ignore = [
+    "B008",  # Do not perform function call `Depends` in argument defaults (standard FastAPI pattern)
+]

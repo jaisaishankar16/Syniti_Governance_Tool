@@ -1,0 +1,49 @@
+# Git and local configs
+.git
+.gitignore
+.gitattributes
+
+# Environment secrets and credentials (NEVER bake into images)
+.env
+.env.*
+*.env
+
+# Python bytecode and caches
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv
+venv/
+ENV/
+env/
+
+# IDE and OS artifacts
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Test coverage and scratch data
+backend/tests/fixtures/redteam.json
+backend/tests/
+backend/scratch/
+
+# Build and dist artifacts
+build/
+dist/
+*.egg-info/
+
+# Node / frontend
+node_modules/
+

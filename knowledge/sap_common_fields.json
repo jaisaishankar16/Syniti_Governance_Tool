@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "common_fields": [
+    {
+      "field": "MANDT",
+      "description": "Client ID (Mandant)",
+      "data_element": "MANDT",
+      "data_type": "CLNT",
+      "length": 3,
+      "key": true,
+      "business_meaning": "Isolates corporate data environments within a single SAP instance. Staging tables typically mirror MANDT but rules filter on active records across clients.",
+      "is_custom": false,
+      "verified": true
+    },
+    {
+      "field": "SPRAS",
+      "description": "Language Key",
+      "data_element": "SPRAS",
+      "data_type": "LANG",
+      "length": 1,
+      "key": false,
+      "business_meaning": "Specifies language for text-dependent master data (e.g. material description MAKT, customer name).",
+      "is_custom": false,
+      "verified": true
+    },
+    {
+      "field": "ERDAT",
+      "description": "Creation Date",
+      "data_element": "ERDAT",
+      "data_type": "DATS",
+      "length": 8,
+      "key": false,
+      "business_meaning": "Calendar date on which the record was originally created.",
+      "is_custom": false,
+      "verified": false
+    },
+    {
+      "field": "ERNAM",
+      "description": "Name of Person who Created the Object",
+      "data_element": "ERNAM",
+      "data_type": "CHAR",
+      "length": 12,
+      "key": false,
+      "business_meaning": "SAP user ID who initially created the record.",
+      "is_custom": false,
+      "verified": false
+    },
+    {
+      "field": "LAEDA",
+      "description": "Date of Last Change",
+      "data_element": "LAEDA",
+      "data_type": "DATS",
+      "length": 8,
+      "key": false,
+      "business_meaning": "Date when the record was last modified.",
+      "is_custom": false,
+      "verified": false
+    },
+    {
+      "field": "AENAM",
+      "description": "Name of Person Who Changed Object",
+      "data_element": "AENAM",
+      "data_type": "CHAR",
+      "length": 12,
+      "key": false,
+      "business_meaning": "SAP user ID of the last person to modify the record.",
+      "is_custom": false,
+      "verified": false
+    },
+    {
+      "field": "LOEVM",
+      "description": "Deletion Flag / Indicator",
+      "data_element": "LOEVM",
+      "data_type": "CHAR",
+      "length": 1,
+      "key": false,
+      "business_meaning": "Flag indicating that the record is marked for deletion (typically 'X'); data quality rules often deactivate such records (ZACTIVE = 0).",
+      "is_custom": false,
+      "verified": true
+    },
+    {
+      "field": "BUKRS",
+      "description": "Company Code",
+      "data_element": "BUKRS",
+      "data_type": "CHAR",
+      "length": 4,
+      "key": false,
+      "business_meaning": "Independent accounting unit within a corporate group.",
+      "is_custom": false,
+      "verified": true
+    },
+    {
+      "field": "WERKS",
+      "description": "Plant",
+      "data_element": "WERKS_D",
+      "data_type": "CHAR",
+      "length": 4,
+      "key": false,
+      "business_meaning": "Operational logistics facility (manufacturing, distribution center, branch).",
+      "is_custom": false,
+      "verified": true
+    },
+    {
+      "field": "MATNR",
+      "description": "Material Number",
+      "data_element": "MATNR",
+      "data_type": "CHAR",
+      "length": 18,
+      "key": true,
+      "business_meaning": "Unique alphanumeric key identifying a physical or service material item.",
+      "is_custom": false,
+      "verified": true
+    },
+    {
+      "field": "LIFNR",
+      "description": "Vendor Account Number",
+      "data_element": "LIFNR",
+      "data_type": "CHAR",
+      "length": 10,
+      "key": true,
+      "business_meaning": "Unique alphanumeric account number identifying a vendor / supplier.",
+      "is_custom": false,
+      "verified": true
+    },
+    {
+      "field": "KUNNR",
+      "description": "Customer Number",
+      "data_element": "KUNNR",
+      "data_type": "CHAR",
+      "length": 10,
+      "key": true,
+      "business_meaning": "Unique alphanumeric account number identifying a customer / client.",
+      "is_custom": false,
+      "verified": true
+    }
+  ],
+  "custom_field_conventions": {
+    "Z<FIELD>": "migration shadow of <FIELD>",
+    "<FIELD>NEW": "derived target value",
+    "ZACTIVE": "migration active flag",
+    "ZLEGACYWERKS": "legacy plant"
+  }
+}

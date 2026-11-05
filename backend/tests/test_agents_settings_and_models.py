@@ -1,0 +1,146 @@
+"""Unit tests for agent settings, model factory, and Pydantic v2 strict models."""
+
+from __future__ import annotations
+
+import os
+from pathlib import Path
+
+import pytest
+from agents import AgentOutputSchema, OpenAIChatCompletionsModel, OpenAIResponsesModel
+from app.agents.model_factory import build_model
+from app.agents.models import SAPAnalysis, SQLAnalysis
+from app.agents.settings import (
+    ENV_FILE_PATH,
+    LLMSettings,
+    clean_api_key,
+    get_key_status,
+    is_valid_api_key,
+)
+from pydantic import SecretStr, ValidationError
+
+
+def test_settings_switching_model_and_base_url():
+    """Switching LLM_MODEL, OPENAI_BASE_URL, or LLM_API_MODE builds appropriate model without code changes."""
+    # 1. Default responses mode
+    s1 = LLMSettings(
+        llm_model="gpt-4o-mini",
+        llm_api_mode="responses",
+        openai_api_key=SecretStr("sk-test-fake-key-12345"),
+    )
+    m1 = build_model(s1)
+    assert isinstance(m1, OpenAIResponsesModel)
+
+    # 2. Chat completions mode explicitly
+    s2 = LLMSettings(
+        llm_model="gpt-4o",
+        llm_api_mode="chat_completions",
+        openai_api_key=SecretStr("sk-test-fake-key-12345"),
+    )
+    m2 = build_model(s2)
+    assert isinstance(m2, OpenAIChatCompletionsModel)
+
+    # 3. Base URL sets default to chat_completions
+    s3 = LLMSettings(
+        llm_model="custom-local-model",
+        openai_base_url="http://localhost:8000/v1",
+        openai_api_key=SecretStr("sk-test-fake-key-12345"),
+    )
+    assert s3.llm_api_mode == "chat_completions"
+    m3 = build_model(s3)
+    assert isinstance(m3, OpenAIChatCompletionsModel)
+
+
+def test_api_key_never_logged_or_in_repr():
+    """OpenAI API key is a SecretStr and never exposed in repr or str."""
+    secret = "sk-super-secret-key-12345"
+    s = LLMSettings(openai_api_key=SecretStr(secret))
+    s_repr = repr(s)
+    s_str = str(s)
+    assert secret not in s_repr
+    assert secret not in s_str
+    assert "**********" in s_repr
+
+
+def test_strict_schema_conversion_for_analysis_models():
+    """SQLAnalysis and SAPAnalysis schemas export successfully with SDK strict schema conversion."""
+    sql_schema = AgentOutputSchema(SQLAnalysis, strict_json_schema=True)
+    assert sql_schema is not None
+    assert sql_schema._output_schema["additionalProperties"] is False
+
+    sap_schema = AgentOutputSchema(SAPAnalysis, strict_json_schema=True)
+    assert sap_schema is not None
+    assert sap_schema._output_schema["additionalProperties"] is False
+
+
+def test_extra_fields_forbidden():
+    """Models forbid extra fields (extra='forbid')."""
+    with pytest.raises(ValidationError):
+        SQLAnalysis(
+            query_purpose="Test",
+            statement_type="SELECT",
+            technical_summary="Summary",
+            unrecognized_extra_field="disallowed",  # type: ignore[call-arg]
+        )
+
+    with pytest.raises(ValidationError):
+        SAPAnalysis(
+            sap_module="MM",
+            client_handling="Standard",
+            unrecognized_extra_field="disallowed",  # type: ignore[call-arg]
+        )
+
+
+def test_placeholder_api_keys_treated_as_not_set():
+    """Blank values and obvious placeholders are treated as NOT SET (None)."""
+    placeholders = [
+        "",
+        "   ",
+        "sk-...",
+        "sk-xxx",
+        "your-key-here",
+        "YOUR-KEY-HERE",
+        "changeme",
+        "dummy",
+        "none",
+        "null",
+        "placeholder",
+    ]
+    for p in placeholders:
+        assert clean_api_key(p) is None, f"Failed to clean placeholder: {p}"
+        assert is_valid_api_key(p) is False
+        s = LLMSettings(openai_api_key=p)  # type: ignore[arg-type]
+        assert s.openai_api_key is None, f"Placeholder {p} was not set to None"
+
+
+def test_os_env_overrides_dotenv(tmp_path: Path):
+    """OS environment variables strictly take precedence over .env file."""
+    # Create temporary .env at repo root path
+    test_env = tmp_path / ".env"
+    test_env.write_text("OPENAI_API_KEY=sk-proj-file-key-from-dotenv-99999\n", encoding="utf-8")
+
+    orig_env = os.environ.get("OPENAI_API_KEY")
+    try:
+        # Set OS env var
+        os.environ["OPENAI_API_KEY"] = "sk-proj-os-key-priority-11111"
+        s = LLMSettings(_env_file=test_env)  # type: ignore[call-arg]
+        assert s.openai_api_key is not None
+        assert s.openai_api_key.get_secret_value() == "sk-proj-os-key-priority-11111"
+    finally:
+        if orig_env is not None:
+            os.environ["OPENAI_API_KEY"] = orig_env
+        else:
+            os.environ.pop("OPENAI_API_KEY", None)
+
+
+def test_settings_loads_from_repo_root_regardless_of_cwd(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    """Settings resolves .env relative to repo root regardless of CWD."""
+    # Change working directory to a sub-folder
+    sub_dir = tmp_path / "some_nested_working_dir"
+    sub_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.chdir(sub_dir)
+
+    status = get_key_status()
+    # The resolved env_path must point to MDM_Syniti root .env, not cwd/.env
+    assert status["env_path"] == ENV_FILE_PATH

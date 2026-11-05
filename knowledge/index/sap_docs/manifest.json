@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "index_name": "sap_docs",
+  "embedding_model": "all-MiniLM-L6-v2",
+  "dim": 384,
+  "source_file": "sap_tables.pdf",
+  "source_sha256": "b1c667630d979f0774fc0a98dbe827f0869b9ac6d89bb9f954fcc03868bd50d3",
+  "chunk_count": 308,
+  "built_at": "2026-11-04T11:57:56.679747+00:00"
+}

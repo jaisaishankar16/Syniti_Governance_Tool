@@ -1,0 +1,46 @@
+{
+  "universal_rules": {
+    "uppercase": true,
+    "allowed_characters_regex": "^[A-Z0-9_]+$",
+    "case_style": "snake_case",
+    "max_length": 256
+  },
+  "migration_prefixes": {
+    "MM": "Material Master",
+    "CM": "Customer Master",
+    "VM": "Vendor Master"
+  },
+  "subject_area_codes": {
+    "PTP": "Procure to Pay"
+  },
+  "known_zsources": [
+    "ECC_EU_R1",
+    "NORTHWIND",
+    "ADVENTUREWORKS"
+  ],
+  "known_actions": [
+    "UPD"
+  ],
+  "special_view_tokens": {
+    "report": "RPT",
+    "export": "EXP"
+  },
+  "reference_keywords": [
+    "XREF",
+    "MAPPING",
+    "SIEVO",
+    "DATADUMP"
+  ],
+  "db_prefixes": {
+    "working": "WRK",
+    "source_snapshot": "SRC",
+    "target_snapshot": "TGT"
+  },
+  "environments": [
+    "D",
+    "Q",
+    "T",
+    "P"
+  ]
+}
+

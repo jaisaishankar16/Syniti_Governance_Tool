@@ -1,0 +1,6 @@
+node_modules
+dist
+coverage
+src/api/schema.gen.ts
+scripts
+

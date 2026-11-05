@@ -1,0 +1,35 @@
+# Environment and Secret Files
+.env
+.env.local
+*.env
+test.py
+
+# Python Virtual Environments & Bytecode
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# Node & Frontend
+node_modules/
+frontend/dist/
+frontend/node_modules/
+
+# Runtime Data & Activity Logs
+data/*
+!data/.gitkeep
+*.log
+*.lock
+!package-lock.json
+!frontend/package-lock.json
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+

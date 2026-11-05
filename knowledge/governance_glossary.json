@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+
+  "subject_areas": {
+    "name": "Subject Areas",
+    "aliases": [
+      "Subject Area",
+      "Business Area",
+      "Domain"
+    ],
+    "description": "Represents the highest level of business categorization within the organization, such as Human Resources, Finance, Sales, or Manufacturing.",
+    "purpose": "Provides a logical grouping for rules, datasets, and business processes within the Data Catalog.",
+    "key_points": [
+      "Every Rule must belong to a Subject Area.",
+      "Every Business Process must belong to a Subject Area.",
+      "Used for organizing Data Catalog assets."
+    ],
+    "examples": [
+      "Finance",
+      "Sales",
+      "Human Resources",
+      "Manufacturing"
+    ]
+  },
+
+  "business_processes": {
+    "name": "Business Processes",
+    "aliases": [
+      "Business Process",
+      "Process",
+      "Workstream"
+    ],
+    "description": "Represents an operational business function where data quality is measured.",
+    "purpose": "Groups rules around a specific business activity to calculate quality metrics.",
+    "key_points": [
+      "Rules are assigned to Business Processes.",
+      "Quality metrics are calculated from associated Rules.",
+      "Represents functional business operations."
+    ],
+    "examples": [
+      "Order to Cash",
+      "Procure to Pay",
+      "Customer Master Data",
+      "Material Master Data",
+      "Order to Cash - Shipping",
+      "Order to Cash - Invoicing"
+    ]
+  },
+
+  "datasets": {
+    "name": "Datasets",
+    "aliases": [
+      "Dataset",
+      "Data Set"
+    ],
+    "description": "A logical collection of fields associated with one or more system datastores.",
+    "purpose": "Maps business documentation and governance assets to physical data storage.",
+    "key_points": [
+      "Associated with System Datastores.",
+      "Can represent only a subset of datastore fields.",
+      "Can span multiple systems."
+    ],
+    "examples": [
+      "Customer Dataset",
+      "Vendor Dataset",
+      "Material Dataset"
+    ]
+  },
+
+  "rules": {
+    "name": "Rules",
+    "aliases": [
+      "Business Rule",
+      "Data Rule",
+      "Quality Rule"
+    ],
+    "description": "Defines business data requirements that establish the foundation for data quality.",
+    "purpose": "Specifies the expected business condition that data must satisfy.",
+    "key_points": [
+      "Foundation of Data Quality.",
+      "Can belong to multiple Business Processes.",
+      "Can belong to multiple Business Concepts."
+    ],
+    "examples": [
+      "Material Type cannot be null.",
+      "Customer Number must be unique."
+    ]
+  },
+
+  "business_concepts": {
+    "name": "Business Concepts",
+    "aliases": [
+      "Terms",
+      "Business Terms",
+      "Glossary Terms"
+    ],
+    "description": "Represents a business entity or concept used throughout the enterprise.",
+    "purpose": "Creates relationships between datasets, business processes, and governance assets.",
+    "key_points": [
+      "Represents business terminology.",
+      "Can relate to Business Processes.",
+      "Can relate to Datasets."
+    ],
+    "examples": [
+      "Customer",
+      "Vendor",
+      "Sales Order",
+      "Material"
+    ]
+  },
+
+  "enforcements": {
+    "name": "Enforcements",
+    "aliases": [
+      "Data Quality Enforcement",
+      "Migration Enforcement"
+    ],
+    "description": "Defines how a Rule is validated against a specific system and business objective.",
+    "purpose": "Specifies implementation requirements, target system, and enforcement objective.",
+    "key_points": [
+      "Extends a Rule.",
+      "Identifies target system.",
+      "Supports Quality or Migration validation."
+    ],
+    "examples": [
+      "Migration Validation",
+      "Data Quality Validation"
+    ]
+  },
+
+  "implementations": {
+    "name": "Implementations",
+    "aliases": [
+      "Implementation",
+      "Technical Implementation",
+      "Rule Implementation"
+    ],
+    "description": "Contains the executable technical logic that validates data against a Rule.",
+    "purpose": "Implements business requirements using SQL or other technical code.",
+    "key_points": [
+      "Typically developed by technical teams.",
+      "Executes data analysis.",
+      "Validates Rule compliance."
+    ],
+    "examples": [
+      "SQL Validation",
+      "Stored Procedure",
+      "Python Validation Script"
+    ]
+  },
+
+  "opportunity_query": {
+    "name": "Opportunity Query",
+    "aliases": [
+      "Opportunity",
+      "Opportunity Count"
+    ],
+    "description": "Defines the total number of records that are eligible for validation.",
+    "purpose": "Provides the denominator for quality score calculations.",
+    "key_points": [
+      "Determines records in scope.",
+      "Used to calculate Data Quality scores."
+    ],
+    "examples": [
+      "SELECT COUNT(*) FROM CUSTOMER"
+    ]
+  },
+
+  "error_query": {
+    "name": "Error Query",
+    "aliases": [
+      "Error Records",
+      "Validation Query"
+    ],
+    "description": "Returns only the records that violate a Rule.",
+    "purpose": "Identifies records failing validation.",
+    "key_points": [
+      "Must always be a subset of the Opportunity Query.",
+      "Determines data quality defects."
+    ],
+    "examples": [
+      "SELECT * FROM CUSTOMER WHERE CUSTOMER_ID IS NULL"
+    ]
+  }
+}

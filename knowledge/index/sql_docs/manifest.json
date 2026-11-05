@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "index_name": "sql_docs",
+  "embedding_model": "all-MiniLM-L6-v2",
+  "dim": 384,
+  "source_file": "sql_reference.pdf",
+  "source_sha256": "fe61329302b9202ada35698e2599df57eb8158120240901b72fec4200fd4f500",
+  "chunk_count": 323,
+  "built_at": "2026-11-04T11:58:30.095798+00:00"
+}

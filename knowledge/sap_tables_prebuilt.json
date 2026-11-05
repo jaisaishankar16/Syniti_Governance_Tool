@@ -1,0 +1,2864 @@
+{
+  "schema_version": 1,
+  "tables": [
+    {
+      "table": "MARA",
+      "description": "General Material Data (Client Level)",
+      "sap_module": "MM",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "MATNR"
+      ],
+      "important_fields": [
+        {
+          "field": "MANDT",
+          "description": "Client",
+          "data_element": null,
+          "data_type": "CLNT",
+          "length": 3,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "MATNR",
+          "description": "Material Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": true,
+          "business_meaning": "Primary material master identifier",
+          "is_custom": false
+        },
+        {
+          "field": "MTART",
+          "description": "Material Type",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": "Determines procurement, valuation, and screen sequences (e.g. FERT, HALB, ROH)",
+          "is_custom": false
+        },
+        {
+          "field": "MATKL",
+          "description": "Material Group",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 9,
+          "key": false,
+          "business_meaning": "Commodity / classification category for reporting and purchasing",
+          "is_custom": false
+        },
+        {
+          "field": "XCHPF",
+          "description": "Batch Management Indicator (Client Level)",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": "Flag specifying whether material is batch managed globally",
+          "is_custom": false
+        },
+        {
+          "field": "MEINS",
+          "description": "Base Unit of Measure",
+          "data_element": null,
+          "data_type": "UNIT",
+          "length": 3,
+          "key": false,
+          "business_meaning": "Standard inventory unit of measure",
+          "is_custom": false
+        },
+        {
+          "field": "LVORM",
+          "description": "Flag Material for Deletion (Client Level)",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": "Client deletion flag",
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "MARC",
+          "on": "MARA.MATNR = MARC.MATNR"
+        },
+        {
+          "to_table": "MAKT",
+          "on": "MARA.MATNR = MAKT.MATNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Material",
+        "Material Master",
+        "Batch Management"
+      ],
+      "typical_business_processes": [
+        "Material Master Standardization",
+        "Classification"
+      ],
+      "typical_subject_area": "Procure to Pay",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "MARC",
+      "description": "Plant Data for Material",
+      "sap_module": "MM",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "MATNR",
+        "WERKS"
+      ],
+      "important_fields": [
+        {
+          "field": "MANDT",
+          "description": "Client",
+          "data_element": null,
+          "data_type": "CLNT",
+          "length": 3,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "MATNR",
+          "description": "Material Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": true,
+          "business_meaning": "Material identifier linked to plant",
+          "is_custom": false
+        },
+        {
+          "field": "WERKS",
+          "description": "Plant",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": "Manufacturing or distribution plant",
+          "is_custom": false
+        },
+        {
+          "field": "XCHPF",
+          "description": "Batch Management Indicator (Plant Level)",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": "Plant-specific batch management flag; must align with MARA.XCHPF",
+          "is_custom": false
+        },
+        {
+          "field": "SSQSS",
+          "description": "QM Control Key",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 8,
+          "key": false,
+          "business_meaning": "Quality management inspection setup key",
+          "is_custom": false
+        },
+        {
+          "field": "QMATA",
+          "description": "Quality Management Material Authorization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 6,
+          "key": false,
+          "business_meaning": "QM authorization indicator for procurement",
+          "is_custom": false
+        },
+        {
+          "field": "STRGR",
+          "description": "Strategy Group / Storage Group",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": "Planning strategy group defining MRP and demand behavior",
+          "is_custom": false
+        },
+        {
+          "field": "LVORM",
+          "description": "Flag Material for Deletion at Plant Level",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": "Plant deletion flag",
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "MARA",
+          "on": "MARC.MATNR = MARA.MATNR"
+        },
+        {
+          "to_table": "MARD",
+          "on": "MARC.MATNR = MARD.MATNR AND MARC.WERKS = MARD.WERKS"
+        }
+      ],
+      "related_business_concepts": [
+        "Plant Material Data",
+        "Planning Strategy",
+        "QM Indicator"
+      ],
+      "typical_business_processes": [
+        "Plant Data Standardization",
+        "Inspection Setup"
+      ],
+      "typical_subject_area": "Procure to Pay",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "MARD",
+      "description": "Storage Location Data for Material",
+      "sap_module": "MM",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "MATNR",
+        "WERKS",
+        "LGORT"
+      ],
+      "important_fields": [
+        {
+          "field": "MATNR",
+          "description": "Material Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "WERKS",
+          "description": "Plant",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LGORT",
+          "description": "Storage Location",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": "Warehouse/bin storage location",
+          "is_custom": false
+        },
+        {
+          "field": "LABST",
+          "description": "Valuated Unrestricted-Use Stock",
+          "data_element": null,
+          "data_type": "QUAN",
+          "length": 13,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "MARC",
+          "on": "MARD.MATNR = MARC.MATNR AND MARD.WERKS = MARC.WERKS"
+        }
+      ],
+      "related_business_concepts": [
+        "Storage Location",
+        "Inventory"
+      ],
+      "typical_business_processes": [
+        "Inventory Management"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "MAKT",
+      "description": "Material Descriptions",
+      "sap_module": "MM",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "MATNR",
+        "SPRAS"
+      ],
+      "important_fields": [
+        {
+          "field": "MATNR",
+          "description": "Material Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "SPRAS",
+          "description": "Language Key",
+          "data_element": null,
+          "data_type": "LANG",
+          "length": 1,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "MAKTX",
+          "description": "Material Description",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 40,
+          "key": false,
+          "business_meaning": "Short text name of material",
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "MARA",
+          "on": "MAKT.MATNR = MARA.MATNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Material Description",
+        "Localization"
+      ],
+      "typical_business_processes": [
+        "Material Master Standardization"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "MBEW",
+      "description": "Material Valuation",
+      "sap_module": "MM",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "MATNR",
+        "BWKEY",
+        "BWTAR"
+      ],
+      "important_fields": [
+        {
+          "field": "MATNR",
+          "description": "Material Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BWKEY",
+          "description": "Valuation Area",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": "Usually corresponds to Plant WERKS",
+          "is_custom": false
+        },
+        {
+          "field": "VPRSV",
+          "description": "Price Control Indicator",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": "Standard (S) or Moving Average (V)",
+          "is_custom": false
+        },
+        {
+          "field": "STPRS",
+          "description": "Standard Price",
+          "data_element": null,
+          "data_type": "CURR",
+          "length": 11,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "MARA",
+          "on": "MBEW.MATNR = MARA.MATNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Valuation",
+        "Standard Costing"
+      ],
+      "typical_business_processes": [
+        "Financial Accounting"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "MVKE",
+      "description": "Sales Data for Material",
+      "sap_module": "SD",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "MATNR",
+        "VKORG",
+        "VTWEG"
+      ],
+      "important_fields": [
+        {
+          "field": "MATNR",
+          "description": "Material Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VKORG",
+          "description": "Sales Organization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VTWEG",
+          "description": "Distribution Channel",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 2,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "DWERK",
+          "description": "Delivering Plant",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "MARA",
+          "on": "MVKE.MATNR = MARA.MATNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Sales Area Data",
+        "Delivering Plant"
+      ],
+      "typical_business_processes": [
+        "Order to Cash"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "KNA1",
+      "description": "General Data in Customer Master",
+      "sap_module": "SD/FI",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "KUNNR"
+      ],
+      "important_fields": [
+        {
+          "field": "KUNNR",
+          "description": "Customer Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "NAME1",
+          "description": "Name 1",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 35,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LAND1",
+          "description": "Country Key",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 3,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "ORT01",
+          "description": "City",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 35,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "PSTLZ",
+          "description": "Postal Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LOEVM",
+          "description": "Central Deletion Flag for Customer",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "KNB1",
+          "on": "KNA1.KUNNR = KNB1.KUNNR"
+        },
+        {
+          "to_table": "KNVV",
+          "on": "KNA1.KUNNR = KNVV.KUNNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Customer Master",
+        "Customer Hierarchy"
+      ],
+      "typical_business_processes": [
+        "Customer Master Data Management"
+      ],
+      "typical_subject_area": "Order to Cash",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "KNB1",
+      "description": "Customer Master (Company Code)",
+      "sap_module": "FI",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "KUNNR",
+        "BUKRS"
+      ],
+      "important_fields": [
+        {
+          "field": "KUNNR",
+          "description": "Customer Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BUKRS",
+          "description": "Company Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "AKONT",
+          "description": "Reconciliation Account in General Ledger",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LOEVM",
+          "description": "Deletion Flag for Company Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "KNA1",
+          "on": "KNB1.KUNNR = KNA1.KUNNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Company Code Customer",
+        "Reconciliation Account"
+      ],
+      "typical_business_processes": [
+        "Financial Accounting"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "KNVV",
+      "description": "Customer Master Sales Data",
+      "sap_module": "SD",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "KUNNR",
+        "VKORG",
+        "VTWEG",
+        "SPART"
+      ],
+      "important_fields": [
+        {
+          "field": "KUNNR",
+          "description": "Customer Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VKORG",
+          "description": "Sales Organization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VTWEG",
+          "description": "Distribution Channel",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 2,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "SPART",
+          "description": "Division",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 2,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VKBUR",
+          "description": "Sales Office",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "KNA1",
+          "on": "KNVV.KUNNR = KNA1.KUNNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Sales Area",
+        "Pricing Terms"
+      ],
+      "typical_business_processes": [
+        "Order to Cash"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "LFA1",
+      "description": "Vendor Master (General Section)",
+      "sap_module": "MM/FI",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "LIFNR"
+      ],
+      "important_fields": [
+        {
+          "field": "MANDT",
+          "description": "Client",
+          "data_element": null,
+          "data_type": "CLNT",
+          "length": 3,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LIFNR",
+          "description": "Vendor Account Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": "Supplier identifier",
+          "is_custom": false
+        },
+        {
+          "field": "NAME1",
+          "description": "Name 1",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 35,
+          "key": false,
+          "business_meaning": "Supplier legal name",
+          "is_custom": false
+        },
+        {
+          "field": "ORT01",
+          "description": "City",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 35,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "PSTLZ",
+          "description": "Postal Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LAND1",
+          "description": "Country Key",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 3,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LOEVM",
+          "description": "Central Deletion Flag for Vendor",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": "Marked for deletion flag",
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "LFB1",
+          "on": "LFA1.LIFNR = LFB1.LIFNR"
+        },
+        {
+          "to_table": "LFM1",
+          "on": "LFA1.LIFNR = LFM1.LIFNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Vendor Master",
+        "Supplier Information",
+        "Vendor Deletion"
+      ],
+      "typical_business_processes": [
+        "Vendor Lifecycle Management",
+        "Procurement"
+      ],
+      "typical_subject_area": "Procure to Pay",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "LFB1",
+      "description": "Vendor Master (Company Code)",
+      "sap_module": "FI",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "LIFNR",
+        "BUKRS"
+      ],
+      "important_fields": [
+        {
+          "field": "LIFNR",
+          "description": "Vendor Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BUKRS",
+          "description": "Company Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "AKONT",
+          "description": "Reconciliation Account in General Ledger",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "ZTERM",
+          "description": "Terms of Payment Key",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LOEVM",
+          "description": "Deletion Flag for Company Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "LFA1",
+          "on": "LFB1.LIFNR = LFA1.LIFNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Vendor Accounting",
+        "Payment Terms"
+      ],
+      "typical_business_processes": [
+        "Accounts Payable"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "LFM1",
+      "description": "Vendor Master Data: Purchasing Organization",
+      "sap_module": "MM",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "LIFNR",
+        "EKORG"
+      ],
+      "important_fields": [
+        {
+          "field": "LIFNR",
+          "description": "Vendor Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "EKORG",
+          "description": "Purchasing Organization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": "Purchasing org unit",
+          "is_custom": false
+        },
+        {
+          "field": "WAERS",
+          "description": "Purchase Order Currency",
+          "data_element": null,
+          "data_type": "CUKY",
+          "length": 5,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "INCO1",
+          "description": "Incoterms (Part 1)",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 3,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LOEVM",
+          "description": "Deletion Flag for Purchasing Organization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "LFA1",
+          "on": "LFM1.LIFNR = LFA1.LIFNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Purchasing Organization",
+        "Procurement Terms"
+      ],
+      "typical_business_processes": [
+        "Purchasing Data Standardization"
+      ],
+      "typical_subject_area": "Procure to Pay",
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "WYT3",
+      "description": "Partner Functions in Purchasing",
+      "sap_module": "MM",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "LIFNR",
+        "EKORG",
+        "LTSNR",
+        "WERKS",
+        "PARVW",
+        "PARZA"
+      ],
+      "important_fields": [
+        {
+          "field": "MANDT",
+          "description": "Client",
+          "data_element": null,
+          "data_type": "CLNT",
+          "length": 3,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LIFNR",
+          "description": "Vendor Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": "Main supplier key",
+          "is_custom": false
+        },
+        {
+          "field": "EKORG",
+          "description": "Purchasing Organization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": "Purchasing organization context",
+          "is_custom": false
+        },
+        {
+          "field": "LTSNR",
+          "description": "Vendor Sub-Range",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 6,
+          "key": true,
+          "business_meaning": "Vendor subrange key",
+          "is_custom": false
+        },
+        {
+          "field": "WERKS",
+          "description": "Plant",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": "Specific plant for partner role",
+          "is_custom": false
+        },
+        {
+          "field": "PARVW",
+          "description": "Partner Function",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 2,
+          "key": true,
+          "business_meaning": "Partner role: VN=Vendor, PI=Invoicing Party, OA=Ordering Address",
+          "is_custom": false
+        },
+        {
+          "field": "PARZA",
+          "description": "Partner Counter",
+          "data_element": null,
+          "data_type": "NUMC",
+          "length": 3,
+          "key": true,
+          "business_meaning": "Differentiates multiple partners in same role",
+          "is_custom": false
+        },
+        {
+          "field": "DEFPA",
+          "description": "Default Partner Indicator",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": "Indicates default partner for role",
+          "is_custom": false
+        },
+        {
+          "field": "PARTNER",
+          "description": "Partner Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": "Assigned partner entity",
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "LFA1",
+          "on": "WYT3.LIFNR = LFA1.LIFNR"
+        },
+        {
+          "to_table": "LFM1",
+          "on": "WYT3.LIFNR = LFM1.LIFNR AND WYT3.EKORG = LFM1.EKORG"
+        }
+      ],
+      "related_business_concepts": [
+        "Partner Function",
+        "Plant Assignment",
+        "Invoicing Party"
+      ],
+      "typical_business_processes": [
+        "Vendor Partner Assignment",
+        "Procurement"
+      ],
+      "typical_subject_area": "Procure to Pay",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "BUT000",
+      "description": "BP: General Data I (Business Partner Master)",
+      "sap_module": "BP",
+      "table_type": "transparent",
+      "key_fields": [
+        "CLIENT",
+        "PARTNER"
+      ],
+      "important_fields": [
+        {
+          "field": "CLIENT",
+          "description": "Client",
+          "data_element": null,
+          "data_type": "CLNT",
+          "length": 3,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "PARTNER",
+          "description": "Business Partner Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": "Central Business Partner identifier in S/4HANA",
+          "is_custom": false
+        },
+        {
+          "field": "TYPE",
+          "description": "Business Partner Category",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": "1=Person, 2=Organization, 3=Group",
+          "is_custom": false
+        },
+        {
+          "field": "BP_GROUP",
+          "description": "Business Partner Grouping",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": "Account grouping governing number assignment",
+          "is_custom": false
+        },
+        {
+          "field": "BU_GROUP",
+          "description": "Business Unit Account Group",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": "Grouping determining role applicability (e.g. BIR1, B3A1)",
+          "is_custom": false
+        },
+        {
+          "field": "NAME_ORG1",
+          "description": "First Name of Organization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 40,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LOEVM",
+          "description": "Central Deletion Flag",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": "Deletion flag for business partner",
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "BUT100",
+          "on": "BUT000.PARTNER = BUT100.PARTNER"
+        },
+        {
+          "to_table": "LFA1",
+          "on": "BUT000.PARTNER = LFA1.LIFNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Business Partner",
+        "Vendor Master Integration",
+        "Account Group"
+      ],
+      "typical_business_processes": [
+        "Vendor Lifecycle Management",
+        "Role Assignment"
+      ],
+      "typical_subject_area": "Procure to Pay",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "BUT100",
+      "description": "BP: Roles (Business Partner Roles)",
+      "sap_module": "BP",
+      "table_type": "transparent",
+      "key_fields": [
+        "CLIENT",
+        "PARTNER",
+        "RLTYP",
+        "DFVAL"
+      ],
+      "important_fields": [
+        {
+          "field": "CLIENT",
+          "description": "Client",
+          "data_element": null,
+          "data_type": "CLNT",
+          "length": 3,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "PARTNER",
+          "description": "Business Partner Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": "Central BP key",
+          "is_custom": false
+        },
+        {
+          "field": "RLTYP",
+          "description": "Business Partner Role",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 6,
+          "key": true,
+          "business_meaning": "Role key: FLVN00=FI Vendor, FLVN01=Purchasing Vendor, FLCU00=FI Customer",
+          "is_custom": false
+        },
+        {
+          "field": "DFVAL",
+          "description": "Differentiation Value",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VALID_FROM",
+          "description": "Validity Start Date",
+          "data_element": null,
+          "data_type": "DATS",
+          "length": 8,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VALID_TO",
+          "description": "Validity End Date",
+          "data_element": null,
+          "data_type": "DATS",
+          "length": 8,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "BUT000",
+          "on": "BUT100.PARTNER = BUT000.PARTNER"
+        }
+      ],
+      "related_business_concepts": [
+        "Business Partner Roles",
+        "Role Assignment",
+        "Vendor Financial Role (FLVN00)"
+      ],
+      "typical_business_processes": [
+        "Role Assignment & Account Group Validation"
+      ],
+      "typical_subject_area": "Procure to Pay",
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "EKKO",
+      "description": "Purchasing Document Header",
+      "sap_module": "MM-PUR",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "EBELN"
+      ],
+      "important_fields": [
+        {
+          "field": "EBELN",
+          "description": "Purchasing Document Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BSTYP",
+          "description": "Purchasing Document Category",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BSART",
+          "description": "Purchasing Document Type",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LIFNR",
+          "description": "Vendor Account Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "EKORG",
+          "description": "Purchasing Organization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "EKPO",
+          "on": "EKKO.EBELN = EKPO.EBELN"
+        }
+      ],
+      "related_business_concepts": [
+        "Purchase Order",
+        "Procurement Document"
+      ],
+      "typical_business_processes": [
+        "Purchase Order Processing"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "EKPO",
+      "description": "Purchasing Document Item",
+      "sap_module": "MM-PUR",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "EBELN",
+        "EBELP"
+      ],
+      "important_fields": [
+        {
+          "field": "EBELN",
+          "description": "Purchasing Document Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "EBELP",
+          "description": "Item Number of Purchasing Document",
+          "data_element": null,
+          "data_type": "NUMC",
+          "length": 5,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "MATNR",
+          "description": "Material Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "WERKS",
+          "description": "Plant",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "MENGE",
+          "description": "Purchase Order Quantity",
+          "data_element": null,
+          "data_type": "QUAN",
+          "length": 13,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "EKKO",
+          "on": "EKPO.EBELN = EKKO.EBELN"
+        }
+      ],
+      "related_business_concepts": [
+        "Purchase Order Item",
+        "Line Item Delivery"
+      ],
+      "typical_business_processes": [
+        "Procurement"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "EKBE",
+      "description": "History per Purchasing Document",
+      "sap_module": "MM-PUR",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "EBELN",
+        "EBELP",
+        "ZEKKN",
+        "VGABE",
+        "GJAHR",
+        "BELNR",
+        "BUZEI"
+      ],
+      "important_fields": [
+        {
+          "field": "EBELN",
+          "description": "Purchasing Document Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "EBELP",
+          "description": "Item Number",
+          "data_element": null,
+          "data_type": "NUMC",
+          "length": 5,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VGABE",
+          "description": "Transaction/Event Type, Purchase Order History",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "EKPO",
+          "on": "EKBE.EBELN = EKPO.EBELN AND EKBE.EBELP = EKPO.EBELP"
+        }
+      ],
+      "related_business_concepts": [
+        "Goods Receipt History",
+        "Invoice Verification"
+      ],
+      "typical_business_processes": [
+        "PO History Tracking"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "EINA",
+      "description": "Purchasing Info Record: General Data",
+      "sap_module": "MM-PUR",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "INFNR"
+      ],
+      "important_fields": [
+        {
+          "field": "INFNR",
+          "description": "Number of Purchasing Info Record",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "MATNR",
+          "description": "Material Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LIFNR",
+          "description": "Vendor Account Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "EINE",
+          "on": "EINA.INFNR = EINE.INFNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Info Record",
+        "Source List"
+      ],
+      "typical_business_processes": [
+        "Purchasing Sourcing"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "EINE",
+      "description": "Purchasing Info Record: Purchasing Organization Data",
+      "sap_module": "MM-PUR",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "INFNR",
+        "EKORG",
+        "ESOKZ",
+        "WERKS"
+      ],
+      "important_fields": [
+        {
+          "field": "INFNR",
+          "description": "Info Record Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "EKORG",
+          "description": "Purchasing Organization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "NETPR",
+          "description": "Net Price in Purchasing Info Record",
+          "data_element": null,
+          "data_type": "CURR",
+          "length": 11,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "EINA",
+          "on": "EINE.INFNR = EINA.INFNR"
+        }
+      ],
+      "related_business_concepts": [
+        "Purchasing Conditions",
+        "Vendor Pricing"
+      ],
+      "typical_business_processes": [
+        "Pricing Management"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "VBAK",
+      "description": "Sales Document: Header Data",
+      "sap_module": "SD",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "VBELN"
+      ],
+      "important_fields": [
+        {
+          "field": "VBELN",
+          "description": "Sales Document Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VBTYP",
+          "description": "SD Document Category",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "AUART",
+          "description": "Sales Document Type",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VKORG",
+          "description": "Sales Organization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "KUNNR",
+          "description": "Sold-To Party",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "VBAP",
+          "on": "VBAK.VBELN = VBAP.VBELN"
+        }
+      ],
+      "related_business_concepts": [
+        "Sales Order Header",
+        "Sold-to Party"
+      ],
+      "typical_business_processes": [
+        "Order to Cash"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "VBAP",
+      "description": "Sales Document: Item Data",
+      "sap_module": "SD",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "VBELN",
+        "POSNR"
+      ],
+      "important_fields": [
+        {
+          "field": "VBELN",
+          "description": "Sales Document",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "POSNR",
+          "description": "Sales Document Item",
+          "data_element": null,
+          "data_type": "NUMC",
+          "length": 6,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "MATNR",
+          "description": "Material Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "WERKS",
+          "description": "Plant",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "VBAK",
+          "on": "VBAP.VBELN = VBAK.VBELN"
+        }
+      ],
+      "related_business_concepts": [
+        "Sales Order Item",
+        "Material Delivery Line"
+      ],
+      "typical_business_processes": [
+        "Order to Cash"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "VBRK",
+      "description": "Billing Document: Header Data",
+      "sap_module": "SD",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "VBELN"
+      ],
+      "important_fields": [
+        {
+          "field": "VBELN",
+          "description": "Billing Document Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "FKART",
+          "description": "Billing Type",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "KUNAG",
+          "description": "Sold-To Party",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "VBRP",
+          "on": "VBRK.VBELN = VBRP.VBELN"
+        }
+      ],
+      "related_business_concepts": [
+        "Customer Invoice",
+        "Billing Header"
+      ],
+      "typical_business_processes": [
+        "Customer Billing"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "VBRP",
+      "description": "Billing Document: Item Data",
+      "sap_module": "SD",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "VBELN",
+        "POSNR"
+      ],
+      "important_fields": [
+        {
+          "field": "VBELN",
+          "description": "Billing Document Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "POSNR",
+          "description": "Billing Item",
+          "data_element": null,
+          "data_type": "NUMC",
+          "length": 6,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "NETWR",
+          "description": "Net Value in Billing Document",
+          "data_element": null,
+          "data_type": "CURR",
+          "length": 15,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "VBRK",
+          "on": "VBRP.VBELN = VBRK.VBELN"
+        }
+      ],
+      "related_business_concepts": [
+        "Invoice Item",
+        "Revenue Realization"
+      ],
+      "typical_business_processes": [
+        "Billing Item Processing"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "LIKP",
+      "description": "SD Document: Delivery Header Data",
+      "sap_module": "LE/SD",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "VBELN"
+      ],
+      "important_fields": [
+        {
+          "field": "VBELN",
+          "description": "Delivery Document Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LFART",
+          "description": "Delivery Type",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "KUNNR",
+          "description": "Ship-To Party",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "LIPS",
+          "on": "LIKP.VBELN = LIPS.VBELN"
+        }
+      ],
+      "related_business_concepts": [
+        "Outbound Delivery",
+        "Shipping"
+      ],
+      "typical_business_processes": [
+        "Logistics Execution"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "LIPS",
+      "description": "SD Document: Delivery Item Data",
+      "sap_module": "LE/SD",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "VBELN",
+        "POSNR"
+      ],
+      "important_fields": [
+        {
+          "field": "VBELN",
+          "description": "Delivery Document",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "POSNR",
+          "description": "Delivery Item",
+          "data_element": null,
+          "data_type": "NUMC",
+          "length": 6,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "MATNR",
+          "description": "Material Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LFIMG",
+          "description": "Actual Quantity Delivered",
+          "data_element": null,
+          "data_type": "QUAN",
+          "length": 13,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "LIKP",
+          "on": "LIPS.VBELN = LIKP.VBELN"
+        }
+      ],
+      "related_business_concepts": [
+        "Delivery Line",
+        "Goods Issue"
+      ],
+      "typical_business_processes": [
+        "Shipping Execution"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "BKPF",
+      "description": "Accounting Document Header",
+      "sap_module": "FI",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "BUKRS",
+        "BELNR",
+        "GJAHR"
+      ],
+      "important_fields": [
+        {
+          "field": "BUKRS",
+          "description": "Company Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BELNR",
+          "description": "Accounting Document Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "GJAHR",
+          "description": "Fiscal Year",
+          "data_element": null,
+          "data_type": "NUMC",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BLART",
+          "description": "Document Type",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 2,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "BSEG",
+          "on": "BKPF.BUKRS = BSEG.BUKRS AND BKPF.BELNR = BSEG.BELNR AND BKPF.GJAHR = BSEG.GJAHR"
+        }
+      ],
+      "related_business_concepts": [
+        "Financial Document Header",
+        "General Ledger Entry"
+      ],
+      "typical_business_processes": [
+        "Financial Accounting"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "BSEG",
+      "description": "Accounting Document Segment (Line Item)",
+      "sap_module": "FI",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "BUKRS",
+        "BELNR",
+        "GJAHR",
+        "BUZEI"
+      ],
+      "important_fields": [
+        {
+          "field": "BUKRS",
+          "description": "Company Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BELNR",
+          "description": "Accounting Document Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "GJAHR",
+          "description": "Fiscal Year",
+          "data_element": null,
+          "data_type": "NUMC",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BUZEI",
+          "description": "Number of Line Item Within Accounting Document",
+          "data_element": null,
+          "data_type": "NUMC",
+          "length": 3,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "HKONT",
+          "description": "General Ledger Account",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "WRBTR",
+          "description": "Amount in Document Currency",
+          "data_element": null,
+          "data_type": "CURR",
+          "length": 13,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "BKPF",
+          "on": "BSEG.BUKRS = BKPF.BUKRS AND BSEG.BELNR = BKPF.BELNR AND BSEG.GJAHR = BKPF.GJAHR"
+        }
+      ],
+      "related_business_concepts": [
+        "GL Line Item",
+        "Debit Credit Entry"
+      ],
+      "typical_business_processes": [
+        "Financial Accounting"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": true,
+      "confidence": 1.0
+    },
+    {
+      "table": "ADRC",
+      "description": "Addresses (Business Address Services)",
+      "sap_module": "BAS",
+      "table_type": "transparent",
+      "key_fields": [
+        "CLIENT",
+        "ADDRNUMBER"
+      ],
+      "important_fields": [
+        {
+          "field": "ADDRNUMBER",
+          "description": "Address Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "NAME1",
+          "description": "Name 1",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 40,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "CITY1",
+          "description": "City",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 40,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "POST_CODE1",
+          "description": "City Postal Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "STREET",
+          "description": "Street",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 60,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "COUNTRY",
+          "description": "Country Key",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 3,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [],
+      "related_business_concepts": [
+        "Address Cleansing",
+        "Postal Standardization"
+      ],
+      "typical_business_processes": [
+        "Master Data Cleansing"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "T001",
+      "description": "Company Codes",
+      "sap_module": "FI",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "BUKRS"
+      ],
+      "important_fields": [
+        {
+          "field": "BUKRS",
+          "description": "Company Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BUTXT",
+          "description": "Name of Company Code",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 25,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "WAERS",
+          "description": "Currency Key",
+          "data_element": null,
+          "data_type": "CUKY",
+          "length": 5,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [],
+      "related_business_concepts": [
+        "Legal Entity",
+        "Company Code Config"
+      ],
+      "typical_business_processes": [
+        "Enterprise Structure"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "T001W",
+      "description": "Plants/Branches",
+      "sap_module": "MM/SD",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "WERKS"
+      ],
+      "important_fields": [
+        {
+          "field": "WERKS",
+          "description": "Plant",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": "Plant identifier",
+          "is_custom": false
+        },
+        {
+          "field": "NAME1",
+          "description": "Plant Name",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 30,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "BWKEY",
+          "description": "Valuation Area",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "KUNNR",
+          "description": "Customer Number of Plant",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LIFNR",
+          "description": "Vendor Number of Plant",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "MARC",
+          "on": "T001W.WERKS = MARC.WERKS"
+        }
+      ],
+      "related_business_concepts": [
+        "Plant Configuration",
+        "Branch Plant Mapping"
+      ],
+      "typical_business_processes": [
+        "Plant Master Maintenance"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "T001L",
+      "description": "Storage Locations",
+      "sap_module": "MM",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "WERKS",
+        "LGORT"
+      ],
+      "important_fields": [
+        {
+          "field": "WERKS",
+          "description": "Plant",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LGORT",
+          "description": "Storage Location",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "LGOBE",
+          "description": "Description of Storage Location",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 16,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "T001W",
+          "on": "T001L.WERKS = T001W.WERKS"
+        }
+      ],
+      "related_business_concepts": [
+        "Storage Location Config"
+      ],
+      "typical_business_processes": [
+        "Warehouse Management"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "T023",
+      "description": "Material Groups",
+      "sap_module": "MM",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "MATKL"
+      ],
+      "important_fields": [
+        {
+          "field": "MATKL",
+          "description": "Material Group",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 9,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "WGBEZ",
+          "description": "Material Group Description",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 20,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "MARA",
+          "on": "T023.MATKL = MARA.MATKL"
+        }
+      ],
+      "related_business_concepts": [
+        "Commodity Code",
+        "Material Classification"
+      ],
+      "typical_business_processes": [
+        "Product Categorization"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "T024",
+      "description": "Purchasing Groups",
+      "sap_module": "MM",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "EKGRP"
+      ],
+      "important_fields": [
+        {
+          "field": "EKGRP",
+          "description": "Purchasing Group",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 3,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "EKNAM",
+          "description": "Description of Purchasing Group",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 18,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [],
+      "related_business_concepts": [
+        "Buyer Group",
+        "Procurement Group"
+      ],
+      "typical_business_processes": [
+        "Purchasing Setup"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "T077D",
+      "description": "Customer Account Groups",
+      "sap_module": "SD/FI",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "KTOKD"
+      ],
+      "important_fields": [
+        {
+          "field": "KTOKD",
+          "description": "Customer Account Group",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [],
+      "related_business_concepts": [
+        "Customer Account Group",
+        "Field Status"
+      ],
+      "typical_business_processes": [
+        "Customer Governance"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "TVKO",
+      "description": "Organizational Unit: Sales Organizations",
+      "sap_module": "SD",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "VKORG"
+      ],
+      "important_fields": [
+        {
+          "field": "VKORG",
+          "description": "Sales Organization",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 4,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "WAERS",
+          "description": "Statistics Currency",
+          "data_element": null,
+          "data_type": "CUKY",
+          "length": 5,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [],
+      "related_business_concepts": [
+        "Sales Organization",
+        "Commercial Entity"
+      ],
+      "typical_business_processes": [
+        "Sales Setup"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "CDHDR",
+      "description": "Change Document Header",
+      "sap_module": "BASIS",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "OBJECTCLAS",
+        "OBJECTID",
+        "CHANGENR"
+      ],
+      "important_fields": [
+        {
+          "field": "OBJECTCLAS",
+          "description": "Object Class",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 15,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "OBJECTID",
+          "description": "Object Value",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 90,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "CHANGENR",
+          "description": "Document Change Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "USERNAME",
+          "description": "User Name of Person Responsible",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 12,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "UDATE",
+          "description": "Creation Date of Change Document",
+          "data_element": null,
+          "data_type": "DATS",
+          "length": 8,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "CDPOS",
+          "on": "CDHDR.OBJECTCLAS = CDPOS.OBJECTCLAS AND CDHDR.OBJECTID = CDPOS.OBJECTID AND CDHDR.CHANGENR = CDPOS.CHANGENR"
+        }
+      ],
+      "related_business_concepts": [
+        "Audit Trail",
+        "Change Log Header"
+      ],
+      "typical_business_processes": [
+        "Data Change Auditing"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    },
+    {
+      "table": "CDPOS",
+      "description": "Change Document Items",
+      "sap_module": "BASIS",
+      "table_type": "transparent",
+      "key_fields": [
+        "MANDT",
+        "OBJECTCLAS",
+        "OBJECTID",
+        "CHANGENR",
+        "TABNAME",
+        "TABKEY",
+        "FNAME",
+        "CHNGIND"
+      ],
+      "important_fields": [
+        {
+          "field": "CHANGENR",
+          "description": "Document Change Number",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 10,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "TABNAME",
+          "description": "Table Name",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 30,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "FNAME",
+          "description": "Field Name",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 30,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "CHNGIND",
+          "description": "Type of Change (U, I, E, D)",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 1,
+          "key": true,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VALUE_NEW",
+          "description": "New Contents of Changed Field",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 254,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        },
+        {
+          "field": "VALUE_OLD",
+          "description": "Old Contents of Changed Field",
+          "data_element": null,
+          "data_type": "CHAR",
+          "length": 254,
+          "key": false,
+          "business_meaning": null,
+          "is_custom": false
+        }
+      ],
+      "common_joins": [
+        {
+          "to_table": "CDHDR",
+          "on": "CDPOS.CHANGENR = CDHDR.CHANGENR"
+        }
+      ],
+      "related_business_concepts": [
+        "Change Item Value",
+        "Field Value History"
+      ],
+      "typical_business_processes": [
+        "Audit Logging"
+      ],
+      "typical_subject_area": null,
+      "source": "prebuilt",
+      "verified": false,
+      "confidence": 0.7
+    }
+  ]
+}

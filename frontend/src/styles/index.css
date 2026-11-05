@@ -1,0 +1,61 @@
+@import '@fontsource-variable/inter';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-page: #f8f9fb;
+    --border-card: #e5e7eb;
+    --heading: #111827;
+    --secondary: #6b7280;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--heading);
+    font-family:
+      'InterVariable',
+      'Inter',
+      system-ui,
+      -apple-system,
+      sans-serif;
+  }
+
+  /* Accessible visible focus outlines */
+  :focus-visible {
+    outline: 2px solid #6d3fe0;
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .gradient-brand {
+    background: linear-gradient(135deg, #6d3fe0 0%, #3b82f6 100%);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #6d3fe0 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .card-base {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

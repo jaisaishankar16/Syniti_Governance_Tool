@@ -1,0 +1,2617 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MDM Syniti Analysis Orchestrator API",
+    "description": "Enterprise SAP Migration & Data Governance SQL Analysis Engine.\nUnder Project Rules (see docs/PROJECT_RULES.md), all queries are parsed and synthesized exclusively through the OpenAI Agents SDK and verified domain knowledge.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Metadata & Operations",
+          "Operations"
+        ],
+        "summary": "Liveness Probe",
+        "description": "Liveness probe. Always returns HTTP 200 while the web process is running.",
+        "operationId": "health_check",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "tags": [
+          "Metadata & Operations",
+          "Operations"
+        ],
+        "summary": "Readiness Probe",
+        "description": "Readiness probe verifying vector indexes, cache connectivity, and LLM configuration.\n\nReturns HTTP 503 if any check fails (including missing or unconfigured LLM API key).",
+        "operationId": "readiness_check",
+        "responses": {
+          "200": {
+            "description": "All subsystems healthy and ready for traffic.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "One or more subsystems not ready."
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "tags": [
+          "Metadata & Operations",
+          "Operations"
+        ],
+        "summary": "Prometheus Metrics",
+        "description": "Exports Prometheus text-formatted application metrics.",
+        "operationId": "get_prometheus_metrics",
+        "parameters": [
+          {
+            "name": "X-Admin-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/examples": {
+      "get": {
+        "tags": [
+          "Metadata & Operations",
+          "Metadata"
+        ],
+        "summary": "List Curated Examples",
+        "description": "Returns curated SQL examples from the reference workbook for dropdown selection.",
+        "operationId": "list_examples",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ExampleQueryItem"
+                  },
+                  "type": "array",
+                  "title": "Response List Examples"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me": {
+      "get": {
+        "tags": [
+          "Metadata & Operations",
+          "Identity"
+        ],
+        "summary": "Get User Profile",
+        "description": "Returns current user profile for application navbar and UI shell.",
+        "operationId": "get_current_user",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Principal"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects": {
+      "get": {
+        "tags": [
+          "Metadata & Operations",
+          "Projects"
+        ],
+        "summary": "List Migration Projects",
+        "description": "Returns configured enterprise migration projects.",
+        "operationId": "list_projects",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  },
+                  "type": "array",
+                  "title": "Response List Projects"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Metadata & Operations",
+          "Projects"
+        ],
+        "summary": "Create Migration Project (Pending)",
+        "description": "Creates a migration project. Currently returns 501 Not Implemented.",
+        "operationId": "create_project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "501": {
+            "description": "Backend integration pending.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/metadata/refresh/stream": {
+      "post": {
+        "tags": [
+          "Metadata & Operations",
+          "Metadata"
+        ],
+        "summary": "Refresh Metadata Stream (Pending)",
+        "description": "Streams metadata refresh logs and progress. Currently returns 501 Not Implemented.",
+        "operationId": "refresh_metadata_stream",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MetadataRefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "501": {
+            "description": "Backend integration pending.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope",
+                  "title": "Response Refresh Metadata Stream"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{project_id}": {
+      "get": {
+        "tags": [
+          "Metadata & Operations",
+          "Projects"
+        ],
+        "summary": "Get Migration Project",
+        "description": "Returns single migration project by ID (PLACEHOLDER UI DATA).",
+        "operationId": "get_project_by_id",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/activity": {
+      "get": {
+        "tags": [
+          "Metadata & Operations",
+          "Projects"
+        ],
+        "summary": "List Recent Activity",
+        "description": "Returns recent analysis activity history (PLACEHOLDER UI DATA).",
+        "operationId": "list_recent_activity",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ActivityItem"
+                  },
+                  "title": "Response List Recent Activity"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/llm/status": {
+      "get": {
+        "tags": [
+          "Metadata & Operations",
+          "Metadata"
+        ],
+        "summary": "Get LLM Subsystem Status",
+        "description": "Returns status of LLM subsystem without contacting provider or leaking API keys.",
+        "operationId": "get_llm_status",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LLMStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/llm/settings": {
+      "get": {
+        "tags": [
+          "Metadata & Operations",
+          "Metadata"
+        ],
+        "summary": "Get LLM Subsystem Diagnostics & Settings",
+        "description": "Returns read-only diagnostics and configuration settings of the LLM pipeline.",
+        "operationId": "get_llm_settings_diagnostics",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LlmSettingsView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analyze": {
+      "post": {
+        "tags": [
+          "Analysis"
+        ],
+        "summary": "Analyze SQL Query",
+        "description": "Executes full analysis pipeline across security guardrails, parsing, multi-tier cache, agents, and synthesizer.\n\nReturns authoritative BusinessIntelligence and Data Governance metadata.",
+        "operationId": "analyze_sql_query",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BusinessIntelligence"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analyze/stream": {
+      "post": {
+        "tags": [
+          "Analysis"
+        ],
+        "summary": "Stream SQL Analysis Progress",
+        "description": "Streams pipeline progress, intermediate events, and final result over Server-Sent Events (SSE).\n\nClient disconnection stops writing without cancelling the shielded background execution.",
+        "operationId": "stream_sql_analysis",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Server-Sent Events stream emitting progress, result, and done events.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/event-stream": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cache/stats": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Get Cache Statistics",
+        "description": "Returns detailed multi-tier cache statistics and hit/miss ratios.",
+        "operationId": "get_cache_stats",
+        "parameters": [
+          {
+            "name": "X-Admin-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CacheStats"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cache": {
+      "delete": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Clear Cache",
+        "description": "Clears cache storage across specified tiers (all, l1, l2, l3).",
+        "operationId": "clear_cache",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "all",
+                "l1",
+                "l2",
+                "l3"
+              ],
+              "type": "string",
+              "default": "all",
+              "title": "Kind"
+            }
+          },
+          {
+            "name": "X-Admin-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CacheClearResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/llm/ping": {
+      "post": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Ping LLM Provider",
+        "description": "Executes a 1-token live request to test credentials and connectivity (result cached 60s).",
+        "operationId": "ping_llm_provider",
+        "parameters": [
+          {
+            "name": "X-Admin-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/learned": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "List Learned SAP Knowledge",
+        "description": "Lists learned SAP entries derived from grounded retrieval.",
+        "operationId": "list_learned_sap",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "pending",
+                "approved",
+                "rejected",
+                "all"
+              ],
+              "type": "string",
+              "default": "all",
+              "title": "Status"
+            }
+          },
+          {
+            "name": "X-Admin-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LearnedSapEntry"
+                  },
+                  "title": "Response List Learned Sap"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/learned/{entry_id}/approve": {
+      "post": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Approve Learned SAP Entry",
+        "description": "Approves a learned SAP entry for official prebuilt integration and logs audit entry.",
+        "operationId": "approve_learned_sap",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entry Id"
+            }
+          },
+          {
+            "name": "X-Admin-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Approve Learned Sap"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/learned/{entry_id}/reject": {
+      "post": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Reject Learned SAP Entry",
+        "description": "Rejects a learned SAP entry and logs audit entry.",
+        "operationId": "reject_learned_sap",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entry Id"
+            }
+          },
+          {
+            "name": "X-Admin-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Reject Learned Sap"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/glossary/proposals": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "List Governance Glossary Proposals",
+        "description": "Returns proposed new subject areas, processes, and business concepts for review.",
+        "operationId": "list_glossary_proposals",
+        "parameters": [
+          {
+            "name": "X-Admin-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  "title": "Response List Glossary Proposals"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivityItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Unique event identifier"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id",
+            "description": "Request ID associated with execution"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "degraded",
+              "failed"
+            ],
+            "title": "Status",
+            "description": "Job or analysis status"
+          },
+          "run_type": {
+            "type": "string",
+            "title": "Run Type",
+            "description": "Classification of execution (e.g. Trial Execution)"
+          },
+          "table_name": {
+            "type": "string",
+            "title": "Table Name",
+            "description": "Target table or view name"
+          },
+          "subtitle": {
+            "type": "string",
+            "title": "Subtitle",
+            "description": "Context or business area subtitle"
+          },
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id",
+            "description": "Parent project identifier"
+          },
+          "cache_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cache Status",
+            "description": "Cache outcome (e.g. miss, hit_final)"
+          },
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms",
+            "description": "Duration in milliseconds"
+          },
+          "finished_at": {
+            "type": "string",
+            "title": "Finished At",
+            "description": "ISO-8601 timestamp of completion"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "run_type",
+          "table_name",
+          "subtitle",
+          "finished_at"
+        ],
+        "title": "ActivityItem",
+        "description": "Audit and activity timeline event."
+      },
+      "AdminPingResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "401",
+              "429",
+              "network_error"
+            ],
+            "title": "Status",
+            "description": "Probe status outcome"
+          },
+          "latency_ms": {
+            "type": "number",
+            "title": "Latency Ms",
+            "description": "Measured round-trip latency in milliseconds"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Sanitized outcome description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "latency_ms",
+          "message"
+        ],
+        "title": "AdminPingResponse",
+        "description": "Result of live 1-token test probe against LLM provider."
+      },
+      "AnalyzeRequest": {
+        "properties": {
+          "sql": {
+            "type": "string",
+            "maxLength": 50000,
+            "minLength": 1,
+            "title": "Sql",
+            "description": "Raw T-SQL or ANSI SQL view definition or query to analyze"
+          },
+          "force_refresh": {
+            "type": "boolean",
+            "title": "Force Refresh",
+            "description": "When true, bypasses L1/L2 cache reads and executes fresh LLM analysis",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "sql"
+        ],
+        "title": "AnalyzeRequest",
+        "description": "Request payload for executing SQL analysis.",
+        "example": {
+          "force_refresh": false,
+          "sql": "SELECT MARC.MATNR, MARA.MTART FROM dbo.MM_MARC_ECC_EU_R1_MARC_S MARC INNER JOIN dbo.MM_MARA_ECC_EU_R1_MARA_S MARA ON MARC.MATNR = MARA.MATNR WHERE MARC.ZACTIVE = 1"
+        }
+      },
+      "BusinessConcept": {
+        "properties": {
+          "term": {
+            "type": "string",
+            "title": "Term",
+            "description": "Standardized name of the business concept (e.g. 'Active Material Plant Status')"
+          },
+          "field": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Field",
+            "description": "Specific column or attribute name associated with this concept, if applicable"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Comprehensive definition of what this business concept represents"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "term",
+          "description"
+        ],
+        "title": "BusinessConcept",
+        "description": "The core business entity or concept governed by the rule."
+      },
+      "BusinessIntelligence": {
+        "properties": {
+          "business_meaning": {
+            "type": "string",
+            "title": "Business Meaning",
+            "description": "Executive business narrative explaining what this query accomplishes"
+          },
+          "technical_summary": {
+            "type": "string",
+            "title": "Technical Summary",
+            "description": "Comprehensive technical summary synthesized from SQL semantics and SAP domain analysis"
+          },
+          "affected_entities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Affected Entities",
+            "description": "List of real SAP tables and migration staging entities affected by this query"
+          },
+          "sap_module": {
+            "type": "string",
+            "title": "Sap Module",
+            "description": "Primary SAP functional module (e.g. MM, SD, FI, CO)"
+          },
+          "query_type": {
+            "type": "string",
+            "title": "Query Type",
+            "description": "Classification of query role (e.g. Staging Rule View, Data Quality Filter)"
+          },
+          "risk_summary": {
+            "$ref": "#/components/schemas/RiskSummary",
+            "description": "Synthesized risk assessment and recommendations"
+          },
+          "final_learning": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Final Learning",
+            "description": "Optional grounded learning insight from this analysis"
+          },
+          "governance": {
+            "$ref": "#/components/schemas/GovernanceOutput",
+            "description": "Enterprise Data Governance rule catalog record"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/BusinessIntelligenceMeta",
+            "description": "Execution metadata, timings, caching, token usage, and guardrail reports"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "business_meaning",
+          "technical_summary",
+          "affected_entities",
+          "sap_module",
+          "query_type",
+          "risk_summary",
+          "governance",
+          "meta"
+        ],
+        "title": "BusinessIntelligence",
+        "description": "Complete, authoritative output of the MDM Syniti analysis engine."
+      },
+      "BusinessIntelligenceMeta": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "cache_status": {
+            "type": "string",
+            "enum": [
+              "hit_final",
+              "partial",
+              "miss",
+              "refresh"
+            ],
+            "title": "Cache Status"
+          },
+          "cache_detail": {
+            "$ref": "#/components/schemas/CacheDetail"
+          },
+          "similarity_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Similarity Score"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "prompt_versions": {
+            "$ref": "#/components/schemas/PromptVersions"
+          },
+          "agent_timings_ms": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Agent Timings Ms"
+          },
+          "stage_timings_ms": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Stage Timings Ms"
+          },
+          "token_usage": {
+            "$ref": "#/components/schemas/TokenUsageBreakdown"
+          },
+          "estimated_cost_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimated Cost Usd"
+          },
+          "degraded": {
+            "type": "boolean",
+            "title": "Degraded",
+            "default": false
+          },
+          "degraded_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Degraded Reasons"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "guardrails": {
+            "$ref": "#/components/schemas/GuardrailReport"
+          },
+          "validation": {
+            "$ref": "#/components/schemas/ValidationSummary"
+          },
+          "ai_generated": {
+            "type": "boolean",
+            "title": "Ai Generated",
+            "default": true
+          },
+          "parse_quality": {
+            "type": "string",
+            "title": "Parse Quality",
+            "default": "full"
+          },
+          "naming_violations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Naming Violations"
+          },
+          "cached_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cached At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request_id",
+          "cache_status",
+          "cache_detail",
+          "model",
+          "prompt_versions",
+          "validation"
+        ],
+        "title": "BusinessIntelligenceMeta",
+        "description": "End-to-end provenance, performance, caching, and guardrail metadata."
+      },
+      "CacheClearResponse": {
+        "properties": {
+          "cleared": {
+            "type": "boolean",
+            "title": "Cleared",
+            "description": "Whether cache was cleared successfully"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind",
+            "description": "Target cache tier (all, l1, l2, l3)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "cleared",
+          "kind"
+        ],
+        "title": "CacheClearResponse",
+        "description": "Response payload for cache deletion operations."
+      },
+      "CacheDetail": {
+        "properties": {
+          "sql_agent": {
+            "type": "string",
+            "enum": [
+              "hit",
+              "miss",
+              "similar_reused",
+              "similar_hint",
+              "skipped"
+            ],
+            "title": "Sql Agent",
+            "default": "miss"
+          },
+          "sap_agent": {
+            "type": "string",
+            "enum": [
+              "hit",
+              "miss",
+              "similar_reused",
+              "similar_hint",
+              "skipped"
+            ],
+            "title": "Sap Agent",
+            "default": "miss"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CacheDetail",
+        "description": "Detailed cache resolution status for individual agents."
+      },
+      "CacheStats": {
+        "properties": {
+          "total_requests": {
+            "type": "integer",
+            "title": "Total Requests",
+            "default": 0
+          },
+          "l1_hits": {
+            "type": "integer",
+            "title": "L1 Hits",
+            "default": 0
+          },
+          "l1_misses": {
+            "type": "integer",
+            "title": "L1 Misses",
+            "default": 0
+          },
+          "l1_hit_ratio": {
+            "type": "number",
+            "title": "L1 Hit Ratio",
+            "default": 0.0
+          },
+          "l2_sql_hits": {
+            "type": "integer",
+            "title": "L2 Sql Hits",
+            "default": 0
+          },
+          "l2_sql_misses": {
+            "type": "integer",
+            "title": "L2 Sql Misses",
+            "default": 0
+          },
+          "l2_sap_hits": {
+            "type": "integer",
+            "title": "L2 Sap Hits",
+            "default": 0
+          },
+          "l2_sap_misses": {
+            "type": "integer",
+            "title": "L2 Sap Misses",
+            "default": 0
+          },
+          "l3_similarity_reuses": {
+            "type": "integer",
+            "title": "L3 Similarity Reuses",
+            "default": 0
+          },
+          "l3_similarity_hints": {
+            "type": "integer",
+            "title": "L3 Similarity Hints",
+            "default": 0
+          },
+          "entries_count": {
+            "type": "integer",
+            "title": "Entries Count",
+            "default": 0
+          },
+          "backend_type": {
+            "type": "string",
+            "title": "Backend Type",
+            "default": "memory"
+          },
+          "backend_healthy": {
+            "type": "boolean",
+            "title": "Backend Healthy",
+            "default": true
+          },
+          "estimated_tokens_saved": {
+            "type": "integer",
+            "title": "Estimated Tokens Saved",
+            "default": 0
+          },
+          "estimated_cost_saved_usd": {
+            "type": "number",
+            "title": "Estimated Cost Saved Usd",
+            "default": 0.0
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CacheStats",
+        "description": "Aggregate statistics and health metrics for the multi-tier caching system."
+      },
+      "ErrorDetail": {
+        "properties": {
+          "field": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Field",
+            "description": "Field name where error occurred"
+          },
+          "issue": {
+            "type": "string",
+            "title": "Issue",
+            "description": "Description of the error condition"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "issue"
+        ],
+        "title": "ErrorDetail",
+        "description": "Specific field or contextual validation issue."
+      },
+      "ErrorEnvelope": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorEnvelopeBody"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorEnvelope",
+        "description": "Top-level container for all API error responses."
+      },
+      "ErrorEnvelopeBody": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code",
+            "description": "Stable programmatic error code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Sanitized user-facing message"
+          },
+          "request_id": {
+            "type": "string",
+            "title": "Request Id",
+            "description": "Tracking identifier for request correlation"
+          },
+          "retry_after_s": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retry After S",
+            "description": "Recommended retry delay in seconds if rate-limited"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/ErrorDetail"
+            },
+            "type": "array",
+            "title": "Details",
+            "description": "Granular issue descriptions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "request_id"
+        ],
+        "title": "ErrorEnvelopeBody",
+        "description": "Standardized error envelope payload."
+      },
+      "Evidence": {
+        "properties": {
+          "chunk_id": {
+            "type": "string",
+            "title": "Chunk Id"
+          },
+          "source_file": {
+            "type": "string",
+            "title": "Source File"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page"
+          },
+          "evidence_text": {
+            "type": "string",
+            "title": "Evidence Text"
+          },
+          "retrieval_score": {
+            "type": "number",
+            "title": "Retrieval Score"
+          },
+          "match_type": {
+            "$ref": "#/components/schemas/MatchType"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "chunk_id",
+          "source_file",
+          "evidence_text",
+          "retrieval_score",
+          "match_type"
+        ],
+        "title": "Evidence",
+        "description": "Grounding evidence required to persist learned entries."
+      },
+      "ExampleQueryItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Identifier or sheet name (e.g. Sheet1)"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Descriptive view title derived from SQL structure"
+          },
+          "sql": {
+            "type": "string",
+            "title": "Sql",
+            "description": "Input SQL statement text only"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "sql"
+        ],
+        "title": "ExampleQueryItem",
+        "description": "Pre-curated workbook query item for UI convenience."
+      },
+      "GovernanceOutput": {
+        "properties": {
+          "subject_area": {
+            "type": "string",
+            "title": "Subject Area",
+            "description": "Highest-level business category (e.g. 'Supply Chain', 'Finance', 'Material Master')"
+          },
+          "business_process": {
+            "type": "string",
+            "title": "Business Process",
+            "description": "Operational business process where data quality is measured (e.g. 'Procure to Pay', 'Inventory Management')"
+          },
+          "dataset": {
+            "type": "string",
+            "title": "Dataset",
+            "description": "Name of the governed dataset (e.g. 'Material Plant Data')"
+          },
+          "business_concept": {
+            "$ref": "#/components/schemas/BusinessConcept",
+            "description": "Core business entity or concept governed by this rule"
+          },
+          "rule": {
+            "type": "string",
+            "title": "Rule",
+            "description": "Concise, formal rule name or business requirement statement"
+          },
+          "specification": {
+            "type": "string",
+            "title": "Specification",
+            "description": "Detailed functional rule specification stating conditions, required values, plants, and exclusions precisely"
+          },
+          "enforcement": {
+            "type": "string",
+            "title": "Enforcement",
+            "description": "Business impact or enforcement mechanism (e.g. 'Block migration of inactive plant records')"
+          },
+          "implementation": {
+            "type": "string",
+            "title": "Implementation",
+            "description": "Technical description of how the rule is realized in SQL logic"
+          },
+          "opportunity_definition": {
+            "type": "string",
+            "title": "Opportunity Definition",
+            "description": "Definition of what constitutes an opportunity record eligible for this rule"
+          },
+          "error_definition": {
+            "type": "string",
+            "title": "Error Definition",
+            "description": "Definition of what constitutes an error or non-compliant record"
+          },
+          "opportunity_query": {
+            "type": "string",
+            "title": "Opportunity Query",
+            "description": "Safe, read-only single-statement SELECT for all in-scope records of the driving table"
+          },
+          "error_query": {
+            "type": "string",
+            "title": "Error Query",
+            "description": "Safe, read-only single-statement SELECT for records violating the rule (strict subset of opportunity)"
+          },
+          "is_new_flags": {
+            "$ref": "#/components/schemas/IsNewFlags",
+            "description": "Flags indicating whether taxonomy terms were newly proposed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "subject_area",
+          "business_process",
+          "dataset",
+          "business_concept",
+          "rule",
+          "specification",
+          "enforcement",
+          "implementation",
+          "opportunity_definition",
+          "error_definition",
+          "opportunity_query",
+          "error_query"
+        ],
+        "title": "GovernanceOutput",
+        "description": "Official enterprise Data Governance catalog entry synthesized for this query."
+      },
+      "GuardrailEvent": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "input",
+              "tool",
+              "agent_output",
+              "final_output",
+              "budget"
+            ],
+            "title": "Stage"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "warn",
+              "sanitize",
+              "repair",
+              "block"
+            ],
+            "title": "Action"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "info",
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "title": "Severity"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/KeyValue"
+            },
+            "type": "array",
+            "title": "Details"
+          },
+          "agent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "stage",
+          "action",
+          "severity",
+          "message"
+        ],
+        "title": "GuardrailEvent",
+        "description": "An individual event emitted by a guardrail check."
+      },
+      "GuardrailReport": {
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/GuardrailEvent"
+            },
+            "type": "array",
+            "title": "Events"
+          },
+          "blocked": {
+            "type": "boolean",
+            "title": "Blocked",
+            "default": false
+          },
+          "highest_severity": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "info",
+                  "low",
+                  "medium",
+                  "high",
+                  "critical"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Highest Severity"
+          },
+          "counts_by_action": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Counts By Action"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "GuardrailReport",
+        "description": "Comprehensive report summarizing all guardrail events in a pipeline run."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Process health indicator",
+            "default": "ok"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp",
+            "description": "Current UTC timestamp"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "timestamp"
+        ],
+        "title": "HealthResponse",
+        "description": "Liveness probe response."
+      },
+      "IsNewFlags": {
+        "properties": {
+          "subject_area": {
+            "type": "boolean",
+            "title": "Subject Area",
+            "description": "True if the subject_area was newly proposed rather than matched to existing glossary",
+            "default": false
+          },
+          "business_process": {
+            "type": "boolean",
+            "title": "Business Process",
+            "description": "True if the business_process was newly proposed rather than matched to existing glossary",
+            "default": false
+          },
+          "business_concept": {
+            "type": "boolean",
+            "title": "Business Concept",
+            "description": "True if the business_concept was newly proposed rather than matched to existing glossary",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "IsNewFlags",
+        "description": "Flags indicating whether governance taxonomy items are proposed additions to the glossary."
+      },
+      "KeyValue": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "value"
+        ],
+        "title": "KeyValue",
+        "description": "Key-value pair for structured details in guardrail events."
+      },
+      "LLMBudgetStatus": {
+        "properties": {
+          "used_tokens": {
+            "type": "integer",
+            "title": "Used Tokens",
+            "description": "Cumulative tokens used today"
+          },
+          "daily_limit": {
+            "type": "integer",
+            "title": "Daily Limit",
+            "description": "Configured daily token budget limit"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "used_tokens",
+          "daily_limit"
+        ],
+        "title": "LLMBudgetStatus",
+        "description": "Current consumption and daily token budget limit."
+      },
+      "LLMStatusResponse": {
+        "properties": {
+          "configured": {
+            "type": "boolean",
+            "title": "Configured",
+            "description": "Whether a valid, non-placeholder API key is configured"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model",
+            "description": "Active OpenAI model identifier"
+          },
+          "api_mode": {
+            "type": "string",
+            "title": "Api Mode",
+            "description": "SDK connection mode (e.g. responses)"
+          },
+          "base_url_set": {
+            "type": "boolean",
+            "title": "Base Url Set",
+            "description": "Whether a custom OPENAI_BASE_URL is active"
+          },
+          "circuit_state": {
+            "type": "string",
+            "title": "Circuit State",
+            "description": "Circuit breaker status (CLOSED, OPEN, HALF_OPEN)"
+          },
+          "budget": {
+            "$ref": "#/components/schemas/LLMBudgetStatus",
+            "description": "Current token consumption against budget"
+          },
+          "last_error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error Code",
+            "description": "Last provider error code if within active window"
+          },
+          "last_error_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error At",
+            "description": "ISO timestamp of last provider error"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "configured",
+          "model",
+          "api_mode",
+          "base_url_set",
+          "circuit_state",
+          "budget"
+        ],
+        "title": "LLMStatusResponse",
+        "description": "Health and configuration status of the underlying LLM subsystem."
+      },
+      "LearnedSapEntry": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "table": {
+            "type": "string",
+            "title": "Table"
+          },
+          "field": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Field"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "business_meaning": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business Meaning"
+          },
+          "module": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module"
+          },
+          "evidence": {
+            "$ref": "#/components/schemas/Evidence"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence"
+          },
+          "source": {
+            "type": "string",
+            "const": "retrieved",
+            "title": "Source",
+            "default": "retrieved"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ],
+            "title": "Status",
+            "default": "pending"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "last_seen_at": {
+            "type": "string",
+            "title": "Last Seen At"
+          },
+          "hit_count": {
+            "type": "integer",
+            "title": "Hit Count",
+            "default": 1
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "table",
+          "description",
+          "evidence",
+          "confidence",
+          "created_at",
+          "last_seen_at"
+        ],
+        "title": "LearnedSapEntry",
+        "description": "Learned SAP table/field knowledge derived from grounded retrieval."
+      },
+      "LlmSettingsView": {
+        "properties": {
+          "model": {
+            "type": "string",
+            "title": "Model",
+            "description": "Active LLM model name"
+          },
+          "api_mode": {
+            "type": "string",
+            "title": "Api Mode",
+            "description": "OpenAI SDK connection mode"
+          },
+          "structured_output_mode": {
+            "type": "string",
+            "title": "Structured Output Mode",
+            "description": "Structured output enforcement mode"
+          },
+          "temperature": {
+            "type": "number",
+            "title": "Temperature",
+            "description": "Sampling temperature"
+          },
+          "max_turns": {
+            "type": "integer",
+            "title": "Max Turns",
+            "description": "Maximum reasoning turns"
+          },
+          "timeout_s": {
+            "type": "number",
+            "title": "Timeout S",
+            "description": "API timeout in seconds"
+          },
+          "max_retries": {
+            "type": "integer",
+            "title": "Max Retries",
+            "description": "Maximum upstream retries"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider",
+            "description": "Target provider protocol"
+          },
+          "base_url": {
+            "type": "string",
+            "title": "Base Url",
+            "description": "Sanitized scheme+host of provider base URL or 'default'"
+          },
+          "api_key_configured": {
+            "type": "boolean",
+            "title": "Api Key Configured",
+            "description": "Whether a valid, non-placeholder API key is set"
+          },
+          "learning_enabled": {
+            "type": "boolean",
+            "title": "Learning Enabled",
+            "description": "Whether dynamic knowledge learning write-back is enabled"
+          },
+          "tracing_enabled": {
+            "type": "boolean",
+            "title": "Tracing Enabled",
+            "description": "Whether telemetry tracing is active"
+          },
+          "token_budgets": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Token Budgets",
+            "description": "Request and daily token allocation and usage"
+          },
+          "circuit_state": {
+            "type": "string",
+            "title": "Circuit State",
+            "description": "Circuit breaker state (CLOSED, OPEN, HALF_OPEN)"
+          },
+          "last_error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error Code",
+            "description": "Last detected error code"
+          },
+          "last_error_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error At",
+            "description": "ISO timestamp of last failure"
+          },
+          "prompt_versions": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Prompt Versions",
+            "description": "Active hash versions of system prompts"
+          },
+          "embedding_model": {
+            "type": "string",
+            "title": "Embedding Model",
+            "description": "Active sentence-transformer embedding model"
+          },
+          "knowledge_index_status": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Knowledge Index Status",
+            "description": "FAISS index status for SAP and SQL"
+          },
+          "cache_backend": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Cache Backend",
+            "description": "Multi-tier cache parameters and TTLs"
+          },
+          "guardrail_modes": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Guardrail Modes",
+            "description": "Active guardrail configuration"
+          },
+          "pricing_configured": {
+            "type": "boolean",
+            "title": "Pricing Configured",
+            "description": "Whether a token pricing table is configured"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "model",
+          "api_mode",
+          "structured_output_mode",
+          "temperature",
+          "max_turns",
+          "timeout_s",
+          "max_retries",
+          "provider",
+          "base_url",
+          "api_key_configured",
+          "learning_enabled",
+          "tracing_enabled",
+          "token_budgets",
+          "circuit_state",
+          "prompt_versions",
+          "embedding_model",
+          "knowledge_index_status",
+          "cache_backend",
+          "guardrail_modes",
+          "pricing_configured"
+        ],
+        "title": "LlmSettingsView",
+        "description": "Read-only diagnostics and configuration view of the LLM pipeline."
+      },
+      "MatchType": {
+        "type": "string",
+        "enum": [
+          "exact",
+          "semantic"
+        ],
+        "title": "MatchType"
+      },
+      "MetadataRefreshRequest": {
+        "properties": {
+          "skp_url": {
+            "type": "string",
+            "maxLength": 2048,
+            "minLength": 1,
+            "title": "Skp Url",
+            "description": "Target SKP service endpoint URL"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "skp_url"
+        ],
+        "title": "MetadataRefreshRequest",
+        "description": "Request payload for initiating SKP metadata refresh."
+      },
+      "Principal": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Unique subject or user identifier"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name",
+            "description": "Human-readable name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email",
+            "description": "User email address"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Roles",
+            "description": "Assigned authorization roles"
+          },
+          "initials": {
+            "type": "string",
+            "title": "Initials",
+            "description": "Two-letter initials for user avatar display",
+            "default": "AU"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "display_name",
+          "email"
+        ],
+        "title": "Principal",
+        "description": "Authenticated user principal identity for audit and rate-limiting."
+      },
+      "Project": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Unique project identifier"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Project title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Summary of project scope and migration waves"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "archived"
+            ],
+            "title": "Status",
+            "description": "Lifecycle status of project"
+          },
+          "release_count": {
+            "type": "integer",
+            "title": "Release Count",
+            "description": "Number of releases configured for project"
+          },
+          "milestone_count": {
+            "type": "integer",
+            "title": "Milestone Count",
+            "description": "Number of governance milestones"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "status",
+          "release_count",
+          "milestone_count"
+        ],
+        "title": "Project",
+        "description": "Enterprise MDM Syniti migration project placeholder metadata."
+      },
+      "ProjectCreateRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Name",
+            "description": "Project name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Optional project description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "ProjectCreateRequest",
+        "description": "Request payload for creating a migration project."
+      },
+      "PromptVersions": {
+        "properties": {
+          "sql": {
+            "type": "string",
+            "title": "Sql"
+          },
+          "sap": {
+            "type": "string",
+            "title": "Sap"
+          },
+          "synthesizer": {
+            "type": "string",
+            "title": "Synthesizer"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "sql",
+          "sap",
+          "synthesizer"
+        ],
+        "title": "PromptVersions",
+        "description": "Prompt version identifiers for each agent in the pipeline."
+      },
+      "ReadyResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "not_ready"
+            ],
+            "title": "Status",
+            "description": "Overall deployment readiness"
+          },
+          "checks": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "type": "object",
+            "title": "Checks",
+            "description": "Detailed subsystem check results (indexes_loaded, cache_healthy, llm_configured)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "checks"
+        ],
+        "title": "ReadyResponse",
+        "description": "Readiness probe response detailing individual subsystem checks."
+      },
+      "RiskSummary": {
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "title": "Level",
+            "description": "Overall risk severity level (low, medium, high, critical)"
+          },
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Specific identified risk items, flaws, or migration hazards"
+          },
+          "recommendations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Recommendations",
+            "description": "Actionable remediation steps or architectural recommendations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "level"
+        ],
+        "title": "RiskSummary",
+        "description": "Structured assessment of risks identified in the analyzed query."
+      },
+      "TokenUsageBreakdown": {
+        "properties": {
+          "sql": {
+            "type": "integer",
+            "title": "Sql",
+            "default": 0
+          },
+          "sap": {
+            "type": "integer",
+            "title": "Sap",
+            "default": 0
+          },
+          "synthesizer": {
+            "type": "integer",
+            "title": "Synthesizer",
+            "default": 0
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "default": 0
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "TokenUsageBreakdown",
+        "description": "Token consumption across all pipeline stages."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "ValidationSummary": {
+        "properties": {
+          "opportunity_sql_ok": {
+            "type": "boolean",
+            "title": "Opportunity Sql Ok"
+          },
+          "error_sql_ok": {
+            "type": "boolean",
+            "title": "Error Sql Ok"
+          },
+          "subset_ok": {
+            "type": "boolean",
+            "title": "Subset Ok"
+          },
+          "glossary_ok": {
+            "type": "boolean",
+            "title": "Glossary Ok"
+          },
+          "matches_parser_baseline": {
+            "type": "boolean",
+            "title": "Matches Parser Baseline",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "opportunity_sql_ok",
+          "error_sql_ok",
+          "subset_ok",
+          "glossary_ok"
+        ],
+        "title": "ValidationSummary",
+        "description": "Summary of deterministic post-processing and guardrail validation checks."
+      }
+    }
+  }
+}
