@@ -13,6 +13,8 @@ from app.parser.sql_parser import SqlParser
 @pytest.fixture(scope="module")
 def examples() -> list[dict]:
     fixtures_path = Path(__file__).resolve().parent / "fixtures" / "examples.json"
+    if not fixtures_path.exists():
+        pytest.skip("examples.json fixture not found (proprietary fixture excluded from git)")
     with open(fixtures_path, "r", encoding="utf-8") as f:
         return json.load(f)
 

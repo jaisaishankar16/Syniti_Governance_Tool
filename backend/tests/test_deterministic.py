@@ -14,6 +14,10 @@ from app.synthesizer.deterministic import (
 
 def _load_excel_fixtures() -> list[dict]:
     p = Path(__file__).resolve().parent / "fixtures" / "examples.json"
+    if not p.exists():
+        import pytest
+
+        pytest.skip("examples.json fixture not found (proprietary fixture excluded from git)")
     with open(p, "r", encoding="utf-8") as f:
         return json.load(f)
 

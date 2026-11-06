@@ -15,6 +15,10 @@ def test_11_examples_sap_pack_coverage():
     fixtures_path = Path(__file__).resolve().parent / "fixtures" / "examples.json"
     if not fixtures_path.exists():
         fixtures_path = Path("backend/tests/fixtures/examples.json").resolve()
+    if not fixtures_path.exists():
+        import pytest
+
+        pytest.skip("examples.json fixture not found (proprietary fixture excluded from git)")
 
     with open(fixtures_path, "r", encoding="utf-8") as f:
         examples = json.load(f)
@@ -104,6 +108,10 @@ def test_sheet1_sap_pack_fixes():
     fixtures_path = Path(__file__).resolve().parent / "fixtures" / "examples.json"
     if not fixtures_path.exists():
         fixtures_path = Path("backend/tests/fixtures/examples.json").resolve()
+    if not fixtures_path.exists():
+        import pytest
+
+        pytest.skip("examples.json fixture not found (proprietary fixture excluded from git)")
 
     with open(fixtures_path, "r", encoding="utf-8") as f:
         examples = json.load(f)

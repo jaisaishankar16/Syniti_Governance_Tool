@@ -8,6 +8,12 @@ import pytest
 from app.api.settings import get_api_settings
 
 
+@pytest.fixture
+def anyio_backend() -> str:
+    """Restricts anyio tests to asyncio backend (avoids trio incompatibility on Windows)."""
+    return "asyncio"
+
+
 @pytest.fixture(autouse=True)
 def isolate_activity_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """Isolates activity_data_dir during test runs so tests never pollute production data/activity.jsonl."""

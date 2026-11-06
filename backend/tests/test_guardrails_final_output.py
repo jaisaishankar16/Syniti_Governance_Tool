@@ -54,6 +54,10 @@ def test_validate_error_subset_on_real_examples() -> None:
     fixture_path = Path("backend/tests/fixtures/examples.json")
     if not fixture_path.exists():
         fixture_path = Path(__file__).resolve().parent / "fixtures" / "examples.json"
+    if not fixture_path.exists():
+        import pytest
+
+        pytest.skip("examples.json fixture not found (proprietary fixture excluded from git)")
 
     with open(fixture_path, "r", encoding="utf-8") as f:
         examples = json.load(f)

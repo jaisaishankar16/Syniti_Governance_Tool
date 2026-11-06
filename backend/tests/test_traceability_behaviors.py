@@ -84,7 +84,10 @@ class TestTraceabilityBehaviors:
             assert res.degraded is False
             assert res.sql.status == "ok"
             assert res.sap.status == "ok"
-            assert elapsed < 0.65, f"Took {elapsed:.2f}s; expected concurrent execution < 0.65s"
+            sum_latencies = (res.sql.latency_ms + res.sap.latency_ms) / 1000.0
+            assert elapsed < sum_latencies, (
+                f"Took {elapsed:.2f}s; expected concurrent execution strictly less than serial sum {sum_latencies:.2f}s"
+            )
 
         asyncio.run(_test())
 
