@@ -232,16 +232,20 @@ class FakeModel(Model):
         conversation_id: str | None = None,
         prompt: ResponsePromptParam | None = None,
     ) -> ModelResponse:
+        t0 = asyncio.get_event_loop().time()
+        if self.sleep_s > 0:
+            await asyncio.sleep(self.sleep_s)
+        t1 = asyncio.get_event_loop().time()
+
         self.call_history.append(
             {
                 "system_instructions": system_instructions,
                 "input": input,
                 "tools": [t.name for t in tools],
+                "start_time": t0,
+                "end_time": t1,
             }
         )
-
-        if self.sleep_s > 0:
-            await asyncio.sleep(self.sleep_s)
 
         if self.error_to_raise is not None:
             raise self.error_to_raise

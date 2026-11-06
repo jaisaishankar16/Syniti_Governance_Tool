@@ -81,3 +81,59 @@ def test_cli_live_fail_fast_when_key_is_placeholder(
     err_output = capsys.readouterr().err
     assert "Error: No valid OpenAI API key is configured." in err_output
     assert "obvious placeholder" in err_output
+
+
+def test_check_env_prints_variable_names_origins_and_key_length_only(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+):
+    """--check-env prints which variable supplied key & base URL, file/OS origin, and length only."""
+    fake_secret = "sk-corp-super-long-token-9876543210-abcdef"
+    env_file = tmp_path / "custom.env"
+    env_file.write_text(f"OPENAI_API_KEY={fake_secret}\nOPENAI_BASE_URL=https://gateway.company.com/v1\n", encoding="utf-8")
+
+    settings = LLMSettings(_env_file=env_file)  # type: ignore[call-arg]
+    _handle_check_env(settings, do_ping=False)
+    out = capsys.readouterr().out
+
+    # 1. Variable name checks
+    assert "Key Variable:       OPENAI_API_KEY" in out
+    assert "Base URL Variable:  OPENAI_BASE_URL" in out
+
+    # 2. Origin checks
+    assert "Key Origin:" in out
+    assert str(env_file) in out
+    assert "Base URL Origin:" in out
+    assert str(env_file) in out
+
+    # 3. Key length only check (never secret characters)
+    assert f"Key Length:         {len(fake_secret)} characters" in out
+    assert fake_secret not in out
+    assert "sk-corp" not in out
+    assert "9876543210" not in out
+
+
+def test_cli_check_env_conflicting_settings_fails_fast(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+):
+    """Running CLI with --check-env when settings conflict fails fast naming variables (never values)."""
+    from app.agents.settings import get_llm_settings
+
+    get_llm_settings.cache_clear()
+
+    monkeypatch.setenv("OPENAI_API_KEY", "key-one-11111")
+    monkeypatch.setenv("LLM_API_KEY", "key-two-22222")
+
+    test_args = ["cli.py", "--check-env"]
+    monkeypatch.setattr(sys, "argv", test_args)
+
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+
+    assert exc_info.value.code == 1
+    err_output = capsys.readouterr().err
+    assert "Conflicting settings: both OPENAI_API_KEY and LLM_API_KEY are set with different values" in err_output
+    assert "key-one-11111" not in err_output
+    assert "key-two-22222" not in err_output
+

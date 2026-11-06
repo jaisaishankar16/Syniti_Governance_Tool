@@ -13,7 +13,6 @@ Specifically confirms:
 from __future__ import annotations
 
 import asyncio
-import time
 from pathlib import Path
 from unittest.mock import patch
 
@@ -72,21 +71,34 @@ class TestTraceabilityBehaviors:
 
             # Each agent sleeps for 0.4s. If serial, took >= 0.8s. If concurrent, took ~ 0.4s (< 0.65s).
             slow_model = FakeModel(sleep_s=0.4)
-            start_t = time.perf_counter()
             res = await analyze_with_agents(
                 parsed=parsed,
                 deps_factory=deps_factory,
                 settings=settings,
                 model=slow_model,
             )
-            elapsed = time.perf_counter() - start_t
 
             assert res.degraded is False
             assert res.sql.status == "ok"
             assert res.sap.status == "ok"
-            sum_latencies = (res.sql.latency_ms + res.sap.latency_ms) / 1000.0
-            assert elapsed < sum_latencies, (
-                f"Took {elapsed:.2f}s; expected concurrent execution strictly less than serial sum {sum_latencies:.2f}s"
+
+            # Verify mathematically that both agent model calls ran concurrently (overlapped in time)
+            assert len(slow_model.call_history) >= 2
+            t0_sql = slow_model.call_history[0]["start_time"]
+            t1_sql = slow_model.call_history[0]["end_time"]
+            t0_sap = slow_model.call_history[1]["start_time"]
+            t1_sap = slow_model.call_history[1]["end_time"]
+
+            # Agent 2 started before Agent 1 finished (concurrency overlap)
+            assert t0_sap < t1_sql, "Agent 2 must start before Agent 1 finishes"
+            # And Agent 1 started before Agent 2 finished
+            assert t0_sql < t1_sap, "Agent 1 must start before Agent 2 finishes"
+
+            # Total model call duration should be approximately max(t_sql, t_sap), far less than sum
+            model_wall_clock = max(t1_sql, t1_sap) - min(t0_sql, t0_sap)
+            model_serial_sum = (t1_sql - t0_sql) + (t1_sap - t0_sap)
+            assert model_wall_clock < model_serial_sum * 0.85, (
+                f"Model wall-clock ({model_wall_clock:.2f}s) expected strictly less than serial sum ({model_serial_sum:.2f}s)"
             )
 
         asyncio.run(_test())

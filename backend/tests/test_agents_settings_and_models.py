@@ -146,16 +146,107 @@ def test_settings_loads_from_repo_root_regardless_of_cwd(
     assert status["env_path"] == ENV_FILE_PATH
 
 
-def test_llm_base_url_and_api_key_aliases(monkeypatch: pytest.MonkeyPatch):
-    """LLM_BASE_URL and LLM_API_KEY work as first-class aliases for OPENAI_BASE_URL and OPENAI_API_KEY."""
+def test_llm_base_url_and_api_key_aliases(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    """LLM_BASE_URL and LLM_API_KEY work as deprecated aliases and emit deprecation warnings."""
+    empty_env = tmp_path / ".env"
+    empty_env.write_text("", encoding="utf-8")
+
     monkeypatch.setenv("LLM_BASE_URL", "https://gateway.internal/v1")
     monkeypatch.setenv("LLM_API_KEY", "gateway-token-xyz-12345")
     monkeypatch.delenv("OPENAI_BASE_URL", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
-    s = LLMSettings()
+    with pytest.deprecated_call():
+        s = LLMSettings(_env_file=empty_env)  # type: ignore[call-arg]
+
     assert s.openai_base_url == "https://gateway.internal/v1"
     assert s.openai_api_key is not None
     assert s.openai_api_key.get_secret_value() == "gateway-token-xyz-12345"
     assert s.llm_api_mode == "chat_completions"
+    assert s.key_variable == "LLM_API_KEY (deprecated)"
+    assert s.base_url_variable == "LLM_BASE_URL (deprecated)"
+
+
+def test_conflicting_api_keys_fail_fast(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """Setting OPENAI_API_KEY and LLM_API_KEY with different values fails fast naming both variables (never values)."""
+    empty_env = tmp_path / ".env"
+    empty_env.write_text("", encoding="utf-8")
+
+    # 1. Conflict in constructor kwargs
+    with pytest.raises(ValueError) as exc1:
+        LLMSettings(
+            openai_api_key="key-alpha-111",  # type: ignore[arg-type]
+            llm_api_key="key-beta-222",  # type: ignore[call-arg]
+            _env_file=empty_env,  # type: ignore[call-arg]
+        )
+    err1 = str(exc1.value)
+    assert "both OPENAI_API_KEY and LLM_API_KEY are set with different values" in err1
+    assert "key-alpha-111" not in err1
+    assert "key-beta-222" not in err1
+
+    # 2. Conflict in OS environment
+    monkeypatch.setenv("OPENAI_API_KEY", "key-gamma-333")
+    monkeypatch.setenv("LLM_API_KEY", "key-delta-444")
+    with pytest.raises(ValueError) as exc2:
+        LLMSettings(_env_file=empty_env)  # type: ignore[call-arg]
+    err2 = str(exc2.value)
+    assert "both OPENAI_API_KEY and LLM_API_KEY are set with different values" in err2
+    assert "key-gamma-333" not in err2
+    assert "key-delta-444" not in err2
+
+    # 3. Conflict in .env file
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("LLM_API_KEY", raising=False)
+    conflict_env = tmp_path / "conflict.env"
+    conflict_env.write_text("OPENAI_API_KEY=key-epsilon-555\nLLM_API_KEY=key-zeta-666\n", encoding="utf-8")
+    with pytest.raises(ValueError) as exc3:
+        LLMSettings(_env_file=conflict_env)  # type: ignore[call-arg]
+    err3 = str(exc3.value)
+    assert "both OPENAI_API_KEY and LLM_API_KEY are set with different values" in err3
+    assert "key-epsilon-555" not in err3
+    assert "key-zeta-666" not in err3
+
+
+def test_conflicting_base_urls_fail_fast(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """Setting OPENAI_BASE_URL and LLM_BASE_URL with different values fails fast naming both variables (never values)."""
+    empty_env = tmp_path / ".env"
+    empty_env.write_text("", encoding="utf-8")
+
+    # 1. Conflict in constructor kwargs
+    with pytest.raises(ValueError) as exc1:
+        LLMSettings(
+            openai_base_url="https://gateway-a.internal/v1",
+            llm_base_url="https://gateway-b.internal/v1",  # type: ignore[call-arg]
+            openai_api_key="valid-dummy-key",  # type: ignore[arg-type]
+            _env_file=empty_env,  # type: ignore[call-arg]
+        )
+    err1 = str(exc1.value)
+    assert "both OPENAI_BASE_URL and LLM_BASE_URL are set with different values" in err1
+
+    # 2. Conflict in OS environment
+    monkeypatch.setenv("OPENAI_BASE_URL", "https://gateway-c.internal/v1")
+    monkeypatch.setenv("LLM_BASE_URL", "https://gateway-d.internal/v1")
+    with pytest.raises(ValueError) as exc2:
+        LLMSettings(openai_api_key="valid-dummy-key", _env_file=empty_env)  # type: ignore[arg-type, call-arg]
+    err2 = str(exc2.value)
+    assert "both OPENAI_BASE_URL and LLM_BASE_URL are set with different values" in err2
+
+
+def test_identical_canonical_and_alias_succeeds_without_error(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """Setting canonical and alias with IDENTICAL values succeeds with no error."""
+    empty_env = tmp_path / ".env"
+    empty_env.write_text("", encoding="utf-8")
+
+    monkeypatch.setenv("OPENAI_API_KEY", "identical-key-12345")
+    monkeypatch.setenv("LLM_API_KEY", "identical-key-12345")
+    monkeypatch.setenv("OPENAI_BASE_URL", "https://gateway.internal/v1")
+    monkeypatch.setenv("LLM_BASE_URL", "https://gateway.internal/v1")
+
+    s = LLMSettings(_env_file=empty_env)  # type: ignore[call-arg]
+    assert s.openai_api_key is not None
+    assert s.openai_api_key.get_secret_value() == "identical-key-12345"
+    assert s.openai_base_url == "https://gateway.internal/v1"
+    assert s.key_variable == "OPENAI_API_KEY"
+    assert s.base_url_variable == "OPENAI_BASE_URL"
+
 

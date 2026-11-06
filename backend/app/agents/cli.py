@@ -16,7 +16,6 @@ from app.agents.settings import (
     ENV_FILE_PATH,
     LLMSettings,
     get_key_status,
-    get_llm_settings,
     is_valid_api_key,
 )
 from app.guardrails.models import GuardrailBlocked
@@ -72,29 +71,42 @@ def _handle_check_env(settings: LLMSettings, do_ping: bool = False) -> None:
     else:
         env_desc = f"{env_path} (Status: Not found)"
 
+    key_var = status["key_variable"] or "None"
     key_src = status["key_source"] or "Not configured"
+    key_len_desc = (
+        f"{status['key_length']} characters"
+        if status["has_valid_key"]
+        else "0 (not configured)"
+    )
     if status["has_valid_key"]:
         key_desc = f"configured (length: {status['key_length']})"
     else:
         key_desc = "Not configured"
 
+    url_var = status["base_url_variable"] or "None (default)"
+    url_src = status["base_url_source"] or "default"
+
     print("=" * 80)
     print("                        ENVIRONMENT & CONFIG CHECK")
     print("=" * 80)
-    print(f".env Path:    {env_desc}")
-    print(f"Key Source:   {key_src}")
-    print(f"API Key:      {key_desc}")
-    print(f"Model:        {settings.llm_model}")
+    print(f".env Path:          {env_desc}")
+    print(f"Key Variable:       {key_var}")
+    print(f"Key Origin:         {key_src}")
+    print(f"Key Length:         {key_len_desc}")
+    print(f"API Key:            {key_desc}")
+    print(f"Base URL Variable:  {url_var}")
+    print(f"Base URL Origin:    {url_src}")
     if settings.openai_base_url:
-        print(f"Base URL:     {settings.openai_base_url}")
+        print(f"Base URL:           {settings.openai_base_url}")
     else:
-        print("Base URL:     None (default: https://api.openai.com/v1)")
-    print(f"API Mode:     {settings.llm_api_mode}")
-    print(f"Structured:   {settings.structured_output_mode}")
-    print(f"Tools Mode:   {settings.tools_mode}")
-    print(f"Temperature:  {settings.llm_temperature}")
-    print(f"Max Turns:    {settings.llm_max_turns}")
-    print(f"Timeout:      {settings.llm_timeout_s}s")
+        print("Base URL:           None (default: https://api.openai.com/v1)")
+    print(f"Model:              {settings.llm_model}")
+    print(f"API Mode:           {settings.llm_api_mode}")
+    print(f"Structured:         {settings.structured_output_mode}")
+    print(f"Tools Mode:         {settings.tools_mode}")
+    print(f"Temperature:        {settings.llm_temperature}")
+    print(f"Max Turns:          {settings.llm_max_turns}")
+    print(f"Timeout:            {settings.llm_timeout_s}s")
     print("-" * 80)
 
     if not do_ping:
@@ -459,8 +471,14 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    # Load settings
-    settings = get_llm_settings()
+    # Load settings (fail-fast if canonical and alias conflict)
+    try:
+        settings = LLMSettings()
+    except ValueError as exc:
+        if "Conflicting settings" in str(exc):
+            print(f"Error: {exc}", file=sys.stderr)
+            sys.exit(1)
+        raise
 
     # Model switch capability check mode
     if args.check_model:
