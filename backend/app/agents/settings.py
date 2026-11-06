@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import Field, SecretStr, field_validator, model_validator
+from pydantic import AliasChoices, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -64,7 +64,7 @@ def is_valid_api_key(val: object) -> bool:
 
 
 def load_dotenv_key(env_path: Path) -> str | None:
-    """Reads OPENAI_API_KEY directly from a dotenv file, filtering placeholders."""
+    """Reads OPENAI_API_KEY or LLM_API_KEY directly from a dotenv file, filtering placeholders."""
     if not env_path.is_file():
         return None
     try:
@@ -75,9 +75,11 @@ def load_dotenv_key(env_path: Path) -> str | None:
                     continue
                 if "=" in line:
                     k, v = line.split("=", 1)
-                    if k.strip() == "OPENAI_API_KEY":
+                    if k.strip() in ("OPENAI_API_KEY", "LLM_API_KEY"):
                         clean_v = v.strip().strip("'\"")
-                        return clean_api_key(clean_v)
+                        res = clean_api_key(clean_v)
+                        if res:
+                            return res
     except OSError:
         return None
     return None
@@ -95,8 +97,12 @@ class LLMSettings(BaseSettings):
     )
 
     llm_model: str = Field(default="gpt-4o-mini", validation_alias="LLM_MODEL")
-    openai_api_key: SecretStr | None = Field(default=None, validation_alias="OPENAI_API_KEY")
-    openai_base_url: str | None = Field(default=None, validation_alias="OPENAI_BASE_URL")
+    openai_api_key: SecretStr | None = Field(
+        default=None, validation_alias=AliasChoices("OPENAI_API_KEY", "LLM_API_KEY")
+    )
+    openai_base_url: str | None = Field(
+        default=None, validation_alias=AliasChoices("OPENAI_BASE_URL", "LLM_BASE_URL")
+    )
 
     llm_api_mode: Literal["responses", "chat_completions"] = Field(
         default="responses", validation_alias="LLM_API_MODE"
@@ -165,13 +171,30 @@ class LLMSettings(BaseSettings):
                     data[upper_k] = data[k]
 
             # 1. API key resolution:
-            if "openai_api_key" in data or "OPENAI_API_KEY" in data:
-                raw_passed = data.pop("OPENAI_API_KEY", None)
-                if "openai_api_key" in data:
-                    raw_passed = data.get("openai_api_key")
+            has_passed_key = any(
+                k in data for k in ("openai_api_key", "OPENAI_API_KEY", "llm_api_key", "LLM_API_KEY")
+            )
+            if has_passed_key:
+                raw_passed = (
+                    data.get("openai_api_key")
+                    if "openai_api_key" in data
+                    else (
+                        data.get("llm_api_key")
+                        if "llm_api_key" in data
+                        else (
+                            data.get("OPENAI_API_KEY")
+                            if "OPENAI_API_KEY" in data
+                            else data.get("LLM_API_KEY")
+                        )
+                    )
+                )
+                data.pop("OPENAI_API_KEY", None)
+                data.pop("LLM_API_KEY", None)
                 data["openai_api_key"] = clean_api_key(raw_passed)
             else:
-                os_key = clean_api_key(os.environ.get("OPENAI_API_KEY"))
+                os_key = clean_api_key(
+                    os.environ.get("OPENAI_API_KEY") or os.environ.get("LLM_API_KEY")
+                )
                 file_key = load_dotenv_key(ENV_FILE_PATH)
                 if os_key:
                     data["openai_api_key"] = os_key
@@ -180,8 +203,13 @@ class LLMSettings(BaseSettings):
                 else:
                     data["openai_api_key"] = None
 
-            # 2. When OPENAI_BASE_URL is set and LLM_API_MODE is not specified, default to chat_completions
-            base_url = data.get("OPENAI_BASE_URL") or data.get("openai_base_url")
+            # 2. When base URL is set and LLM_API_MODE is not specified, default to chat_completions
+            base_url = (
+                data.get("OPENAI_BASE_URL")
+                or data.get("LLM_BASE_URL")
+                or data.get("openai_base_url")
+                or data.get("llm_base_url")
+            )
             api_mode = data.get("LLM_API_MODE") or data.get("llm_api_mode")
             if base_url and not api_mode:
                 data["llm_api_mode"] = "chat_completions"

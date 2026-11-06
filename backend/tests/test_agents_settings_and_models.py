@@ -144,3 +144,18 @@ def test_settings_loads_from_repo_root_regardless_of_cwd(
     status = get_key_status()
     # The resolved env_path must point to MDM_Syniti root .env, not cwd/.env
     assert status["env_path"] == ENV_FILE_PATH
+
+
+def test_llm_base_url_and_api_key_aliases(monkeypatch: pytest.MonkeyPatch):
+    """LLM_BASE_URL and LLM_API_KEY work as first-class aliases for OPENAI_BASE_URL and OPENAI_API_KEY."""
+    monkeypatch.setenv("LLM_BASE_URL", "https://gateway.internal/v1")
+    monkeypatch.setenv("LLM_API_KEY", "gateway-token-xyz-12345")
+    monkeypatch.delenv("OPENAI_BASE_URL", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+
+    s = LLMSettings()
+    assert s.openai_base_url == "https://gateway.internal/v1"
+    assert s.openai_api_key is not None
+    assert s.openai_api_key.get_secret_value() == "gateway-token-xyz-12345"
+    assert s.llm_api_mode == "chat_completions"
+
