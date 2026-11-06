@@ -2,7 +2,7 @@
 
 This document describes the REST API, Server-Sent Events (SSE) streaming protocol, error handling contracts, operational probes, and configuration settings for the MDM Syniti Analysis Orchestrator.
 
-Under **Project Rules** (see [PROJECT_RULES.md](file:///c:/Users/91830/Downloads/MDM_Syniti/docs/PROJECT_RULES.md)), execution works **strictly through the OpenAI Agents SDK and verified domain knowledge**. There is no offline mode, dry-run mode, or fallback answer generation.
+Under **Project Rules** (see [PROJECT_RULES.md](PROJECT_RULES.md)), execution works **strictly through the OpenAI Agents SDK and verified domain knowledge**. There is no offline mode, dry-run mode, or fallback answer generation.
 
 ---
 
@@ -64,9 +64,10 @@ Every non-2xx error response returns a consistent JSON envelope:
 | `LLM_BUDGET_EXCEEDED`| `429 Too Many Requests` | Daily token or dollar usage budget has been exhausted. |
 | `SYNTHESIS_FAILED` | `502 Bad Gateway` | Synthesizer LLM output failed schema validation after retries. |
 | `LLM_NOT_CONFIGURED` | `503 Service Unavailable` | `OPENAI_API_KEY` is missing or contains placeholder text. |
-| `LLM_AUTH_FAILED` | `503 Service Unavailable` | Provider returned HTTP 401 Unauthorized (server credential issue). |
-| `LLM_QUOTA_EXCEEDED` | `503 Service Unavailable` | Provider account billing quota or credit balance exhausted. |
-| `LLM_UNAVAILABLE` | `503 Service Unavailable` | Provider network failure, 5xx server error, or circuit breaker is OPEN. |
+| `LLM_AUTH_FAILED` | `503 Service Unavailable` | Provider returned HTTP 401/403 Unauthorized/Forbidden (server credential issue). Not retried. |
+| `LLM_QUOTA_EXCEEDED` | `503 Service Unavailable` | Provider account billing quota, credit balance, or rate allowance exhausted. Not retried. |
+| `LLM_MODEL_NOT_FOUND` | `503 Service Unavailable` | Configured AI model is not deployed or accessible on the AI gateway endpoint. Not retried. |
+| `LLM_UNAVAILABLE` | `503 Service Unavailable` | Provider network failure, TLS/cert failure, 5xx server error, or circuit breaker is OPEN. |
 | `INTERNAL_ERROR` | `500 Internal Server Error` | Unexpected server crash (details masked from client, logged server-side). |
 
 ---

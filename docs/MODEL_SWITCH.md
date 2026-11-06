@@ -1,83 +1,74 @@
-# Model Switch Readiness Guide
+# Model Switch & AI Gateway Readiness Guide
 
-This document describes how to transition the Syniti Data Migration & Governance Agent pipeline from the default `gpt-4o-mini` model to alternative models, specifically **Astra-Luna** or custom OpenAI-compatible inference endpoints (e.g. self-hosted vLLM, Ollama, Azure OpenAI, or LiteLLM proxy), with zero code changes.
+This document describes how to transition the Syniti Data Migration & Governance Agent pipeline from default OpenAI models to enterprise AI gateways, corporate proxies, or custom OpenAI-compatible endpoints with zero code changes.
 
 ---
 
 ## 1. Zero-Code Environment Configuration
 
-Switching models is controlled entirely via environment variables in `.env` (or OS environment):
+Switching models or routing through an internal AI Gateway is controlled entirely via environment variables in `.env` (or the host OS environment):
 
 | Variable | Default Value | Description |
 | :--- | :--- | :--- |
-| `LLM_MODEL` | `gpt-4o-mini` | Target model name (e.g., `astra-luna`, `gpt-4o`, `custom-model`) |
-| `OPENAI_BASE_URL` | `None` (uses OpenAI default) | Base URL for API calls (e.g., `http://10.0.0.5:8000/v1` or `https://astra.internal/api/v1`) |
-| `OPENAI_API_KEY` | *(Required for live calls)* | API key or bearer token for the target model provider |
-| `STRUCTURED_OUTPUT_MODE` | `native` | `native` (OpenAI strict JSON schema) or `json_prompt` (Pydantic prompt fallback) |
-| `LLM_API_MODE` | `responses` | `responses` (Agents SDK / Structured outputs) or `chat_completions` |
-| `LLM_TEMPERATURE` | `0.1` | Sampling temperature (recommend `0.0` or `0.1` for deterministic governance) |
-| `LLM_TIMEOUT_S` | `60.0` | Agent timeout in seconds |
+| `OPENAI_BASE_URL` | `None` (uses provider default) | Base URL for the AI Gateway (used verbatim without altering path segments). |
+| `OPENAI_API_KEY` | *(Required for live calls)* | API key or gateway routing token (masked in logs and diagnostics). |
+| `LLM_MODEL` | `gpt-4o-mini` | Target model identifier hosted on your gateway or inference service. |
+| `LLM_API_MODE` | `chat_completions` (when base URL set) | API mode: `chat_completions` (default for gateway) or `responses`. |
+| `STRUCTURED_OUTPUT_MODE` | `auto` | `auto` (auto-detected via capability probe), `native` (strict schema), or `json_prompt`. |
+| `TOOLS_MODE` | `auto` | `auto` (auto-detected via probe), `native` (function calling), or `prefetch` (deterministic context injection). |
+| `LLM_CA_BUNDLE` | `None` | Optional path to corporate PEM CA certificate bundle for internal TLS verification. |
+| `LLM_EXTRA_HEADERS` | `None` | Optional JSON object of custom HTTP routing/auth headers (values never logged). |
+| `LLM_TEMPERATURE` | `0.1` | Sampling temperature (`0.0` or `0.1` recommended for deterministic governance). |
+| `LLM_TIMEOUT_S` | `60.0` | Gateway request timeout in seconds. |
 
-Example `.env` configuration for Astra-Luna:
+### Example `.env` Configuration for Enterprise AI Gateway:
 ```ini
-LLM_MODEL=astra-luna
-OPENAI_BASE_URL=https://astra-luna.internal/v1
-OPENAI_API_KEY=sk-astra-live-key
-STRUCTURED_OUTPUT_MODE=native
-LLM_API_MODE=responses
+OPENAI_BASE_URL=https://gateway.company.com/v1
+OPENAI_API_KEY=your-gateway-token
+LLM_MODEL=your-model-name
+LLM_API_MODE=chat_completions
+STRUCTURED_OUTPUT_MODE=auto
+TOOLS_MODE=auto
+LLM_CA_BUNDLE=/etc/ssl/certs/corp-ca.pem
+LLM_EXTRA_HEADERS={"X-Corp-Tenant":"MDM-Team"}
 ```
 
 ---
 
 ## 2. Model Capability Validation CLI (`--check-model`)
 
-Before routing production traffic to a new model or inference endpoint, execute the validation probe:
+Before routing production traffic to a new model or gateway endpoint, execute the automated capability probe:
 
-```powershell
+```bash
 python -m app.agents.cli --check-model
 ```
 
-The script performs 4 sequential capability checks:
-1. **Plain Completion**: Verifies network connectivity, authentication, and token generation.
-2. **Native Structured Output**: Tests strict JSON schema enforcement against `SQLAnalysis`, `SAPAnalysis`, and `BusinessIntelligence`.
-3. **Tool Calling**: Tests function / tool definition and call generation (`lookup_sap_table`).
-4. **JSON Prompt Fallback**: Tests fallback prompt parsing using standard JSON mode.
+The probe performs 5 sequential capability checks:
+1. **Plain Completion**: Verifies basic gateway connectivity, authentication, and token generation.
+2. **Temperature Supported**: Tests whether custom sampling temperatures are accepted without error.
+3. **Native Structured Output**: Tests strict JSON schema parsing against `SQLAnalysis`, `SAPAnalysis`, and `BusinessIntelligence`.
+4. **Tool Calling**: Tests function/tool definition and dynamic execution against domain tools (`lookup_sap_table`).
+5. **JSON Prompt Fallback**: Tests fallback prompt parsing using standard JSON object mode.
 
-The CLI outputs an evaluation summary and prints recommended environment settings:
-```
-================================================================================
-       MODEL CAPABILITY CHECK: astra-luna
-       Endpoint: https://astra-luna.internal/v1
-================================================================================
-Testing [1/4] Plain Completion...
-  -> PASS
-Testing [2/4] Native Structured Output (strict schema)...
-  -> PASS
-Testing [3/4] Tool Calling...
-  -> PASS
-Testing [4/4] JSON Prompt Fallback...
-  -> PASS
-================================================================================
-                           SUMMARY & RECOMMENDATIONS
-================================================================================
-Plain Completion               : [PASS] (Received: OK)
-Native Structured Output       : [PASS] (Strict JSON schema successfully parsed)
-Tool Calling                   : [PASS] (Invoked tool: lookup_sap_table)
-JSON Prompt Fallback           : [PASS] (Valid JSON object returned)
---------------------------------------------------------------------------------
-Recommended Environment Configuration:
-  LLM_MODEL=astra-luna
-  OPENAI_BASE_URL=https://astra-luna.internal/v1
-  STRUCTURED_OUTPUT_MODE=native
-  LLM_API_MODE=responses
-================================================================================
-```
-
-If the model does not support native structured schemas, configure `STRUCTURED_OUTPUT_MODE=json_prompt` as recommended.
+Results are persisted automatically to `data/model_capabilities.json` (keyed by `sha256(model + base_url)`), enabling automatic mode selection at runtime without manual intervention.
 
 ---
 
-## 3. Cache Isolation Guarantees
+## 3. Prefetch Tools Mode for Restricted Endpoints
+
+When connecting to gateways or models that do not support dynamic tool calling, configure:
+```ini
+TOOLS_MODE=prefetch
+```
+In `prefetch` mode:
+- The orchestrator pre-fetches all catalog records, glossary terms, and knowledge chunks during input preparation.
+- Pre-fetched knowledge is formatted into an explicit `<prefetched_knowledge>` context block inside agent input prompts.
+- Agents run with `tools=[]` (zero tool definitions passed to the model), avoiding provider tool unsupported errors.
+- Real-time knowledge learning and write-backs are cleanly disabled.
+
+---
+
+## 4. Cache Isolation Guarantees
 
 All cache tiers (L1 Final, L2 SQL, L2 SAP) incorporate the active model identifier and a SHA-256 hash tag of the `OPENAI_BASE_URL`:
 
@@ -85,25 +76,4 @@ All cache tiers (L1 Final, L2 SQL, L2 SAP) incorporate the active model identifi
 - **L2 SQL Key**: `syniti:v1:L2_sql:{sha256(normalized_sql|sql_ver|model|url_tag)}`
 - **L2 SAP Key**: `syniti:v1:L2_sap:{sha256(sorted_tables|sorted_fields|sorted_naming|sap_ver|model|url_tag|k_fp)}`
 
-### Security & Integrity Guarantee:
-Switching `LLM_MODEL` or pointing to a different `OPENAI_BASE_URL` isolates the cache namespace completely. Responses generated by `gpt-4o-mini` will **never** be served when running on `astra-luna`, preventing poisoned or cross-model cache leaks. Verified in `backend/tests/test_cache_layers.py::TestCacheLayers::test_cache_keys_model_and_base_url_isolation` and `test_model_switch_never_serves_cached_answers`.
-
----
-
-## 4. Cost & Pricing Configuration
-
-Pricing for token calculations is configured in `backend/app/guardrails/settings.py` via `PRICING_TABLE`:
-
-```python
-pricing_table: dict[str, dict[str, float]] = Field(default_factory=dict)
-```
-
-- **Default State**: Empty (`{}`). Cost is reported as `"pricing not configured"` and `calculate_cost_usd()` returns `None`.
-- **Configuring Custom Model Pricing**: Set pricing in USD per 1,000 tokens:
-  ```json
-  {
-    "astra-luna": {"input_cost_per_1k": 0.00015, "output_cost_per_1k": 0.0006},
-    "gpt-4o-mini": {"input_cost_per_1k": 0.00015, "output_cost_per_1k": 0.0006}
-  }
-  ```
-
+Switching `LLM_MODEL` or pointing to a different `OPENAI_BASE_URL` isolates the cache namespace completely. Responses generated by one model will **never** be served when running on another, preventing poisoned or cross-model cache leaks.

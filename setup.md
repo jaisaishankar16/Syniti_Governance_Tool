@@ -120,12 +120,15 @@ cp env/.env.example .env
 #### Key Settings Overview:
 
 ```ini
-# LLM Provider Configuration
-OPENAI_API_KEY=your-openai-api-key-here     # Required for live agent execution (tests run offline without this)
-LLM_MODEL=gpt-4o-mini                       # Target model (e.g. gpt-4o-mini or astra-luna)
-OPENAI_BASE_URL=                            # Optional custom API gateway or enterprise proxy
-LLM_API_MODE=native                         # 'native' (OpenAI Responses) or 'json_prompt'
-STRUCTURED_OUTPUT_MODE=native               # 'native' or 'json_prompt'
+# LLM / AI Gateway Configuration
+OPENAI_API_KEY=your-api-key-here            # Required for live agent execution (tests run offline without this)
+LLM_MODEL=gpt-4o-mini                       # Target model (e.g. gpt-4o-mini, gpt-4o, or gateway-deployed model)
+OPENAI_BASE_URL=                            # Optional custom AI gateway or enterprise proxy (used verbatim)
+LLM_API_MODE=chat_completions               # 'chat_completions' (default for gateway) or 'responses'
+STRUCTURED_OUTPUT_MODE=auto                 # 'auto' (auto-detects capabilities), 'native', or 'json_prompt'
+TOOLS_MODE=auto                             # 'auto' (auto-detects tool calling), 'native', or 'prefetch'
+LLM_CA_BUNDLE=                              # Optional corporate CA bundle path for TLS verification
+LLM_EXTRA_HEADERS=                          # Optional JSON object of extra routing/auth headers
 
 # User Principal Configuration
 PLACEHOLDER_PRINCIPAL_NAME="Jai Shankar"    # Display name in navbar profile

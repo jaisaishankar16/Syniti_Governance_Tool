@@ -46,7 +46,7 @@ The application consists of:
   - `LLM_QUOTA_EXCEEDED` is a **billing/credit exhaustion** issue. It is **NOT RETRIED** by runners.
   - `LLM_RATE_LIMITED` is a **transient concurrency spike**. It is retried automatically with exponential backoff.
 - **Remediation Steps:**
-  1. Check OpenAI billing dashboard to ensure prepaid credits or spending limits are active.
+  1. Check AI gateway or provider account dashboard to ensure active billing credits or token allocations are available.
   2. The failure cache stores `LLM_QUOTA_EXCEEDED` for 60 seconds, during which all incoming requests fail fast from memory without burning API calls.
   3. Once billing is replenished, restart the service or wait 60 seconds.
 
@@ -64,7 +64,7 @@ The application consists of:
   - While `OPEN`, calls fail fast without hitting the provider.
   - After 30 seconds, the breaker transitions to `HALF_OPEN` and lets 1 probe request through.
 - **Remediation Steps:**
-  1. Check provider status page (e.g., status.openai.com).
+  1. Check AI gateway / provider health or endpoint status.
   2. Test provider ping: `python -m app.agents.cli --check-env --ping`.
   3. Breaker resets automatically once a probe request succeeds.
 
