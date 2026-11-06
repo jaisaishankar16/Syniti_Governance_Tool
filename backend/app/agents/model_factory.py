@@ -11,7 +11,8 @@ from agents import (
     OpenAIResponsesModel,
     set_tracing_disabled,
 )
-from openai import AsyncOpenAI
+
+from app.agents.client_factory import create_async_client
 
 if TYPE_CHECKING:
     from app.agents.settings import LLMSettings
@@ -22,24 +23,14 @@ logger = logging.getLogger(__name__)
 def build_model(settings: LLMSettings) -> Model:
     """Builds and configures an Agents SDK model instance based on LLMSettings.
 
-    Disables SDK tracing globally unless settings.agents_tracing is True.
-    Uses OpenAI Responses API model when api_mode is 'responses',
-    otherwise uses OpenAIChatCompletionsModel with AsyncOpenAI client.
+    Disables SDK tracing globally (tracing forced off).
+    When OPENAI_BASE_URL is set, LLM_API_MODE defaults to chat_completions
+    and OpenAIChatCompletionsModel is used with the AsyncOpenAI client.
     """
-    # Global SDK tracing control
-    set_tracing_disabled(not settings.agents_tracing)
+    # Global SDK tracing control: force off
+    set_tracing_disabled(True)
 
-    api_key_str = (
-        settings.openai_api_key.get_secret_value()
-        if settings.openai_api_key is not None
-        else "MISSING_KEY"
-    )
-
-    client_kwargs: dict[str, str | None] = {"api_key": api_key_str}
-    if settings.openai_base_url:
-        client_kwargs["base_url"] = settings.openai_base_url
-
-    async_client = AsyncOpenAI(**client_kwargs)  # type: ignore[arg-type]
+    async_client = create_async_client(settings)
 
     if settings.llm_api_mode == "responses" and not settings.openai_base_url:
         logger.debug("Building OpenAIResponsesModel with model=%s", settings.llm_model)

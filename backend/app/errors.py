@@ -17,6 +17,7 @@ class ErrorCode(str, Enum):
     LLM_RATE_LIMITED = "LLM_RATE_LIMITED"
     LLM_UNAVAILABLE = "LLM_UNAVAILABLE"
     LLM_BUDGET_EXCEEDED = "LLM_BUDGET_EXCEEDED"
+    LLM_MODEL_NOT_FOUND = "LLM_MODEL_NOT_FOUND"
     SYNTHESIS_FAILED = "SYNTHESIS_FAILED"
 
 
@@ -122,6 +123,19 @@ class LLMBudgetExceededError(AppError):
     def __init__(
         self,
         message: str = "Daily LLM usage budget limit has been reached for this deployment.",
+        details: str | None = None,
+    ) -> None:
+        super().__init__(message=message, details=details)
+
+
+class LLMModelNotFoundError(AppError):
+    """Raised when the requested model is not found or not supported by the AI gateway."""
+
+    code = ErrorCode.LLM_MODEL_NOT_FOUND
+
+    def __init__(
+        self,
+        message: str = "The configured model is not available on the AI gateway.",
         details: str | None = None,
     ) -> None:
         super().__init__(message=message, details=details)

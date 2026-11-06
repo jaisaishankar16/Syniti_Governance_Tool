@@ -2122,12 +2122,24 @@
           "structured_output_mode": {
             "type": "string",
             "title": "Structured Output Mode",
-            "description": "Structured output enforcement mode"
+            "description": "Structured output enforcement mode in effect"
+          },
+          "tools_mode": {
+            "type": "string",
+            "title": "Tools Mode",
+            "description": "Tools execution mode in effect (native or prefetch)",
+            "default": "native"
           },
           "temperature": {
             "type": "number",
             "title": "Temperature",
             "description": "Sampling temperature"
+          },
+          "temperature_supported": {
+            "type": "boolean",
+            "title": "Temperature Supported",
+            "description": "Whether temperature parameter is accepted by provider",
+            "default": true
           },
           "max_turns": {
             "type": "integer",
@@ -2149,15 +2161,45 @@
             "title": "Provider",
             "description": "Target provider protocol"
           },
+          "provider_type": {
+            "type": "string",
+            "title": "Provider Type",
+            "description": "Provider connection type (gateway or direct)",
+            "default": "direct"
+          },
           "base_url": {
             "type": "string",
             "title": "Base Url",
             "description": "Sanitized scheme+host of provider base URL or 'default'"
           },
+          "base_host": {
+            "type": "string",
+            "title": "Base Host",
+            "description": "Provider or gateway hostname only",
+            "default": "api.openai.com"
+          },
           "api_key_configured": {
             "type": "boolean",
             "title": "Api Key Configured",
             "description": "Whether a valid, non-placeholder API key is set"
+          },
+          "capabilities_probe_timestamp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capabilities Probe Timestamp",
+            "description": "Timestamp of last capability probe"
+          },
+          "tracing": {
+            "type": "string",
+            "title": "Tracing",
+            "description": "Agents SDK tracing status",
+            "default": "disabled (forced)"
           },
           "learning_enabled": {
             "type": "boolean",
@@ -2167,7 +2209,8 @@
           "tracing_enabled": {
             "type": "boolean",
             "title": "Tracing Enabled",
-            "description": "Whether telemetry tracing is active"
+            "description": "Whether telemetry tracing is active",
+            "default": false
           },
           "token_budgets": {
             "additionalProperties": true,
@@ -2255,7 +2298,6 @@
           "base_url",
           "api_key_configured",
           "learning_enabled",
-          "tracing_enabled",
           "token_budgets",
           "circuit_state",
           "prompt_versions",

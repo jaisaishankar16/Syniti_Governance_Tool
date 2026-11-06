@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import time
 import uuid
@@ -64,6 +65,33 @@ async def analyze_with_agents(
     # 2. Agent input builders
     sql_input = build_sql_agent_input(parsed, sql_pack)
     sap_input = build_sap_agent_input(parsed, sap_pack)
+
+    from app.agents.capabilities import resolve_effective_modes
+
+    _, effective_tools, _ = resolve_effective_modes(active_settings)
+    if effective_tools == "prefetch":
+        logger.warning(
+            "Running agents in prefetch mode: dynamic tool calling and write-back disabled."
+        )
+        prefetched_sql = []
+        for u_sql in sql_pack.unresolved:
+            hits_sql = sql_deps.sql_retriever.search(u_sql.construct, k=2)
+            if hits_sql:
+                prefetched_sql.append(
+                    {"item": u_sql.construct, "hits": [h.text[:400] for h in hits_sql]}
+                )
+        if prefetched_sql:
+            sql_input += f"\n\n<prefetched_knowledge>\n{json.dumps(prefetched_sql, indent=2)}\n</prefetched_knowledge>"
+
+        prefetched_sap = []
+        for u_sap in sap_pack.unresolved:
+            res_sap = sap_deps.sap_retriever.search(u_sap.table, k=2)
+            if res_sap.hits:
+                prefetched_sap.append(
+                    {"item": u_sap.table, "hits": [h.text[:400] for h in res_sap.hits]}
+                )
+        if prefetched_sap:
+            sap_input += f"\n\n<prefetched_knowledge>\n{json.dumps(prefetched_sap, indent=2)}\n</prefetched_knowledge>"
 
     # 3. Model & Agent creation
     model_instance = model if model is not None else build_model(active_settings)

@@ -71,8 +71,14 @@ def create_sql_agent(
     """Creates a configured SQLSemanticsAgent instance."""
     prompt_content, prompt_version = load_sql_prompt()
 
+    from app.agents.capabilities import resolve_effective_modes
+
+    effective_struct, effective_tools, _ = resolve_effective_modes(settings)
+
+    tools: list[Any] = [] if effective_tools == "prefetch" else [lookup_sql_keyword, search_sql_docs]
+
     output_type: Any = None
-    if settings.structured_output_mode == "native":
+    if effective_struct == "native":
         try:
             output_type = AgentOutputSchema(SQLAnalysis, strict_json_schema=True)
         except Exception:  # noqa: BLE001
@@ -81,7 +87,7 @@ def create_sql_agent(
     agent: Agent[AgentDeps] = Agent(
         name="SQLSemanticsAgent",
         instructions=prompt_content,
-        tools=[lookup_sql_keyword, search_sql_docs],
+        tools=tools,
         model=model,
         output_type=output_type,
     )

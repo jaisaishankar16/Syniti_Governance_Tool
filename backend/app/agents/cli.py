@@ -63,7 +63,7 @@ def _load_example_sql(example_query: str) -> tuple[str, str]:
 
 
 def _handle_check_env(settings: LLMSettings, do_ping: bool = False) -> None:
-    """Inspects environment, .env file path and status, and optionally pings OpenAI."""
+    """Inspects environment, .env file path and status, and optionally pings AI gateway."""
     status = get_key_status(settings)
     env_path = status["env_path"]
     if status["env_exists"]:
@@ -74,11 +74,9 @@ def _handle_check_env(settings: LLMSettings, do_ping: bool = False) -> None:
 
     key_src = status["key_source"] or "Not configured"
     if status["has_valid_key"]:
-        key_desc = (
-            f"Configured (Length: {status['key_length']}, First 7: '{status['key_prefix']}...')"
-        )
+        key_desc = f"configured (length: {status['key_length']})"
     else:
-        key_desc = "Not set (or invalid placeholder)"
+        key_desc = "Not configured"
 
     print("=" * 80)
     print("                        ENVIRONMENT & CONFIG CHECK")
@@ -87,10 +85,13 @@ def _handle_check_env(settings: LLMSettings, do_ping: bool = False) -> None:
     print(f"Key Source:   {key_src}")
     print(f"API Key:      {key_desc}")
     print(f"Model:        {settings.llm_model}")
-    print(
-        f"Base URL:     {settings.openai_base_url or 'None (default: https://api.openai.com/v1)'}"
-    )
+    if settings.openai_base_url:
+        print(f"Base URL:     {settings.openai_base_url}")
+    else:
+        print("Base URL:     None (default: https://api.openai.com/v1)")
     print(f"API Mode:     {settings.llm_api_mode}")
+    print(f"Structured:   {settings.structured_output_mode}")
+    print(f"Tools Mode:   {settings.tools_mode}")
     print(f"Temperature:  {settings.llm_temperature}")
     print(f"Max Turns:    {settings.llm_max_turns}")
     print(f"Timeout:      {settings.llm_timeout_s}s")
@@ -98,48 +99,35 @@ def _handle_check_env(settings: LLMSettings, do_ping: bool = False) -> None:
 
     if not do_ping:
         print("Ping:         SKIPPED (Use --ping with --check-env to test key connectivity)")
+    elif not status["has_valid_key"]:
+        print("Ping:         SKIPPED (No valid API key configured to ping)")
     else:
-        if not status["has_valid_key"]:
-            print("Ping:         SKIPPED (No valid API key configured to ping)")
-        else:
-            print("Ping:         Testing key with live completion...")
-            try:
-                import openai
+        from app.agents.client_factory import run_smoke_ping
 
-                client = openai.OpenAI(
-                    api_key=settings.openai_api_key.get_secret_value()
-                    if settings.openai_api_key
-                    else None,
-                    base_url=settings.openai_base_url,
-                    timeout=10.0,
-                )
-                client.chat.completions.create(
-                    model=settings.llm_model,
-                    messages=[{"role": "user", "content": "hi"}],
-                    max_tokens=1,
-                )
-                print("Ping:         OK (200 - Connection and API key valid)")
-            except openai.AuthenticationError as e:
-                print(f"Ping:         401 (bad key: {e})")
-            except openai.RateLimitError as e:
-                print(f"Ping:         429 (quota/billing or rate limit exceeded: {e})")
-            except (openai.APIConnectionError, openai.APITimeoutError) as e:
-                print(f"Ping:         Network error ({type(e).__name__}: {e})")
-            except Exception as e:  # noqa: BLE001  # noqa: BLE001
-                print(f"Ping:         Error ({type(e).__name__}: {e})")
+        print("Ping:         Testing key with live smoke probe...")
+        ping_res = run_smoke_ping(settings)
+        if ping_res.get("success"):
+            print(
+                f"Ping:         OK (200 - AI gateway connection valid, host: {ping_res.get('gateway_host')}, latency: {ping_res.get('latency_ms')} ms)"
+            )
+        else:
+            err_c = ping_res.get("error_code", "LLM_UNAVAILABLE")
+            msg_c = ping_res.get("message", "Error")
+            print(f"Ping:         FAILED [{err_c}]: {msg_c}")
 
     print("=" * 80)
 
 
 def _handle_check_model(settings: LLMSettings) -> None:
-    """Probes model capabilities for model-switch readiness (e.g. Astra-Luna or alternative models).
+    """Probes model capabilities for model-switch readiness (e.g. gateway models).
 
     Tests in order:
       1. Plain completion
-      2. Native structured output with strict schemas (SQLAnalysis, SAPAnalysis, BusinessIntelligence)
-      3. Tool / function calling
-      4. JSON prompt fallback
-    Prints supported modes and recommends env values.
+      2. Temperature accepted?
+      3. Native structured output with strict schemas (SQLAnalysis, SAPAnalysis, BusinessIntelligence)
+      4. Tool / function calling
+      5. JSON prompt fallback
+    Prints supported modes, recommends env values, and persists to data/model_capabilities.json.
     """
     if not is_valid_api_key(settings.openai_api_key):
         print("=" * 80)
@@ -150,75 +138,128 @@ def _handle_check_model(settings: LLMSettings) -> None:
         print("=" * 80)
         sys.exit(1)
 
-    import openai
+    from app.agents.capabilities import save_capabilities
+    from app.agents.client_factory import create_sync_client, get_base_host
+    from app.agents.models import SAPAnalysis, SQLAnalysis
+    from app.synthesizer.models import BusinessIntelligence
 
-    from app.agents.models import SQLAnalysis
-
-    api_key_str = settings.openai_api_key.get_secret_value() if settings.openai_api_key else ""
-    client = openai.OpenAI(
-        api_key=api_key_str,
-        base_url=settings.openai_base_url,
-        timeout=settings.llm_timeout_s,
-    )
+    client = create_sync_client(settings)
+    host_only = get_base_host(settings.openai_base_url)
 
     print("=" * 80)
     print(f"       MODEL CAPABILITY CHECK: {settings.llm_model}")
-    print(f"       Endpoint: {settings.openai_base_url or 'https://api.openai.com/v1'}")
+    print(f"       AI Gateway Host: {host_only}")
     print("=" * 80)
 
     results: dict[str, tuple[bool, str]] = {}
 
     # 1. Plain Completion
-    print("Testing [1/4] Plain Completion...")
+    print("Testing [1/5] Plain Completion...")
     try:
         resp1 = client.chat.completions.create(
             model=settings.llm_model,
             messages=[{"role": "user", "content": "Return 'OK'"}],
             max_tokens=10,
-            temperature=0.0,
         )
-        msg1 = resp1.choices[0].message.content or ""
-        results["Plain Completion"] = (True, f"Received: {msg1.strip()[:50]}")
-        print("  -> PASS")
+        msg1 = (resp1.choices[0].message.content or "").strip()
+        results["Plain Completion"] = (True, f"Received: {msg1[:50]}")
+        print(f"  -> PASS (Output: {msg1[:30]})")
     except Exception as e:  # noqa: BLE001
         results["Plain Completion"] = (False, str(e))
         print(f"  -> FAIL: {e}")
 
-    # 2. Native Structured Output (strict schema)
-    print("Testing [2/4] Native Structured Output (strict schema)...")
+    # 2. Temperature Accepted?
+    print("Testing [2/5] Temperature Accepted...")
+    temp_accepted = False
     try:
-        resp2 = client.beta.chat.completions.parse(
+        client.chat.completions.create(
+            model=settings.llm_model,
+            messages=[{"role": "user", "content": "Return 'OK'"}],
+            max_tokens=10,
+            temperature=0.0,
+        )
+        temp_accepted = True
+        results["Temperature Accepted"] = (True, "Temperature parameter accepted")
+        print("  -> PASS")
+    except Exception as e:  # noqa: BLE001
+        err_str = str(e).lower()
+        if "temperature" in err_str and (
+            "unsupported" in err_str or "unknown" in err_str or "not supported" in err_str
+        ):
+            results["Temperature Accepted"] = (
+                False,
+                "Provider does not accept temperature parameter",
+            )
+            print("  -> FAIL (Unsupported parameter)")
+        else:
+            results["Temperature Accepted"] = (False, str(e))
+            print(f"  -> FAIL: {e}")
+
+    # 3. Native Structured Output (strict schemas)
+    print("Testing [3/5] Native Structured Output (strict schemas)...")
+    struct_ok = False
+    try:
+        # Test SQLAnalysis schema
+        resp_sql = client.beta.chat.completions.parse(
             model=settings.llm_model,
             messages=[
                 {
                     "role": "user",
-                    "content": (
-                        "Analyze this simple SQL: SELECT 1 AS id. "
-                        "Return valid JSON matching the strict schema."
-                    ),
+                    "content": "Analyze: SELECT 1. Output JSON adhering to SQLAnalysis.",
                 }
             ],
             response_format=SQLAnalysis,
         )
-        parsed2 = resp2.choices[0].message.parsed
-        if parsed2 and isinstance(parsed2, SQLAnalysis):
+        parsed_sql = resp_sql.choices[0].message.parsed
+        # Test SAPAnalysis schema
+        resp_sap = client.beta.chat.completions.parse(
+            model=settings.llm_model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": "Analyze table MARA. Output JSON adhering to SAPAnalysis.",
+                }
+            ],
+            response_format=SAPAnalysis,
+        )
+        parsed_sap = resp_sap.choices[0].message.parsed
+        # Test BusinessIntelligence schema
+        resp_bi = client.beta.chat.completions.parse(
+            model=settings.llm_model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": "Synthesize BI for SELECT 1. Output JSON adhering to BusinessIntelligence.",
+                }
+            ],
+            response_format=BusinessIntelligence,
+        )
+        parsed_bi = resp_bi.choices[0].message.parsed
+
+        if (
+            isinstance(parsed_sql, SQLAnalysis)
+            and isinstance(parsed_sap, SAPAnalysis)
+            and isinstance(parsed_bi, BusinessIntelligence)
+        ):
+            struct_ok = True
             results["Native Structured Output"] = (
                 True,
-                "Strict JSON schema successfully parsed",
+                "All 3 schemas (SQL, SAP, BI) parsed strictly",
             )
             print("  -> PASS")
         else:
             results["Native Structured Output"] = (
                 False,
-                "Response did not parse into SQLAnalysis",
+                "One or more schemas failed to parse strictly",
             )
-            print("  -> FAIL")
+            print("  -> FAIL (Parse incomplete)")
     except Exception as e:  # noqa: BLE001
         results["Native Structured Output"] = (False, str(e))
         print(f"  -> FAIL: {e}")
 
-    # 3. Tool Calling
-    print("Testing [3/4] Tool Calling...")
+    # 4. Tool Calling
+    print("Testing [4/5] Tool Calling...")
+    tools_ok = False
     try:
         tools = [
             {
@@ -229,45 +270,38 @@ def _handle_check_model(settings: LLMSettings) -> None:
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "table_name": {
-                                "type": "string",
-                                "description": "SAP table name",
-                            },
+                            "table_name": {"type": "string", "description": "SAP table name"},
                         },
                         "required": ["table_name"],
                     },
                 },
             }
         ]
-        resp3 = client.chat.completions.create(  # type: ignore[call-overload]
+        resp_tools = client.chat.completions.create(  # type: ignore[call-overload]
             model=settings.llm_model,
             messages=[
-                {
-                    "role": "user",
-                    "content": "Look up table MARC using the lookup_sap_table tool.",
-                }
+                {"role": "user", "content": "Look up table MARC using the lookup_sap_table tool."}
             ],
             tools=tools,  # type: ignore[arg-type]
             tool_choice="auto",
         )
-        tool_calls = resp3.choices[0].message.tool_calls
-        if tool_calls and len(tool_calls) > 0 and tool_calls[0].function.name == "lookup_sap_table":
-            results["Tool Calling"] = (
-                True,
-                f"Invoked tool: {tool_calls[0].function.name}",
-            )
+        t_calls = resp_tools.choices[0].message.tool_calls
+        if t_calls and len(t_calls) > 0 and t_calls[0].function.name == "lookup_sap_table":
+            tools_ok = True
+            results["Tool Calling"] = (True, f"Invoked tool: {t_calls[0].function.name}")
             print("  -> PASS")
         else:
             results["Tool Calling"] = (False, "No function tool call generated")
-            print("  -> FAIL")
+            print("  -> FAIL (No tool call generated)")
     except Exception as e:  # noqa: BLE001
         results["Tool Calling"] = (False, str(e))
         print(f"  -> FAIL: {e}")
 
-    # 4. JSON Prompt Fallback
-    print("Testing [4/4] JSON Prompt Fallback...")
+    # 5. JSON Prompt Fallback
+    print("Testing [5/5] JSON Prompt Fallback...")
+    json_prompt_ok = False
     try:
-        resp4 = client.chat.completions.create(
+        resp_json = client.chat.completions.create(
             model=settings.llm_model,
             messages=[
                 {
@@ -285,17 +319,18 @@ def _handle_check_model(settings: LLMSettings) -> None:
                 },
             ],
             response_format={"type": "json_object"},
-            temperature=0.0,
         )
-        raw_json = resp4.choices[0].message.content or "{}"
-        _ = json.loads(raw_json)
-        results["JSON Prompt Fallback"] = (True, "Valid JSON object returned")
+        raw_json = resp_json.choices[0].message.content or "{}"
+        parsed_dict = json.loads(raw_json)
+        _ = SQLAnalysis.model_validate(parsed_dict)
+        json_prompt_ok = True
+        results["JSON Prompt Fallback"] = (True, "Valid JSON object returned and validated")
         print("  -> PASS")
     except Exception as e:  # noqa: BLE001
         results["JSON Prompt Fallback"] = (False, str(e))
         print(f"  -> FAIL: {e}")
 
-    # Recommendations
+    # Summary and Recommendations
     print("=" * 80)
     print("                           SUMMARY & RECOMMENDATIONS")
     print("=" * 80)
@@ -304,18 +339,33 @@ def _handle_check_model(settings: LLMSettings) -> None:
         print(f"{test_name:30} : [{status_str}] ({details})")
     print("-" * 80)
 
-    native_ok = results.get("Native Structured Output", (False, ""))[0]
-    tools_ok = results.get("Tool Calling", (False, ""))[0]
-    json_prompt_ok = results.get("JSON Prompt Fallback", (False, ""))[0]
+    rec_struct = "native" if struct_ok else ("json_prompt" if json_prompt_ok else "unsupported")
+    rec_tools = "native" if tools_ok else "prefetch"
+    rec_api_mode = (
+        "responses"
+        if tools_ok and struct_ok and not settings.openai_base_url
+        else "chat_completions"
+    )
 
-    rec_struct = "native" if native_ok else ("json_prompt" if json_prompt_ok else "unsupported")
-    rec_api_mode = "responses" if tools_ok and native_ok else "chat_completions"
+    # Save to data/model_capabilities.json
+    caps_data = {
+        "plain_completion": results.get("Plain Completion", (False, ""))[0],
+        "temperature_supported": temp_accepted,
+        "native_structured_output": struct_ok,
+        "tool_calling": tools_ok,
+        "json_prompt_fallback": json_prompt_ok,
+        "recommended_structured_output_mode": rec_struct,
+        "recommended_tools_mode": rec_tools,
+        "recommended_api_mode": rec_api_mode,
+    }
+    save_capabilities(settings.llm_model, settings.openai_base_url, caps_data)
 
     print("Recommended Environment Configuration:")
     print(f"  LLM_MODEL={settings.llm_model}")
     if settings.openai_base_url:
         print(f"  OPENAI_BASE_URL={settings.openai_base_url}")
     print(f"  STRUCTURED_OUTPUT_MODE={rec_struct}")
+    print(f"  TOOLS_MODE={rec_tools}")
     print(f"  LLM_API_MODE={rec_api_mode}")
     print("=" * 80)
 

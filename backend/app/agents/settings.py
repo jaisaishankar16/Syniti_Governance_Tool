@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import functools
+import json
 import os
 from pathlib import Path
 from typing import Any, Literal
@@ -21,13 +22,14 @@ ENV_FILE_PATH = REPO_ROOT / ".env"
 
 PLACEHOLDER_KEYS = {
     "",
-    "sk-...",
-    "sk-xxx",
+    "api_key",
     "your-key-here",
     "changeme",
     "dummy",
     "none",
     "null",
+    "sk-...",
+    "sk-xxx",
     "placeholder",
 }
 
@@ -44,7 +46,8 @@ def clean_api_key(val: object) -> str | None:
     if low in PLACEHOLDER_KEYS:
         return None
     if (
-        s.startswith(("sk-...", "sk-xxx"))
+        s.startswith("<")
+        or low.startswith("sk-...")
         or "your-key" in low
         or "your_key" in low
         or "changeme" in low
@@ -102,14 +105,31 @@ class LLMSettings(BaseSettings):
     llm_max_turns: int = Field(default=6, validation_alias="LLM_MAX_TURNS")
     llm_timeout_s: float = Field(default=60.0, validation_alias="LLM_TIMEOUT_S")
     llm_max_retries: int = Field(default=3, validation_alias="LLM_MAX_RETRIES")
-    structured_output_mode: Literal["native", "json_prompt"] = Field(
-        default="native", validation_alias="STRUCTURED_OUTPUT_MODE"
+    structured_output_mode: Literal["auto", "native", "json_prompt"] = Field(
+        default="auto", validation_alias="STRUCTURED_OUTPUT_MODE"
+    )
+    tools_mode: Literal["auto", "native", "prefetch"] = Field(
+        default="auto", validation_alias="TOOLS_MODE"
+    )
+    llm_ca_bundle: Path | None = Field(default=None, validation_alias="LLM_CA_BUNDLE")
+    llm_extra_headers: dict[str, str] | None = Field(
+        default=None, validation_alias="LLM_EXTRA_HEADERS"
     )
     agents_tracing: bool = Field(default=False, validation_alias="AGENTS_TRACING")
     learning_enabled: bool = Field(default=True, validation_alias="LEARNING_ENABLED")
     max_search_calls_per_run: int = Field(default=4, validation_alias="MAX_SEARCH_CALLS_PER_RUN")
     max_retrieved_chars: int = Field(default=800, validation_alias="MAX_RETRIEVED_CHARS")
     pack_max_items: int = Field(default=40, validation_alias="PACK_MAX_ITEMS")
+
+    @field_validator("openai_base_url", mode="before")
+    @classmethod
+    def validate_url(cls, v: object) -> object:
+        """Validates base URL constraints (https only, no credentials, no whitespace)."""
+        if v is None:
+            return None
+        from app.agents.client_factory import validate_base_url
+
+        return validate_base_url(str(v))
 
     @field_validator("openai_api_key", mode="before")
     @classmethod
@@ -118,15 +138,33 @@ class LLMSettings(BaseSettings):
         cleaned = clean_api_key(v)
         return cleaned
 
+    @model_validator(mode="after")
+    def validate_tracing_guard(self) -> LLMSettings:
+        """Refuses AGENTS_TRACING=true when a custom base URL is configured."""
+        if self.openai_base_url and self.agents_tracing:
+            raise ValueError("AGENTS_TRACING cannot be enabled when OPENAI_BASE_URL is configured.")
+        return self
+
     @model_validator(mode="before")
     @classmethod
     def resolve_settings(cls, data: dict[str, object] | object) -> dict[str, object] | object:
         """Enforces OS env > .env priority, filters placeholder keys, and configures defaults."""
         if isinstance(data, dict):
+            # Parse extra headers from JSON if passed as string
+            extra_h = data.get("LLM_EXTRA_HEADERS") or data.get("llm_extra_headers")
+            if isinstance(extra_h, str) and extra_h.strip():
+                try:
+                    data["llm_extra_headers"] = json.loads(extra_h)
+                except json.JSONDecodeError as exc:
+                    raise ValueError(f"Invalid JSON in LLM_EXTRA_HEADERS: {exc}") from exc
+
+            # Normalize passed kwargs so explicit constructor arguments override .env
+            for k in list(data.keys()):
+                upper_k = k.upper()
+                if upper_k != k:
+                    data[upper_k] = data[k]
+
             # 1. API key resolution:
-            # - If explicit constructor argument provided (even if None), respect it and clean it
-            # - Else check OS environment variable
-            # - Else check .env file
             if "openai_api_key" in data or "OPENAI_API_KEY" in data:
                 raw_passed = data.pop("OPENAI_API_KEY", None)
                 if "openai_api_key" in data:
@@ -184,7 +222,6 @@ def get_key_status(settings: LLMSettings | None = None) -> dict[str, Any]:
         key_source = None
 
     key_len = len(active_key) if active_key else 0
-    key_prefix = active_key[:7] if active_key else None
 
     return {
         "env_path": ENV_FILE_PATH,
@@ -192,7 +229,7 @@ def get_key_status(settings: LLMSettings | None = None) -> dict[str, Any]:
         "env_is_empty": env_is_empty,
         "key_source": key_source,
         "key_length": key_len,
-        "key_prefix": key_prefix,
+        "configured": active_key is not None,
         "has_valid_key": active_key is not None,
     }
 

@@ -18,12 +18,14 @@ from tenacity import (
     wait_random_exponential,
 )
 
+from app.agents.capabilities import record_process_fallback, resolve_effective_modes
 from app.agents.failure_cache import get_failure_cache
 from app.agents.models import AgentErrorDetails, AgentOutcome, UsageInfo
 from app.errors import (
     AppError,
     ErrorCode,
     LLMAuthError,
+    LLMModelNotFoundError,
     LLMQuotaExceededError,
     LLMRateLimitedError,
     LLMUnavailableError,
@@ -74,10 +76,12 @@ def extract_retry_after(exc: BaseException) -> int | None:
 def classify_provider_error(exc: BaseException) -> AppError:
     """Classifies provider exception into standardized AppError subclass.
 
-    Rules:
-      - 401 -> LLMAuthError (LLM_AUTH_FAILED)
-      - 429 with insufficient_quota / "account not active" / billing wording -> LLMQuotaExceededError (LLM_QUOTA_EXCEEDED)
-      - 429 rate limit -> LLMRateLimitedError (LLM_RATE_LIMITED)
+    Gateway-tolerant rules:
+      - TLS/certificate errors -> LLMUnavailableError (LLM_UNAVAILABLE) with safe message
+      - 401/403 -> LLMAuthError (LLM_AUTH_FAILED)
+      - 402 or 429 mentioning quota/credit/billing/budget -> LLMQuotaExceededError (LLM_QUOTA_EXCEEDED, not retried)
+      - other 429 -> LLMRateLimitedError (LLM_RATE_LIMITED)
+      - 404 or 400 mentioning 'model' not found/unknown/does not exist -> LLMModelNotFoundError (LLM_MODEL_NOT_FOUND)
       - timeouts, connection errors and 5xx -> LLMUnavailableError (LLM_UNAVAILABLE)
     """
     if isinstance(exc, AppError):
@@ -86,30 +90,64 @@ def classify_provider_error(exc: BaseException) -> AppError:
     status_code = getattr(exc, "status_code", None)
     msg = str(exc).lower()
 
-    # 1. 401 Unauthorized
-    if (
-        isinstance(exc, openai.AuthenticationError)
-        or status_code == 401
-        or ("401" in msg and "unauthorized" in msg)
-    ):
-        return LLMAuthError(
-            message="Authentication failed with the LLM provider (HTTP 401). Please verify that your OPENAI_API_KEY is active and valid.",
-            details="Provider returned 401 Unauthorized",
+    # 1. TLS and Certificate Errors
+    if "ssl" in msg or "cert" in msg or "tls" in msg or "handshake" in msg:
+        return LLMUnavailableError(
+            message="TLS or certificate problem reaching the AI gateway.",
+            details="TLS or certificate verification problem",
         )
 
-    # 2. 429 Quota vs Rate Limit
+    # 2. 401/403 Unauthorized / Forbidden
+    if (
+        isinstance(exc, openai.AuthenticationError)
+        or status_code in (401, 403)
+        or ("401" in msg and "unauthorized" in msg)
+        or ("403" in msg and "forbidden" in msg)
+    ):
+        return LLMAuthError(
+            message="Authentication failed with the AI gateway (HTTP 401/403). Please verify that your OPENAI_API_KEY is active and valid.",
+            details="Provider returned 401/403 Unauthorized or Forbidden",
+        )
+
+    # 3. 402 or 429 with Quota / Billing / Budget Exhaustion
+    if status_code == 402 or is_quota_error(exc):
+        return LLMQuotaExceededError(
+            message="AI gateway quota or billing limit exceeded. Please check your account usage and credits.",
+            details="Provider returned quota or billing exhaustion",
+        )
+
+    # 4. Other 429 Rate Limit
     if isinstance(exc, openai.RateLimitError) or status_code == 429 or "429" in msg:
-        if is_quota_error(exc):
-            return LLMQuotaExceededError(
-                message="LLM account quota or billing limit exceeded (HTTP 429). Please check your account usage and credits.",
-                details="Provider returned 429 with quota or billing exhaustion",
-            )
         return LLMRateLimitedError(
-            message="LLM provider rate limit exceeded (HTTP 429). Retries exhausted. Please retry the request later.",
+            message="AI gateway rate limit exceeded (HTTP 429). Retries exhausted. Please retry the request later.",
             details="Provider returned 429 rate limit",
         )
 
-    # 3. Timeouts, connection errors, 5xx
+    # 5. 404 or 400 with Model Not Found
+    if (
+        status_code in (404, 400)
+        and "model" in msg
+        and any(
+            kw in msg
+            for kw in (
+                "not found",
+                "unknown",
+                "does not exist",
+                "not supported",
+                "invalid",
+                "no such model",
+                "model_not_found",
+                "not deployed",
+                "access",
+            )
+        )
+    ):
+        return LLMModelNotFoundError(
+            message="The configured model is not available on the AI gateway.",
+            details="Configured model was not found on the AI gateway",
+        )
+
+    # 6. Timeouts, connection errors, 5xx
     if isinstance(
         exc,
         (
@@ -120,30 +158,58 @@ def classify_provider_error(exc: BaseException) -> AppError:
         ),
     ) or (status_code is not None and status_code >= 500):
         return LLMUnavailableError(
-            message="LLM service is currently unavailable (network timeout, connection error, or provider 5xx).",
+            message="AI gateway service is currently unavailable.",
             details=f"Provider failed with {type(exc).__name__}",
         )
 
     # Fallback to unavailable
     return LLMUnavailableError(
-        message="LLM service encountered an unexpected provider error.",
-        details=f"{type(exc).__name__}: {exc}",
+        message="AI gateway encountered an unexpected provider error.",
+        details="Unexpected provider error",
     )
 
 
 def is_transient_error(exc: BaseException) -> bool:
     """Identifies transient network or rate-limit errors eligible for retry."""
-    # 401 is NOT transient (never retried)
-    if isinstance(exc, openai.AuthenticationError) or getattr(exc, "status_code", None) == 401:
+    # 401/403 is NOT transient (never retried)
+    status_code = getattr(exc, "status_code", None)
+    if (
+        isinstance(exc, openai.AuthenticationError)
+        or status_code in (401, 403)
+        or isinstance(exc, LLMAuthError)
+    ):
         return False
 
-    # 429 quota/billing is NOT transient (must NOT be retried)
+    # 402 or Quota/billing is NOT transient (must NOT be retried)
+    if status_code == 402 or is_quota_error(exc) or isinstance(exc, LLMQuotaExceededError):
+        return False
+
+    # Model not found is NOT transient (must NOT be retried)
+    if isinstance(exc, LLMModelNotFoundError):
+        return False
+    msg = str(exc).lower()
+    if (
+        status_code in (404, 400)
+        and "model" in msg
+        and any(
+            kw in msg
+            for kw in ("not found", "unknown", "does not exist", "not supported", "model_not_found")
+        )
+    ):
+        return False
+
+    # TLS / certificate errors should not be retried in a tight loop
+    if "ssl" in msg or "cert" in msg or "tls" in msg or "handshake" in msg:
+        return False
+
+    # 429 rate limit IS transient (retried)
     if (
         isinstance(exc, openai.RateLimitError)
-        or getattr(exc, "status_code", None) == 429
-        or "429" in str(exc)
+        or status_code == 429
+        or "429" in msg
+        or isinstance(exc, LLMRateLimitedError)
     ):
-        return not is_quota_error(exc)
+        return True
 
     if isinstance(
         exc,
@@ -188,12 +254,14 @@ async def run_agent(
     # Fail fast if within active 60s auth/quota failure window
     get_failure_cache().check_failure_window()
 
+    effective_struct, _, _temp_supported = resolve_effective_modes(settings)
+
     logger.info(
-        "Starting agent run: agent=%s, request_id=%s, model=%s, mode=%s",
+        "Starting agent run: agent=%s, request_id=%s, model=%s, effective_struct=%s",
         agent.name,
         deps.request_id,
         model_name,
-        settings.structured_output_mode,
+        effective_struct,
     )
 
     cb = get_circuit_breaker()
@@ -258,51 +326,73 @@ async def run_agent(
 
         # Process output based on structured output mode
         final_obj: T | None = None
-        if settings.structured_output_mode == "native":
-            raw_out = run_res.final_output
-            if isinstance(raw_out, output_cls):
-                final_obj = raw_out
-            elif isinstance(raw_out, str):
+        raw_out = run_res.final_output
+        if isinstance(raw_out, output_cls):
+            final_obj = raw_out
+        elif effective_struct == "native":
+            if isinstance(raw_out, str):
                 final_obj = output_cls.model_validate_json(_extract_json_text(raw_out))
             elif isinstance(raw_out, dict):
                 final_obj = output_cls.model_validate(raw_out)
             else:
-                raise ValueError(f"Unexpected output type from native mode: {type(raw_out)}")
+                raise TypeError(f"Unexpected output type from native mode: {type(raw_out)}")
         else:
             # json_prompt mode
-            raw_str = str(run_res.final_output) if run_res.final_output is not None else ""
-            json_text = _extract_json_text(raw_str)
-            try:
-                final_obj = output_cls.model_validate_json(json_text)
-            except ValidationError as val_err:
-                logger.warning("json_prompt validation failed, retrying once: %s", val_err)
-                # Retry ONCE with validation error appended
-                retry_input = (
-                    f"{input_text}\n\n<validation_error>\n"
-                    f"Your previous output was invalid JSON for the required schema:\n{val_err}\n"
-                    "Output ONLY valid JSON matching the schema.\n</validation_error>"
+            if isinstance(raw_out, dict):
+                final_obj = output_cls.model_validate(raw_out)
+            else:
+                raw_str = (
+                    raw_out.model_dump_json()
+                    if hasattr(raw_out, "model_dump_json")
+                    else (str(raw_out) if raw_out is not None else "")
                 )
-                attempts_count += 1
-                retry_run = await asyncio.wait_for(
-                    Runner.run(
-                        agent,
-                        retry_input,
-                        context=deps,
-                        max_turns=settings.llm_max_turns,
-                    ),
-                    timeout=settings.llm_timeout_s,
-                )
-                for resp in retry_run.raw_responses:
-                    if resp.usage:
-                        total_usage.requests += getattr(resp.usage, "requests", 1) or 1
-                        total_usage.input_tokens += getattr(resp.usage, "input_tokens", 0) or 0
-                        total_usage.output_tokens += getattr(resp.usage, "output_tokens", 0) or 0
-                        total_usage.total_tokens += getattr(resp.usage, "total_tokens", 0) or 0
+                json_text = _extract_json_text(raw_str)
+                try:
+                    final_obj = output_cls.model_validate_json(json_text)
+                except ValidationError as val_err:
+                    logger.warning("json_prompt validation failed, retrying once: %s", val_err)
+                    # Retry ONCE with validation error appended
+                    retry_input = (
+                        f"{input_text}\n\n<validation_error>\n"
+                        f"Your previous output was invalid JSON for the required schema:\n{val_err}\n"
+                        "Output ONLY valid JSON matching the schema.\n</validation_error>"
+                    )
+                    attempts_count += 1
+                    retry_run = await asyncio.wait_for(
+                        Runner.run(
+                            agent,
+                            retry_input,
+                            context=deps,
+                            max_turns=settings.llm_max_turns,
+                        ),
+                        timeout=settings.llm_timeout_s,
+                    )
+                    for resp in retry_run.raw_responses:
+                        if resp.usage:
+                            total_usage.requests += getattr(resp.usage, "requests", 1) or 1
+                            total_usage.input_tokens += getattr(resp.usage, "input_tokens", 0) or 0
+                            total_usage.output_tokens += (
+                                getattr(resp.usage, "output_tokens", 0) or 0
+                            )
+                            total_usage.total_tokens += getattr(resp.usage, "total_tokens", 0) or 0
 
-                raw_retry_str = (
-                    str(retry_run.final_output) if retry_run.final_output is not None else ""
-                )
-                final_obj = output_cls.model_validate_json(_extract_json_text(raw_retry_str))
+                    if isinstance(retry_run.final_output, output_cls):
+                        final_obj = retry_run.final_output
+                    elif isinstance(retry_run.final_output, dict):
+                        final_obj = output_cls.model_validate(retry_run.final_output)
+                    else:
+                        raw_retry_str = (
+                            retry_run.final_output.model_dump_json()
+                            if hasattr(retry_run.final_output, "model_dump_json")
+                            else (
+                                str(retry_run.final_output)
+                                if retry_run.final_output is not None
+                                else ""
+                            )
+                        )
+                        final_obj = output_cls.model_validate_json(
+                            _extract_json_text(raw_retry_str)
+                        )
 
         latency = (time.perf_counter() - start_time) * 1000
         cb.record_success()
@@ -369,6 +459,33 @@ async def run_agent(
             get_failure_cache().record_failure(typed_err)
         else:
             cb.record_failure(exc, request_id=deps.request_id)
+
+        # Record dynamic fallback if provider rejected schema or temperature
+        err_msg = str(exc).lower()
+        if (
+            isinstance(exc, openai.BadRequestError) or getattr(exc, "status_code", None) == 400
+        ) and any(kw in err_msg for kw in ("response_format", "schema", "strict", "structured")):
+            logger.warning(
+                "Provider rejected native structured output (400). Recording process fallback to json_prompt: %s",
+                exc,
+            )
+            record_process_fallback(
+                settings.llm_model,
+                settings.openai_base_url,
+                "structured_output_mode",
+                "json_prompt",
+            )
+
+        if (
+            isinstance(exc, openai.BadRequestError) or getattr(exc, "status_code", None) == 400
+        ) and "temperature" in err_msg:
+            logger.warning(
+                "Provider rejected temperature parameter (400). Recording process fallback: %s",
+                exc,
+            )
+            record_process_fallback(
+                settings.llm_model, settings.openai_base_url, "temperature_supported", False
+            )
 
         retryable = is_transient_error(exc)
         exc_type_name = typed_err.__class__.__name__

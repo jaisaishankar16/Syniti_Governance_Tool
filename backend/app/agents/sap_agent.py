@@ -75,12 +75,19 @@ def create_sap_agent(
     """Creates a configured SAPDomainAgent instance."""
     prompt_content, prompt_version = load_sap_prompt()
 
-    tools: list[Any] = [lookup_sap_knowledge, search_sap_catalog]
-    if settings.learning_enabled:
-        tools.append(save_learned_sap_knowledge)
+    from app.agents.capabilities import resolve_effective_modes
+
+    effective_struct, effective_tools, _ = resolve_effective_modes(settings)
+
+    if effective_tools == "prefetch":
+        tools: list[Any] = []
+    else:
+        tools = [lookup_sap_knowledge, search_sap_catalog]
+        if settings.learning_enabled:
+            tools.append(save_learned_sap_knowledge)
 
     output_type: Any = None
-    if settings.structured_output_mode == "native":
+    if effective_struct == "native":
         try:
             output_type = AgentOutputSchema(SAPAnalysis, strict_json_schema=True)
         except Exception:  # noqa: BLE001

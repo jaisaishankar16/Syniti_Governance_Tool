@@ -359,6 +359,15 @@ async def get_llm_settings_view() -> LlmSettingsView:
     raw_key = llm_settings.openai_api_key.get_secret_value() if llm_settings.openai_api_key else ""
     key_configured = is_valid_api_key(raw_key)
 
+    from app.agents.capabilities import load_capabilities, resolve_effective_modes
+    from app.agents.client_factory import get_base_host
+
+    eff_struct, eff_tools, temp_supported = resolve_effective_modes(llm_settings)
+    caps = load_capabilities(llm_settings.llm_model, llm_settings.openai_base_url)
+    caps_probe_ts = caps.get("probed_at") if caps else None
+    base_host = get_base_host(llm_settings.openai_base_url)
+    provider_type = "gateway" if llm_settings.openai_base_url else "direct"
+
     # Prompt versions
     _, sql_v = create_sql_agent("dummy", llm_settings)
     _, sap_v = create_sap_agent("dummy", llm_settings)
@@ -374,16 +383,22 @@ async def get_llm_settings_view() -> LlmSettingsView:
     return LlmSettingsView(
         model=llm_settings.llm_model,
         api_mode=llm_settings.llm_api_mode,
-        structured_output_mode=llm_settings.structured_output_mode,
+        structured_output_mode=eff_struct,
+        tools_mode=eff_tools,
         temperature=llm_settings.llm_temperature,
+        temperature_supported=temp_supported,
         max_turns=llm_settings.llm_max_turns,
         timeout_s=llm_settings.llm_timeout_s,
         max_retries=llm_settings.llm_max_retries,
         provider="OpenAI-compatible",
+        provider_type=provider_type,
         base_url=clean_base_url,
+        base_host=base_host,
         api_key_configured=key_configured,
-        learning_enabled=llm_settings.learning_enabled,
-        tracing_enabled=llm_settings.agents_tracing,
+        capabilities_probe_timestamp=caps_probe_ts,
+        tracing="disabled (forced)",
+        learning_enabled=llm_settings.learning_enabled and eff_tools != "prefetch",
+        tracing_enabled=False,
         token_budgets={
             "max_request_tokens": guard_settings.per_request_token_budget,
             "daily_token_budget": guard_settings.daily_token_budget,

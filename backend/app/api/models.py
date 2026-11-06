@@ -184,18 +184,34 @@ class LlmSettingsView(BaseModel):
 
     model: str = Field(description="Active LLM model name")
     api_mode: str = Field(description="OpenAI SDK connection mode")
-    structured_output_mode: str = Field(description="Structured output enforcement mode")
+    structured_output_mode: str = Field(description="Structured output enforcement mode in effect")
+    tools_mode: str = Field(
+        default="native", description="Tools execution mode in effect (native or prefetch)"
+    )
     temperature: float = Field(description="Sampling temperature")
+    temperature_supported: bool = Field(
+        default=True, description="Whether temperature parameter is accepted by provider"
+    )
     max_turns: int = Field(description="Maximum reasoning turns")
     timeout_s: float = Field(description="API timeout in seconds")
     max_retries: int = Field(description="Maximum upstream retries")
     provider: str = Field(description="Target provider protocol")
+    provider_type: str = Field(
+        default="direct", description="Provider connection type (gateway or direct)"
+    )
     base_url: str = Field(description="Sanitized scheme+host of provider base URL or 'default'")
+    base_host: str = Field(
+        default="api.openai.com", description="Provider or gateway hostname only"
+    )
     api_key_configured: bool = Field(description="Whether a valid, non-placeholder API key is set")
+    capabilities_probe_timestamp: str | None = Field(
+        default=None, description="Timestamp of last capability probe"
+    )
+    tracing: str = Field(default="disabled (forced)", description="Agents SDK tracing status")
     learning_enabled: bool = Field(
         description="Whether dynamic knowledge learning write-back is enabled"
     )
-    tracing_enabled: bool = Field(description="Whether telemetry tracing is active")
+    tracing_enabled: bool = Field(default=False, description="Whether telemetry tracing is active")
     token_budgets: dict[str, Any] = Field(
         description="Request and daily token allocation and usage"
     )
