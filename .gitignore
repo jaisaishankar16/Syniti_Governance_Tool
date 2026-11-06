@@ -18,18 +18,35 @@ __pycache__/
 node_modules/
 frontend/dist/
 frontend/node_modules/
+frontend/.vite/
+
+# Proprietary Test Fixtures
+backend/tests/fixtures/DQ_Queries.xlsx
+backend/tests/fixtures/examples.json
+
+# Raw Knowledge Sources
+knowledge/sources/*
+!knowledge/sources/README.md
 
 # Runtime Data & Activity Logs
-data/*
+data/
 !data/.gitkeep
-*.log
-*.lock
-!package-lock.json
-!frontend/package-lock.json
+
+# Learned Knowledge & Indexes
+knowledge/learned/
+!knowledge/learned/.gitkeep
+knowledge/index/
+!knowledge/index/.gitkeep
+
+# Evaluation Outputs
+docs/eval/
 
 # OS and IDE files
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
-
+*.log
+*.lock
+!package-lock.json
+!frontend/package-lock.json
