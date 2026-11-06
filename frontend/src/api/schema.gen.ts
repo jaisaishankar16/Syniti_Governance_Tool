@@ -1139,14 +1139,26 @@ export interface components {
             api_mode: string;
             /**
              * Structured Output Mode
-             * @description Structured output enforcement mode
+             * @description Structured output enforcement mode in effect
              */
             structured_output_mode: string;
+            /**
+             * Tools Mode
+             * @description Tools execution mode in effect (native or prefetch)
+             * @default native
+             */
+            tools_mode: string;
             /**
              * Temperature
              * @description Sampling temperature
              */
             temperature: number;
+            /**
+             * Temperature Supported
+             * @description Whether temperature parameter is accepted by provider
+             * @default true
+             */
+            temperature_supported: boolean;
             /**
              * Max Turns
              * @description Maximum reasoning turns
@@ -1168,15 +1180,38 @@ export interface components {
              */
             provider: string;
             /**
+             * Provider Type
+             * @description Provider connection type (gateway or direct)
+             * @default direct
+             */
+            provider_type: string;
+            /**
              * Base Url
              * @description Sanitized scheme+host of provider base URL or 'default'
              */
             base_url: string;
             /**
+             * Base Host
+             * @description Provider or gateway hostname only
+             * @default api.openai.com
+             */
+            base_host: string;
+            /**
              * Api Key Configured
              * @description Whether a valid, non-placeholder API key is set
              */
             api_key_configured: boolean;
+            /**
+             * Capabilities Probe Timestamp
+             * @description Timestamp of last capability probe
+             */
+            capabilities_probe_timestamp?: string | null;
+            /**
+             * Tracing
+             * @description Agents SDK tracing status
+             * @default disabled (forced)
+             */
+            tracing: string;
             /**
              * Learning Enabled
              * @description Whether dynamic knowledge learning write-back is enabled
@@ -1185,6 +1220,7 @@ export interface components {
             /**
              * Tracing Enabled
              * @description Whether telemetry tracing is active
+             * @default false
              */
             tracing_enabled: boolean;
             /**

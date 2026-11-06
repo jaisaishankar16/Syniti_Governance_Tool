@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom';
 import { afterEach } from 'vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
+
+// Increase async utility timeout for slower test environments / full parallel test runs
+configure({ asyncUtilTimeout: 10000 });
 
 // Clean up DOM after each test
 afterEach(() => {

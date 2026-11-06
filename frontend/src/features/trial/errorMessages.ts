@@ -9,19 +9,25 @@ export interface ErrorConfig {
 
 export const ERROR_CODE_MAP: Record<string, ErrorConfig> = {
   LLM_NOT_CONFIGURED: {
-    title: 'AI service not configured',
+    title: 'AI gateway not configured',
     description: 'The server has no AI credentials; contact the administrator.',
     isRetryable: false,
   },
   LLM_AUTH_FAILED: {
     title: 'Authentication Failed',
-    description: "The AI service rejected the server's credentials.",
+    description: "The AI gateway rejected the server's credentials.",
     isRetryable: false,
   },
   LLM_QUOTA_EXCEEDED: {
     title: 'Quota Exceeded',
     description:
-      'AI provider quota or billing problem (administrator must check the provider account).',
+      'AI gateway quota or billing problem (administrator must check the provider account).',
+    isRetryable: false,
+  },
+  LLM_MODEL_NOT_FOUND: {
+    title: 'AI model not available',
+    description:
+      'The configured model is not available on the AI gateway; the administrator must check LLM_MODEL.',
     isRetryable: false,
   },
   LLM_RATE_LIMITED: {

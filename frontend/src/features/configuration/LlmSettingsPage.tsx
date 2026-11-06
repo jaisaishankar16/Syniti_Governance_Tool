@@ -118,14 +118,31 @@ export const LlmSettingsPage: React.FC = () => {
                   <dd className="font-semibold text-gray-900 mt-0.5">{settings.api_mode}</dd>
                 </div>
                 <div>
-                  <dt className="text-gray-500">Structured Output</dt>
+                  <dt className="text-gray-500">Structured Output Mode</dt>
                   <dd className="font-semibold text-gray-900 mt-0.5">
                     {settings.structured_output_mode}
                   </dd>
                 </div>
                 <div>
+                  <dt className="text-gray-500">Tools Mode</dt>
+                  <dd className="font-semibold text-gray-900 mt-0.5">{settings.tools_mode}</dd>
+                </div>
+                <div>
                   <dt className="text-gray-500">Temperature</dt>
-                  <dd className="font-semibold text-gray-900 mt-0.5">{settings.temperature}</dd>
+                  <dd className="font-semibold text-gray-900 mt-0.5">
+                    {settings.temperature}{' '}
+                    <span className="text-[10px] text-gray-500 font-normal">
+                      ({settings.temperature_supported ? 'supported' : 'unsupported'})
+                    </span>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Capabilities Probed</dt>
+                  <dd className="font-semibold text-gray-900 mt-0.5 truncate" title={settings.capabilities_probe_timestamp || 'Not probed'}>
+                    {settings.capabilities_probe_timestamp
+                      ? new Date(settings.capabilities_probe_timestamp).toLocaleDateString()
+                      : 'Not probed'}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-gray-500">Max Turns</dt>
@@ -146,9 +163,21 @@ export const LlmSettingsPage: React.FC = () => {
             <div className="card-base p-6 space-y-4">
               <div className="flex items-center space-x-2.5 pb-3 border-b border-[#E5E7EB]">
                 <Server className="w-5 h-5 text-[#6D3FE0]" />
-                <h3 className="text-base font-bold text-[#111827]">Provider Connectivity</h3>
+                <h3 className="text-base font-bold text-[#111827]">AI Gateway & Connectivity</h3>
               </div>
               <dl className="grid grid-cols-2 gap-y-3 gap-x-2 text-xs">
+                <div>
+                  <dt className="text-gray-500">Provider Type</dt>
+                  <dd className="font-semibold text-gray-900 uppercase mt-0.5">
+                    {settings.provider_type}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Gateway Host</dt>
+                  <dd className="font-semibold font-mono text-gray-900 mt-0.5 truncate" title={settings.base_host}>
+                    {settings.base_host}
+                  </dd>
+                </div>
                 <div>
                   <dt className="text-gray-500">Provider Protocol</dt>
                   <dd className="font-semibold text-gray-900 mt-0.5">{settings.provider}</dd>
@@ -207,9 +236,9 @@ export const LlmSettingsPage: React.FC = () => {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-gray-500">Tracing / Telemetry</dt>
+                  <dt className="text-gray-500">Telemetry Tracing</dt>
                   <dd className="font-semibold text-gray-900 mt-0.5">
-                    {settings.tracing_enabled ? 'Active' : 'Disabled'}
+                    {settings.tracing || 'disabled (forced)'}
                   </dd>
                 </div>
                 <div>
@@ -397,13 +426,16 @@ export const LlmSettingsPage: React.FC = () => {
                 <span className="p-1.5 bg-white border rounded">OPENAI_BASE_URL</span>
                 <span className="p-1.5 bg-white border rounded">LLM_API_MODE</span>
                 <span className="p-1.5 bg-white border rounded">STRUCTURED_OUTPUT_MODE</span>
+                <span className="p-1.5 bg-white border rounded">TOOLS_MODE</span>
                 <span className="p-1.5 bg-white border rounded">LLM_TEMPERATURE</span>
                 <span className="p-1.5 bg-white border rounded">LLM_TIMEOUT_S</span>
                 <span className="p-1.5 bg-white border rounded">LLM_MAX_RETRIES</span>
+                <span className="p-1.5 bg-white border rounded">LLM_CA_BUNDLE</span>
+                <span className="p-1.5 bg-white border rounded">LLM_EXTRA_HEADERS</span>
                 <span className="p-1.5 bg-white border rounded">CACHE_BACKEND</span>
                 <span className="p-1.5 bg-white border rounded">DAILY_TOKEN_BUDGET</span>
-                <span className="p-1.5 bg-white border rounded">ENABLE_LEARNING</span>
-                <span className="p-1.5 bg-white border rounded">ENABLE_TRACING</span>
+                <span className="p-1.5 bg-white border rounded">LEARNING_ENABLED</span>
+                <span className="p-1.5 bg-white border rounded">AGENTS_TRACING</span>
                 <span className="p-1.5 bg-white border rounded">ADMIN_API_KEY</span>
               </div>
             </div>
