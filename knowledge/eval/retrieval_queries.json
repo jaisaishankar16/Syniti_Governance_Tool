@@ -1,0 +1,142 @@
+[
+  {
+    "query": "plant data for material",
+    "domain": "sap",
+    "expected_target": "MARC",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "vendor master general",
+    "domain": "sap",
+    "expected_target": "LFA1",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "purchasing document header",
+    "domain": "sap",
+    "expected_target": "EKKO",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "sales document header",
+    "domain": "sap",
+    "expected_target": "VBAK",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "plants branches",
+    "domain": "sap",
+    "expected_target": "T001W",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "company codes",
+    "domain": "sap",
+    "expected_target": "T001",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "accounting document header",
+    "domain": "sap",
+    "expected_target": "BKPF",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "material valuation",
+    "domain": "sap",
+    "expected_target": "MBEW",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "material descriptions",
+    "domain": "sap",
+    "expected_target": "MAKT",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "photosynthesis chloroplast cellular respiration",
+    "domain": "sap",
+    "expected_target": "NONE",
+    "is_negative": true,
+    "verified": true
+  },
+  {
+    "query": "quantum electrodynamics perturbation theory",
+    "domain": "sap",
+    "expected_target": "NONE",
+    "is_negative": true,
+    "verified": true
+  },
+  {
+    "query": "recursive cte",
+    "domain": "sql",
+    "expected_target": "Common Table Expressions",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "row_number partition by",
+    "domain": "sql",
+    "expected_target": "Row number",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "not exists",
+    "domain": "sql",
+    "expected_target": "EXISTS",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "left join",
+    "domain": "sql",
+    "expected_target": "Join",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "case when",
+    "domain": "sql",
+    "expected_target": "CASE",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "group by having",
+    "domain": "sql",
+    "expected_target": "GROUP BY",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "cross apply",
+    "domain": "sql",
+    "expected_target": "APPLY",
+    "is_negative": false,
+    "verified": true
+  },
+  {
+    "query": "chocolate chip cookie baking recipe temperature",
+    "domain": "sql",
+    "expected_target": "NONE",
+    "is_negative": true,
+    "verified": true
+  },
+  {
+    "query": "renaissance oil painting brush technique",
+    "domain": "sql",
+    "expected_target": "NONE",
+    "is_negative": true,
+    "verified": true
+  }
+]

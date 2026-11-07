@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "models": {
+    "text-embedding-3-small_None": {
+      "sap_min_score": 0.45,
+      "sql_min_score": 0.40,
+      "l3_hint_threshold": 0.78,
+      "l3_reuse_threshold": 0.95,
+      "write_back_min_score": 0.75,
+      "created_at": "2026-11-07T00:00:00Z",
+      "metrics": {
+        "calibrated_samples": 24,
+        "positive_pairs_min": 0.965,
+        "negative_pairs_max": 0.732
+      }
+    },
+    "text-embedding-3-small_1536": {
+      "sap_min_score": 0.45,
+      "sql_min_score": 0.40,
+      "l3_hint_threshold": 0.78,
+      "l3_reuse_threshold": 0.95,
+      "write_back_min_score": 0.75,
+      "created_at": "2026-11-07T00:00:00Z",
+      "metrics": {
+        "calibrated_samples": 24,
+        "positive_pairs_min": 0.965,
+        "negative_pairs_max": 0.732
+      }
+    }
+  }
+}
