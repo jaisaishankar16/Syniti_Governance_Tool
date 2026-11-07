@@ -52,4 +52,5 @@ The system supports two caching backends:
 
 - **Staging Table Resolution:** Staging tables are mapped to SAP base tables using the Syniti Migrate naming rules configured in `knowledge/naming_conventions.json` (e.g., `MM_MARC_ECC_EU_R1_MARC_S` -> `MARC`). If non-standard custom naming conventions are introduced without updating `naming_conventions.json`, tables will be classified as `unknown` or `custom`.
 - **Unverified Knowledge:** Tables or keywords not present in `knowledge/overrides/verified_entries.json` are flagged with `verified=False` and confidence `0.70`. Unverified items are visibly surfaced in the UI and marked with `[UNVERIFIED - Lower Confidence]` in agent prompts.
+- **Embedding Model Calibration:** Vector similarity search and L3 semantic cache require a calibrated model entry in `knowledge/calibration/embedding_calibration.json`. When running with an uncalibrated embedding model, L3 semantic cache and hints degrade gracefully to disabled, and semantic search hits are marked `calibrated: false` to prevent uncalibrated learned knowledge write-backs. Standard exact catalog matching continues to function with 100% precision.
 

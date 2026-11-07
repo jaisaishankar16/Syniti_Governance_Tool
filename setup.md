@@ -220,9 +220,9 @@ python scripts/validate_knowledge.py
 ```
 *Expected output: `INFO: All knowledge files validated successfully.`*
 
-*(Optional)* Pre-generate vector embeddings for FAISS vector search:
+*(Optional)* Pre-generate vector embeddings for FAISS vector search using configured embeddings endpoint:
 ```powershell
-python -m app.knowledge.build_index
+python -m app.knowledge.build_index --target all
 ```
 
 ---

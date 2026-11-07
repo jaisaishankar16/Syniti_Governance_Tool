@@ -35,9 +35,9 @@ This checklist must be reviewed and signed off prior to deploying the MDM Syniti
 
 - [ ] **Knowledge Volumes:** Docker volume mounted to `/app/knowledge/learned` to ensure learned SAP and SQL domain knowledge is persisted across container restarts.
 - [ ] **Log Retention:** Volume mounted to `/app/logs` with log rotation policies enabled.
-- [ ] **Pre-built FAISS Indexes:** Verify that `knowledge/index/` contains pre-built vector indexes (`sap_docs.faiss`, `sql_docs.faiss`). If missing, run:
+- [ ] **Pre-built FAISS Indexes:** Verify that `knowledge/index/` contains pre-built vector indexes (`sap_docs.faiss`, `sql_docs.faiss`). If missing or embedding configuration changes, run:
   ```powershell
-  python -m app.knowledge.build_index
+  python -m app.knowledge.build_index --target all
   ```
 
 ---

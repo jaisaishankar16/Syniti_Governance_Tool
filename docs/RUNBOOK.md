@@ -87,10 +87,11 @@ The application consists of:
 ## 3. Maintenance Operations
 
 ### Pre-warming Knowledge & Embeddings
-To pre-generate FAISS vector embeddings and cache SentenceTransformer models:
+To pre-generate FAISS vector embeddings using the configured OpenAI-compatible embeddings endpoint:
 ```powershell
-python -m app.knowledge.build_index
+python -m app.knowledge.build_index --target all
 ```
+Use `--rebuild` to force rebuilding existing indexes, or `--target sap` / `--target sql` for specific catalogs.
 
 ### Inspecting Inputs & Token Usage (No LLM Call)
 To inspect prompt formatting and verify token context without spending budget:

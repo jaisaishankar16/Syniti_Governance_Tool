@@ -19,7 +19,6 @@ All runtime dependencies use permissive open-source licenses (MIT, Apache 2.0, B
 | **openai-agents** (`agents`) | `0.8.2` | Apache-2.0 | Multi-agent coordination framework |
 | **redis** | `7.4.0` | MIT | Redis cache backend client |
 | **faiss-cpu** | `1.15.1` | MIT | Vector indexing for semantic knowledge retrieval |
-| **sentence-transformers** | `5.3.0` | Apache-2.0 | Text embeddings for semantic search |
 | **openpyxl** | `3.1.5` | MIT | Reading Excel `.xlsx` workbook test fixtures |
 | **tiktoken** | `0.14.0` | MIT | Token counting for LLM context windows |
 | **uvicorn** | `0.34.0` | BSD-3-Clause | Production ASGI web server |
