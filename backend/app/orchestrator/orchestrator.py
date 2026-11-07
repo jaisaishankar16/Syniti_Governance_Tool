@@ -290,36 +290,39 @@ async def analyze(
         sim_index = get_similarity_index()
         similarity_score: float | None = None
         if sql_analysis is None and not force_refresh:
-            sim_action, sim_payload, score = sim_index.find_similar(
-                parsed.normalized_sql,
-                table_names,
-                reuse_threshold=orch_settings.similarity_reuse_threshold,
-                hint_threshold=orch_settings.similarity_hint_threshold,
-            )
-            similarity_score = score
-            if sim_action == "similar_reused" and sim_payload:
-                try:
-                    sql_analysis = SQLAnalysis.model_validate(sim_payload.get("sql", {}))
-                    # Reconcile through Phase 3B agent output guardrail
-                    sql_pack = build_sql_pack(
-                        parsed, store, max_items=active_llm_settings.pack_max_items
-                    )
-                    sql_analysis, _, blocked = guardrail_sql_output(
-                        sql_analysis,
-                        parsed,
-                        sql_pack,
-                        sanitized.canary_token,
-                        guard_settings,
-                        req_id,
-                    )
-                    if not blocked:
-                        cache_detail.sql_agent = "similar_reused"
-                    else:
+            try:
+                sim_action, sim_payload, score = sim_index.find_similar(
+                    parsed.normalized_sql,
+                    table_names,
+                    reuse_threshold=orch_settings.similarity_reuse_threshold,
+                    hint_threshold=orch_settings.similarity_hint_threshold,
+                )
+                similarity_score = score
+                if sim_action == "similar_reused" and sim_payload:
+                    try:
+                        sql_analysis = SQLAnalysis.model_validate(sim_payload.get("sql", {}))
+                        # Reconcile through Phase 3B agent output guardrail
+                        sql_pack = build_sql_pack(
+                            parsed, store, max_items=active_llm_settings.pack_max_items
+                        )
+                        sql_analysis, _, blocked = guardrail_sql_output(
+                            sql_analysis,
+                            parsed,
+                            sql_pack,
+                            sanitized.canary_token,
+                            guard_settings,
+                            req_id,
+                        )
+                        if not blocked:
+                            cache_detail.sql_agent = "similar_reused"
+                        else:
+                            sql_analysis = None
+                    except Exception:  # noqa: BLE001
                         sql_analysis = None
-                except Exception:  # noqa: BLE001
-                    sql_analysis = None
-            elif sim_action == "similar_hint":
-                cache_detail.sql_agent = "similar_hint"
+                elif sim_action == "similar_hint":
+                    cache_detail.sql_agent = "similar_hint"
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("L3 similarity lookup skipped: %s", exc)
 
         # 6b. Run only the needed agents in parallel
         need_sql = sql_analysis is None
@@ -513,6 +516,34 @@ async def analyze(
             degraded=(sql_analysis is None or sap_analysis is None),
         )
         stage_timings["synthesizing"] = round((time.perf_counter() - t_synth) * 1000, 2)
+
+        # Embedding tokens and cost accounting
+        from app.embeddings.settings import get_embedding_settings
+
+        emb_settings = get_embedding_settings()
+        sql_emb_tokens = (
+            sql_deps.run_trace.embedding_tokens_count
+            if ("sql_deps" in locals() and sql_deps.run_trace is not None)
+            else 0
+        )
+        sap_emb_tokens = (
+            sap_deps.run_trace.embedding_tokens_count
+            if ("sap_deps" in locals() and sap_deps.run_trace is not None)
+            else 0
+        )
+        total_emb_tokens = sql_emb_tokens + sap_emb_tokens
+        bi.meta.token_usage.embedding = total_emb_tokens
+        bi.meta.token_usage.total += total_emb_tokens
+
+        if total_emb_tokens > 0 and emb_settings.embedding_price_per_m_tokens is not None:
+            emb_cost = (total_emb_tokens / 1_000_000.0) * emb_settings.embedding_price_per_m_tokens
+            bi.meta.estimated_cost_usd = round((bi.meta.estimated_cost_usd or 0.0) + emb_cost, 6)
+            get_budget_tracker().record_usage(
+                prompt_tokens=total_emb_tokens,
+                completion_tokens=0,
+                model=emb_settings.embedding_model,
+                request_id=req_id,
+            )
 
         # Update timings & similarity in meta
         bi.meta.similarity_score = similarity_score

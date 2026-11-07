@@ -178,7 +178,7 @@ describe('Zod API Schemas runtime validation', () => {
         },
         agent_timings_ms: { sql: 120, sap: 140 },
         stage_timings_ms: { total: 450 },
-        token_usage: { sql: 500, sap: 400, synthesizer: 600, total: 1500 },
+        token_usage: { sql: 500, sap: 400, synthesizer: 600, embedding: 100, total: 1600 },
         estimated_cost_usd: 0.002,
         degraded: false,
         degraded_reasons: [],

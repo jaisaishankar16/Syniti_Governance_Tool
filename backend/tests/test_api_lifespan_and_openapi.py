@@ -17,20 +17,19 @@ def anyio_backend() -> str:
 
 
 @pytest.mark.anyio
-async def test_startup_fails_when_vector_index_is_stale() -> None:
-    """Verifies that if a vector index is stale/missing, startup raises RuntimeError unless skipped."""
+async def test_startup_succeeds_when_vector_index_is_stale() -> None:
+    """Verifies that if a vector index is stale/missing, startup succeeds without raising RuntimeError."""
     settings = ApiSettings(app_env="production")
     app = create_app(settings=settings, skip_index_check=False)
 
     with patch("app.api.main.VectorIndex") as mock_vindex_cls:
         mock_idx = MagicMock()
-        mock_idx.index_name = "sap"
+        mock_idx.index_name = "sap_docs"
         mock_idx.is_stale.return_value = (True, "manifest missing")
         mock_vindex_cls.return_value = mock_idx
 
-        with pytest.raises(RuntimeError, match="missing or stale"):
-            async with app.router.lifespan_context(app):
-                pass
+        async with app.router.lifespan_context(app):
+            pass
 
 
 @pytest.mark.anyio
@@ -102,7 +101,11 @@ async def test_redis_down_at_startup_graceful_in_memory_fallback() -> None:
     settings = ApiSettings(app_env="production", rate_limit_backend="redis")
     app = create_app(settings=settings, skip_index_check=True)
 
-    with patch("app.cache.backends.RedisBackend.ping", side_effect=OSError("Connection refused")):
+    with (
+        patch("app.cache.backends.RedisBackend.ping", side_effect=OSError("Connection refused")),
+        patch("app.knowledge.vector_index.VectorIndex.is_built", return_value=True),
+        patch("app.knowledge.vector_index.VectorIndex.is_stale", return_value=(False, "")),
+    ):
         async with app.router.lifespan_context(app):
             from app.cache.backends import InMemoryBackend
 

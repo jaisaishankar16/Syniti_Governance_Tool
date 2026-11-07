@@ -268,17 +268,65 @@ export const LlmSettingsPage: React.FC = () => {
               </dl>
             </div>
 
-            {/* 5. Knowledge Store & Vector Indexes */}
+            {/* 5. Embeddings & Knowledge Subsystem */}
             <div className="card-base p-6 space-y-4">
               <div className="flex items-center space-x-2.5 pb-3 border-b border-[#E5E7EB]">
                 <Database className="w-5 h-5 text-[#6D3FE0]" />
-                <h3 className="text-base font-bold text-[#111827]">Knowledge & Retrieval</h3>
+                <h3 className="text-base font-bold text-[#111827]">Embeddings & Retrieval</h3>
               </div>
               <dl className="grid grid-cols-2 gap-y-3 gap-x-2 text-xs">
                 <div className="col-span-2">
-                  <dt className="text-gray-500">Sentence Embedding Model</dt>
+                  <dt className="text-gray-500">Embedding Model</dt>
                   <dd className="font-mono font-semibold text-gray-900 mt-0.5">
-                    {settings.embedding_model}
+                    {settings.embeddings?.embedding_model || settings.embedding_model}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Provider Type</dt>
+                  <dd className="font-semibold text-gray-900 capitalize mt-0.5">
+                    {settings.embeddings?.provider_type || 'direct'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Base Host</dt>
+                  <dd className="font-semibold text-gray-900 mt-0.5">
+                    {settings.embeddings?.base_host || 'same as LLM'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Dimensions</dt>
+                  <dd className="font-semibold text-gray-900 mt-0.5">
+                    {settings.embeddings?.dimensions ? String(settings.embeddings.dimensions) : 'Model Default'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Index Matches Config</dt>
+                  <dd className="font-semibold text-gray-900 mt-0.5">
+                    {settings.embeddings?.index_matches_config ? 'Matches Active Config' : 'Mismatch / Stale'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Index Built At</dt>
+                  <dd className="font-semibold text-gray-900 mt-0.5">
+                    {settings.embeddings?.index_built_at ? new Date(settings.embeddings.index_built_at).toLocaleString() : 'Not Built'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Calibration Status</dt>
+                  <dd className="font-semibold text-gray-900 mt-0.5">
+                    {settings.embeddings?.calibrated ? 'Calibrated' : 'Uncalibrated'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Last Embedding Error</dt>
+                  <dd className="font-semibold text-gray-900 mt-0.5">
+                    {settings.embeddings?.last_embedding_error_code || 'None'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Pricing Configured</dt>
+                  <dd className="font-semibold text-gray-900 mt-0.5">
+                    {settings.embeddings?.pricing_configured ? 'Configured' : 'Not Configured'}
                   </dd>
                 </div>
                 <div>

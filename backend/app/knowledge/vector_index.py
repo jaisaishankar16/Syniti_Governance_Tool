@@ -1,4 +1,4 @@
-"""Vector index implementation using FAISS IndexFlatIP with L2 normalized embeddings."""
+"""Vector index implementation using FAISS IndexFlatIP with OpenAI-compatible embeddings."""
 
 from __future__ import annotations
 
@@ -11,31 +11,12 @@ from pathlib import Path
 import faiss  # type: ignore[import-untyped]
 import numpy as np
 from pydantic import ValidationError
-from sentence_transformers import SentenceTransformer
 
+from app.embeddings.cache import get_disk_cache
+from app.embeddings.embedder import Embedder, get_embedder
+from app.embeddings.settings import EmbeddingSettings, get_embedding_settings
 from app.knowledge.models import DocChunk, IndexManifest, StaleIndexError
 from app.knowledge.settings import KnowledgeSettings, get_settings
-
-_MODEL_LOCK = threading.Lock()
-_EMBEDDING_MODELS: dict[str, SentenceTransformer] = {}
-
-
-def get_embedding_model(model_name: str) -> SentenceTransformer:
-    """Thread-safe singleton getter for sentence-transformers embedding models."""
-    import os
-
-    with _MODEL_LOCK:
-        if model_name not in _EMBEDDING_MODELS:
-            # Respect HF_HUB_OFFLINE or try local files first when model is cached
-            local_only = os.environ.get("HF_HUB_OFFLINE") == "1"
-            try:
-                _EMBEDDING_MODELS[model_name] = SentenceTransformer(
-                    model_name,
-                    local_files_only=local_only,
-                )
-            except Exception:  # noqa: BLE001
-                _EMBEDDING_MODELS[model_name] = SentenceTransformer(model_name)
-        return _EMBEDDING_MODELS[model_name]
 
 
 def compute_file_sha256(path: Path) -> str:
@@ -50,7 +31,7 @@ def compute_file_sha256(path: Path) -> str:
 
 
 class VectorIndex:
-    """Manages a FAISS IndexFlatIP index with DocChunks and IndexManifest."""
+    """Manages a FAISS IndexFlatIP index with DocChunks and IndexManifest v2."""
 
     def __init__(
         self,
@@ -58,12 +39,16 @@ class VectorIndex:
         index_dir: Path,
         source_path: Path,
         settings: KnowledgeSettings | None = None,
+        embedding_settings: EmbeddingSettings | None = None,
+        embedder: Embedder | None = None,
         rebuild_builder: Callable[[], list[DocChunk]] | None = None,
     ) -> None:
         self.index_name = index_name
         self.index_dir = index_dir
         self.source_path = source_path
         self.settings = settings or get_settings()
+        self.embedding_settings = embedding_settings or get_embedding_settings()
+        self.embedder = embedder or get_embedder(self.embedding_settings)
         self.rebuild_builder = rebuild_builder
 
         self.index: faiss.Index | None = None
@@ -90,7 +75,7 @@ class VectorIndex:
         )
 
     def is_stale(self) -> tuple[bool, str]:
-        """Checks if the on-disk index is stale compared to settings and source file."""
+        """Checks if the on-disk index is stale compared to embedding settings and source file."""
         if not self.is_built():
             return True, "Index files are missing"
 
@@ -100,10 +85,31 @@ class VectorIndex:
         except (OSError, ValidationError, ValueError) as exc:
             return True, f"Failed to parse manifest: {exc}"
 
-        if manifest.embedding_model != self.settings.embedding_model:
+        if manifest.schema_version != 2:
             return (
                 True,
-                f"Embedding model mismatch: index has '{manifest.embedding_model}', settings require '{self.settings.embedding_model}'",
+                f"Manifest schema version mismatch: found v{manifest.schema_version}, expected v2",
+            )
+
+        if manifest.embedding_model != self.embedding_settings.embedding_model:
+            return (
+                True,
+                f"Embedding model mismatch: index has '{manifest.embedding_model}', settings require '{self.embedding_settings.embedding_model}'",
+            )
+
+        if (
+            self.embedding_settings.embedding_dimensions is not None
+            and manifest.dimensions != self.embedding_settings.embedding_dimensions
+        ):
+            return (
+                True,
+                f"Dimensions mismatch: index has {manifest.dimensions}, settings require {self.embedding_settings.embedding_dimensions}",
+            )
+
+        if manifest.base_url_hash != self.embedding_settings.base_url_hash:
+            return (
+                True,
+                f"Base URL hash mismatch: index has '{manifest.base_url_hash}', active is '{self.embedding_settings.base_url_hash}'",
             )
 
         if self.source_path.exists():
@@ -116,27 +122,46 @@ class VectorIndex:
 
         return False, ""
 
-    def build(self, chunks: list[DocChunk], batch_size: int = 64) -> None:
-        """Encodes chunks, creates FAISS index, and persists all artifacts."""
+    def build(self, chunks: list[DocChunk], batch_size: int = 96) -> None:
+        """Encodes chunks, creates FAISS index, and persists all artifacts using disk cache."""
         with self._lock:
             self.index_dir.mkdir(parents=True, exist_ok=True)
-            model = get_embedding_model(self.settings.embedding_model)
-
-            texts = [c.text for c in chunks]
-            if not texts:
+            if not chunks:
                 raise ValueError("Cannot build index from empty chunk list")
 
-            # Encode in batches with L2 normalization
-            raw_embeddings = model.encode(
-                texts,
-                batch_size=batch_size,
-                normalize_embeddings=True,
-                show_progress_bar=False,
-            )
-            embeddings = np.array(raw_embeddings, dtype=np.float32)
+            model_name = self.embedding_settings.embedding_model
+            dims = self.embedding_settings.embedding_dimensions
+            disk_cache = get_disk_cache()
+
+            # Retrieve cached embeddings or record cache misses
+            chunk_vectors: list[list[float] | None] = [None] * len(chunks)
+            missing_indices: list[int] = []
+            missing_texts: list[str] = []
+
+            for i, chunk in enumerate(chunks):
+                cached_vec = disk_cache.get(model_name, dims, chunk.text)
+                if cached_vec is not None:
+                    chunk_vectors[i] = cached_vec
+                else:
+                    missing_indices.append(i)
+                    missing_texts.append(chunk.text)
+
+            # Embed missing chunks
+            if missing_texts:
+                result = self.embedder.embed_documents_sync(missing_texts)
+                for missing_pos, vec in enumerate(result.vectors):
+                    orig_idx = missing_indices[missing_pos]
+                    chunk_vectors[orig_idx] = vec
+                    disk_cache.put(model_name, dims, missing_texts[missing_pos], vec)
+
+            valid_vectors = [v for v in chunk_vectors if v is not None]
+            if len(valid_vectors) != len(chunks):
+                raise ValueError(f"Failed to generate embeddings for all chunks ({len(valid_vectors)}/{len(chunks)})")
+
+            embeddings = np.array(valid_vectors, dtype=np.float32)
             faiss.normalize_L2(embeddings)
 
-            dim = embeddings.shape[1]
+            dim = int(embeddings.shape[1])
             faiss_index = faiss.IndexFlatIP(dim)
             faiss_index.add(embeddings)
 
@@ -150,14 +175,18 @@ class VectorIndex:
             # Create and persist manifest
             source_hash = compute_file_sha256(self.source_path) if self.source_path.exists() else ""
             manifest = IndexManifest(
-                schema_version=1,
+                schema_version=2,
+                provider="OpenAI-compatible",
                 index_name=self.index_name,
-                embedding_model=self.settings.embedding_model,
-                dim=dim,
+                embedding_model=model_name,
+                dimensions=dim,
+                base_url_hash=self.embedding_settings.base_url_hash,
+                normalized=True,
                 source_file=self.source_path.name,
                 source_sha256=source_hash,
                 chunk_count=len(chunks),
                 built_at=datetime.now(timezone.utc).isoformat(),
+                chunk_id_scheme="deterministic_v1",
             )
             with open(self.manifest_path, "w", encoding="utf-8") as f:
                 f.write(manifest.model_dump_json(indent=2))
@@ -184,7 +213,8 @@ class VectorIndex:
                     self.build(chunks)
                     return
                 raise StaleIndexError(
-                    f"Index '{self.index_name}' at {self.index_dir} is stale: {reason}"
+                    f"Index '{self.index_name}' at {self.index_dir} is stale: {reason}. "
+                    "Rebuild with: python -m app.knowledge.build_index --target all"
                 )
 
             # Load manifest
@@ -213,9 +243,8 @@ class VectorIndex:
         if self.index is None or not self.chunks:
             return []
 
-        model = get_embedding_model(self.settings.embedding_model)
-        query_emb = model.encode([query], normalize_embeddings=True)
-        query_vec = np.array(query_emb, dtype=np.float32)
+        query_vec_raw = self.embedder.embed_query_sync(query)
+        query_vec = np.array([query_vec_raw], dtype=np.float32)
         faiss.normalize_L2(query_vec)
 
         k = min(top_k, len(self.chunks))

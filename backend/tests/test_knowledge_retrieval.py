@@ -1,5 +1,6 @@
 """Tests for SAP and SQL retrievers, exact vs semantic matching, and dialect reranking."""
 
+import os
 import time
 
 import pytest
@@ -36,6 +37,10 @@ def test_sap_exact_match(sap_retriever: SapRetriever):
     assert len(top_hit.text) <= 2000
 
 
+@pytest.mark.skipif(
+    os.environ.get("RUN_LIVE_LLM") != "1",
+    reason="Requires live LLM/embeddings; run with RUN_LIVE_LLM=1",
+)
 def test_sap_semantic_marc_in_top_3(sap_retriever: SapRetriever):
     """plant data for material returns MARC in top 3 hits."""
     result = sap_retriever.search("plant data for material", k=3)
@@ -43,6 +48,10 @@ def test_sap_semantic_marc_in_top_3(sap_retriever: SapRetriever):
     assert "MARC" in tables, f"Expected MARC in top 3 hits, got {tables}"
 
 
+@pytest.mark.skipif(
+    os.environ.get("RUN_LIVE_LLM") != "1",
+    reason="Requires live LLM/embeddings; run with RUN_LIVE_LLM=1",
+)
 def test_sap_semantic_lfa1_in_top_3(sap_retriever: SapRetriever):
     """vendor master general returns LFA1 in top 3 hits."""
     result = sap_retriever.search("vendor master general", k=3)
@@ -79,6 +88,10 @@ def test_mandt_resolves_common_fields(store: KnowledgeStore):
     assert "client" in result.notes.lower()
 
 
+@pytest.mark.skipif(
+    os.environ.get("RUN_LIVE_LLM") != "1",
+    reason="Requires live LLM/embeddings; run with RUN_LIVE_LLM=1",
+)
 def test_sql_recursive_cte(sql_retriever: SqlDocRetriever):
     """recursive cte retrieves Common Table Expressions chapter."""
     hits = sql_retriever.search("recursive cte", k=3)
@@ -88,6 +101,10 @@ def test_sql_recursive_cte(sql_retriever: SqlDocRetriever):
     assert top_hit.untrusted is True
 
 
+@pytest.mark.skipif(
+    os.environ.get("RUN_LIVE_LLM") != "1",
+    reason="Requires live LLM/embeddings; run with RUN_LIVE_LLM=1",
+)
 def test_sql_row_number_partition_by(sql_retriever: SqlDocRetriever):
     """row_number partition by retrieves analytic / row number chapter."""
     hits = sql_retriever.search("row_number partition by", k=3)
@@ -96,6 +113,10 @@ def test_sql_row_number_partition_by(sql_retriever: SqlDocRetriever):
     assert any("Row number" in c or "Analytic" in c or "Window" in c for c in chapters)
 
 
+@pytest.mark.skipif(
+    os.environ.get("RUN_LIVE_LLM") != "1",
+    reason="Requires live LLM/embeddings; run with RUN_LIVE_LLM=1",
+)
 def test_sql_not_exists(sql_retriever: SqlDocRetriever):
     """not exists retrieves EXISTS chapter."""
     hits = sql_retriever.search("not exists", k=3)
@@ -103,6 +124,10 @@ def test_sql_not_exists(sql_retriever: SqlDocRetriever):
     assert any("EXISTS" in h.metadata.get("chapter", "") for h in hits)
 
 
+@pytest.mark.skipif(
+    os.environ.get("RUN_LIVE_LLM") != "1",
+    reason="Requires live LLM/embeddings; run with RUN_LIVE_LLM=1",
+)
 def test_sql_isnull_tsql_rerank(sql_retriever: SqlDocRetriever):
     """isnull returns tsql-relevant chunks above other-dialect chunks."""
     hits = sql_retriever.search("isnull", k=5)
@@ -118,6 +143,10 @@ def test_sql_isnull_tsql_rerank(sql_retriever: SqlDocRetriever):
         )
 
 
+@pytest.mark.skipif(
+    os.environ.get("RUN_LIVE_LLM") != "1",
+    reason="Requires live LLM/embeddings; run with RUN_LIVE_LLM=1",
+)
 def test_warm_search_latency(sap_retriever: SapRetriever, sql_retriever: SqlDocRetriever):
     """Warm search latency must be under 50 ms."""
     # Warm-up call

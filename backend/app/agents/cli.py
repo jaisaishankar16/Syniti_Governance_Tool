@@ -7,6 +7,7 @@ import asyncio
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 from app.agents.knowledge_pack import build_sap_pack, build_sql_pack
@@ -107,6 +108,20 @@ def _handle_check_env(settings: LLMSettings, do_ping: bool = False) -> None:
     print(f"Temperature:        {settings.llm_temperature}")
     print(f"Max Turns:          {settings.llm_max_turns}")
     print(f"Timeout:            {settings.llm_timeout_s}s")
+    print("-" * 80)
+
+    from app.embeddings.settings import get_embedding_settings
+
+    emb_settings = get_embedding_settings()
+    print(f"Embedding Model:    {emb_settings.embedding_model}")
+    print(f"Dimensions:         {emb_settings.embedding_dimensions or 'Model Default'}")
+    print(f"Embedding Base Host:{emb_settings.base_host}")
+    sep_creds = (
+        f"Yes (key length: {emb_settings.key_length})"
+        if emb_settings.has_separate_credentials
+        else "No (shares LLM credentials)"
+    )
+    print(f"Separate Creds:     {sep_creds}")
     print("-" * 80)
 
     if not do_ping:
@@ -342,6 +357,56 @@ def _handle_check_model(settings: LLMSettings) -> None:
         results["JSON Prompt Fallback"] = (False, str(e))
         print(f"  -> FAIL: {e}")
 
+    # 6. Embeddings Probe
+    print("Testing [6/6] Embeddings Probe...")
+    from app.embeddings.client import create_embedding_sync_client
+    from app.embeddings.settings import get_embedding_settings
+
+    emb_settings = get_embedding_settings()
+    emb_client = create_embedding_sync_client(emb_settings)
+    emb_reachable = False
+    emb_dims_returned = None
+    emb_dims_accepted = False
+    batch_2_works = False
+    emb_latency_ms = 0.0
+    emb_tokens = 0
+
+    try:
+        t0_emb = time.perf_counter()
+        resp_emb = emb_client.embeddings.create(
+            model=emb_settings.embedding_model,
+            input=["test input 1", "test input 2"],
+            encoding_format="float",
+        )
+        emb_latency_ms = round((time.perf_counter() - t0_emb) * 1000, 2)
+        if len(resp_emb.data) == 2:
+            emb_reachable = True
+            batch_2_works = True
+            emb_dims_returned = len(resp_emb.data[0].embedding)
+            if resp_emb.usage:
+                emb_tokens = resp_emb.usage.total_tokens or resp_emb.usage.prompt_tokens or 0
+            results["Embeddings Reachable"] = (
+                True,
+                f"{emb_dims_returned} dims, {emb_latency_ms}ms, {emb_tokens} tokens",
+            )
+            print(f"  -> PASS (Model {emb_settings.embedding_model}: {emb_dims_returned} dims in {emb_latency_ms}ms)")
+    except Exception as e:  # noqa: BLE001
+        results["Embeddings Reachable"] = (False, str(e))
+        print(f"  -> FAIL: {e}")
+
+    try:
+        _ = emb_client.embeddings.create(
+            model=emb_settings.embedding_model,
+            input=["test dimension param"],
+            dimensions=emb_dims_returned or 512,
+            encoding_format="float",
+        )
+        emb_dims_accepted = True
+        results["Embeddings Dimensions Param"] = (True, "dimensions parameter accepted")
+    except Exception as e:  # noqa: BLE001
+        emb_dims_accepted = False
+        results["Embeddings Dimensions Param"] = (False, f"Not accepted: {e}")
+
     # Summary and Recommendations
     print("=" * 80)
     print("                           SUMMARY & RECOMMENDATIONS")
@@ -369,6 +434,15 @@ def _handle_check_model(settings: LLMSettings) -> None:
         "recommended_structured_output_mode": rec_struct,
         "recommended_tools_mode": rec_tools,
         "recommended_api_mode": rec_api_mode,
+        "embeddings": {
+            "model": emb_settings.embedding_model,
+            "reachable": emb_reachable,
+            "dimensions_returned": emb_dims_returned,
+            "dimensions_param_accepted": emb_dims_accepted,
+            "batch_of_2_works": batch_2_works,
+            "latency_ms": emb_latency_ms,
+            "token_usage": emb_tokens,
+        },
     }
     save_capabilities(settings.llm_model, settings.openai_base_url, caps_data)
 
@@ -379,6 +453,9 @@ def _handle_check_model(settings: LLMSettings) -> None:
     print(f"  STRUCTURED_OUTPUT_MODE={rec_struct}")
     print(f"  TOOLS_MODE={rec_tools}")
     print(f"  LLM_API_MODE={rec_api_mode}")
+    print(f"  EMBEDDING_MODEL={emb_settings.embedding_model}")
+    if emb_dims_returned:
+        print(f"  EMBEDDING_DIMENSIONS={emb_dims_returned}")
     print("=" * 80)
 
 

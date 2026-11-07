@@ -8,6 +8,8 @@ from app.cache.similarity import (
     mask_literals_and_aliases,
 )
 
+from tests.support.fake_embedder import FakeEmbedder
+
 
 class TestSimilarityCache:
     """Verifies literal masking, structural fingerprinting, and cosine threshold decisions."""
@@ -33,7 +35,8 @@ class TestSimilarityCache:
         assert fp1 != fp3
 
     def test_similarity_index_add_and_search(self) -> None:
-        idx = SimilarityCacheIndex()
+        embedder = FakeEmbedder(dimensions=1536, model="text-embedding-3-small")
+        idx = SimilarityCacheIndex(embedder=embedder)
         idx.clear()
 
         sql_base = "SELECT [MATNR], [WERKS] FROM [MARC] WHERE [WERKS] = '1000'"

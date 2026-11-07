@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Any
 
 from pydantic import TypeAdapter
 
+from app.embeddings.models import EmbeddingResponseError
+from app.embeddings.settings import get_embedding_settings
+from app.knowledge.calibration import get_model_calibration
 from app.knowledge.models import (
     DocChunk,
     MatchType,
@@ -14,9 +18,12 @@ from app.knowledge.models import (
     SapCatalogRecord,
     SapSearchResult,
     SqlDialect,
+    StaleIndexError,
 )
 from app.knowledge.settings import KnowledgeSettings, get_settings
 from app.knowledge.vector_index import VectorIndex
+
+logger = logging.getLogger("app.knowledge.retrievers")
 
 
 class SapRetriever:
@@ -48,12 +55,15 @@ class SapRetriever:
     def search(
         self, query: str, k: int | None = None, module_filter: str | None = None
     ) -> SapSearchResult:
-        """Searches SAP catalog: step 1 exact table lookup, step 2 semantic search."""
+        """Searches SAP catalog: step 1 exact table lookup, step 2 semantic search.
+
+        If exact table match is found, NO embedding call is made.
+        """
         top_k = k or self.settings.top_k
         query_stripped = query.strip()
         query_upper = query_stripped.upper()
 
-        # Step 1: Check for exact table matches
+        # Step 1: Check for exact table matches FIRST
         exact_hits: list[RetrievalHit] = []
         tokens = re.findall(r"\b[A-Z0-9_]{3,16}\b", query_upper)
         matched_tables: set[str] = set()
@@ -83,17 +93,33 @@ class SapRetriever:
                             "sections": rec.sections,
                         },
                         untrusted=True,
+                        calibrated=True,
                     )
                 )
 
         exact_match_found = len(exact_hits) > 0
 
-        # Step 2: Semantic search
-        semantic_hits: list[RetrievalHit] = []
-        try:
-            raw_hits = self.vector_index.search(
-                query, top_k=top_k * 4, min_score=self.settings.min_score_sap
+        # Optimization & Rule: Exact match FIRST (no embedding call made when exact match found)
+        if exact_match_found and self.settings.sap_exact_match_first:
+            return SapSearchResult(
+                query=query,
+                exact_match_found=True,
+                hits=exact_hits[:top_k],
+                semantic_search_unavailable=False,
             )
+
+        # Step 2: Semantic search
+        emb_settings = get_embedding_settings()
+        calib = get_model_calibration(emb_settings.embedding_model, emb_settings.embedding_dimensions)
+        is_calibrated = calib is not None
+        min_score = calib.sap_min_score if calib is not None else 0.0
+
+        semantic_hits: list[RetrievalHit] = []
+        semantic_unavailable = False
+        unavailable_reason: str | None = None
+
+        try:
+            raw_hits = self.vector_index.search(query, top_k=top_k * 4, min_score=min_score)
             q_words = [w for w in re.split(r"\W+", query.lower()) if len(w) > 2]
             scored_candidates: list[tuple[DocChunk, float]] = []
 
@@ -132,10 +158,13 @@ class SapRetriever:
                         page=None,
                         metadata=meta_dict,
                         untrusted=True,
+                        calibrated=is_calibrated,
                     )
                 )
-        except (OSError, ValueError):
-            # Fall back to exact hits if vector index is unavailable
+        except (EmbeddingResponseError, StaleIndexError, OSError, ValueError) as exc:
+            logger.warning("Semantic search unavailable: %s", exc)
+            semantic_unavailable = True
+            unavailable_reason = getattr(exc, "code", type(exc).__name__)
             semantic_hits = []
 
         all_hits = exact_hits + semantic_hits
@@ -152,6 +181,8 @@ class SapRetriever:
             exact_match_found=exact_match_found,
             hits=all_hits,
             warning=warning,
+            semantic_search_unavailable=semantic_unavailable,
+            unavailable_reason=unavailable_reason,
         )
 
 
@@ -174,9 +205,18 @@ class SqlDocRetriever:
     def search(self, query: str, k: int | None = None, dialect: str = "tsql") -> list[RetrievalHit]:
         """Searches SQL docs vector index and applies dialect reranking."""
         top_k = k or self.settings.top_k
-        raw_hits = self.vector_index.search(
-            query, top_k=top_k * 3, min_score=self.settings.min_score_sql
-        )
+        emb_settings = get_embedding_settings()
+        calib = get_model_calibration(emb_settings.embedding_model, emb_settings.embedding_dimensions)
+        is_calibrated = calib is not None
+        min_score = calib.sql_min_score if calib is not None else 0.0
+
+        try:
+            raw_hits = self.vector_index.search(
+                query, top_k=top_k * 3, min_score=min_score
+            )
+        except (EmbeddingResponseError, StaleIndexError, OSError, ValueError) as exc:
+            logger.warning("SQL docs semantic search unavailable: %s", exc)
+            return []
 
         candidate_hits: list[RetrievalHit] = []
         for chunk, base_score in raw_hits:
@@ -209,6 +249,7 @@ class SqlDocRetriever:
                     page=getattr(metadata, "page_start", None),
                     metadata=meta_dict,
                     untrusted=True,
+                    calibrated=is_calibrated,
                 )
             )
 

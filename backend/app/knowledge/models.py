@@ -191,6 +191,7 @@ class RetrievalHit(BaseModel):
     page: int | None = None
     metadata: dict[str, Any] = Field(default_factory=dict)
     untrusted: Literal[True] = True
+    calibrated: bool = True
 
 
 class SapLookupResult(BaseModel):
@@ -219,6 +220,8 @@ class SapSearchResult(BaseModel):
     exact_match_found: bool
     hits: list[RetrievalHit] = Field(default_factory=list)
     warning: str | None = None
+    semantic_search_unavailable: bool = False
+    unavailable_reason: str | None = None
 
 
 # ==============================================================================
@@ -413,11 +416,15 @@ class LearnedGlossaryFile(BaseModel):
 
 class IndexManifest(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    schema_version: int = 1
+    schema_version: int = 2
+    provider: str = "OpenAI-compatible"
     index_name: str
     embedding_model: str
-    dim: int
-    source_file: str
-    source_sha256: str
+    dimensions: int
+    base_url_hash: str
+    normalized: bool = True
+    source_file: str = ""
+    source_sha256: str = ""
     chunk_count: int
     built_at: str
+    chunk_id_scheme: str = "deterministic_v1"

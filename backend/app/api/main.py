@@ -35,7 +35,7 @@ from app.guardrails.logging_filter import GuardrailLoggingFilter
 from app.guardrails.models import GuardrailBlocked
 from app.knowledge.settings import get_settings as get_knowledge_settings
 from app.knowledge.store import KnowledgeStore
-from app.knowledge.vector_index import VectorIndex, get_embedding_model
+from app.knowledge.vector_index import VectorIndex
 from app.orchestrator.orchestrator import analyze as default_analyze
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
@@ -83,32 +83,22 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     store = KnowledgeStore(k_settings)
     app.state.knowledge_store = store
 
-    # Verify vector index manifests unless explicitly bypassed for tests
-    skip_index = getattr(app.state, "skip_index_check", False)
-    if not skip_index:
-        sap_idx = VectorIndex("sap", k_settings.sap_index_dir, k_settings.sap_pdf_path, k_settings)
-        sql_idx = VectorIndex("sql", k_settings.sql_index_dir, k_settings.sql_pdf_path, k_settings)
+    # Check vector index manifests for logging (startup never fails if missing/stale)
+    sap_idx = VectorIndex("sap_docs", k_settings.sap_index_dir, k_settings.sap_pdf_path, k_settings)
+    sql_idx = VectorIndex("sql_docs", k_settings.sql_index_dir, k_settings.sql_pdf_path, k_settings)
 
-        for idx in (sap_idx, sql_idx):
-            stale, reason = idx.is_stale()
-            if stale:
-                msg = (
-                    f"Knowledge vector index '{idx.index_name}' is missing or stale ({reason}). "
-                    "Please run 'python -m app.knowledge.build_index' before starting the API."
-                )
-                logger.error(msg)
-                raise RuntimeError(msg)
-
-        # Warm embedding model
-        t_model = time.perf_counter()
-        get_embedding_model(k_settings.embedding_model)
-        logger.info(
-            "Warmed sentence-transformers model in %.2fms",
-            (time.perf_counter() - t_model) * 1000,
-        )
+    for idx in (sap_idx, sql_idx):
+        stale, reason = idx.is_stale()
+        if stale:
+            logger.warning(
+                "Knowledge vector index '%s' is missing or stale (%s). "
+                "Semantic retrieval disabled until built with 'python -m app.knowledge.build_index --target all'.",
+                idx.index_name,
+                reason,
+            )
 
     logger.info(
-        "Knowledge store and indexes verified in %.2fms",
+        "Knowledge store initialized in %.2fms",
         (time.perf_counter() - t_warm) * 1000,
     )
 

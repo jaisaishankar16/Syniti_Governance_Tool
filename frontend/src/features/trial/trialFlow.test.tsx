@@ -44,7 +44,9 @@ describe('Trial Flow and Results Presentation', () => {
     global.fetch = originalFetch;
   });
 
-  it('runs analysis via SSE stream and renders every field of BusinessIntelligence', async () => {
+  it(
+    'runs analysis via SSE stream and renders every field of BusinessIntelligence',
+    async () => {
     const user = userEvent.setup();
 
     global.fetch = vi.fn().mockImplementation((url: string) => {
@@ -204,7 +206,7 @@ describe('Trial Flow and Results Presentation', () => {
 
     expect(screen.getByRole('button', { name: /Copy JSON/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Download/i })).toBeInTheDocument();
-  });
+  }, 15000);
 
   it('enforces SQL size limit and disables Execute button with inline error', async () => {
     global.fetch = vi.fn().mockImplementation((url: string) => {

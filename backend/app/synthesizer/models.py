@@ -142,6 +142,7 @@ class TokenUsageBreakdown(BaseModel):
     sql: int = 0
     sap: int = 0
     synthesizer: int = 0
+    embedding: int = 0
     total: int = 0
 
 

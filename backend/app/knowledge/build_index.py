@@ -1,11 +1,15 @@
-"""Builds FAISS vector indexes for SAP catalog and SQL documentation."""
+"""Builds FAISS vector indexes for SAP catalog and SQL documentation using OpenAI embeddings."""
 
 from __future__ import annotations
 
 import argparse
+import sys
 
 from pydantic import TypeAdapter
 
+from app.embeddings.cache import get_disk_cache
+from app.embeddings.embedder import estimate_tokens
+from app.embeddings.settings import EmbeddingSettings, get_embedding_settings
 from app.knowledge.models import (
     CatalogCategory,
     DocChunk,
@@ -70,15 +74,19 @@ def build_sql_chunks(settings: KnowledgeSettings | None = None) -> list[DocChunk
 
 
 def build_sap_index(
-    settings: KnowledgeSettings | None = None, rebuild: bool = False
+    settings: KnowledgeSettings | None = None,
+    emb_settings: EmbeddingSettings | None = None,
+    rebuild: bool = False,
 ) -> VectorIndex:
     """Builds or rebuilds the SAP vector index."""
     settings = settings or get_settings()
+    emb_settings = emb_settings or get_embedding_settings()
     vec_idx = VectorIndex(
         index_name="sap_docs",
         index_dir=settings.sap_index_dir,
         source_path=settings.sap_pdf_path,
         settings=settings,
+        embedding_settings=emb_settings,
         rebuild_builder=lambda: build_sap_chunks(settings),
     )
 
@@ -95,15 +103,19 @@ def build_sap_index(
 
 
 def build_sql_index(
-    settings: KnowledgeSettings | None = None, rebuild: bool = False
+    settings: KnowledgeSettings | None = None,
+    emb_settings: EmbeddingSettings | None = None,
+    rebuild: bool = False,
 ) -> VectorIndex:
     """Builds or rebuilds the SQL documentation vector index."""
     settings = settings or get_settings()
+    emb_settings = emb_settings or get_embedding_settings()
     vec_idx = VectorIndex(
         index_name="sql_docs",
         index_dir=settings.sql_index_dir,
         source_path=settings.sql_pdf_path,
         settings=settings,
+        embedding_settings=emb_settings,
         rebuild_builder=lambda: build_sql_chunks(settings),
     )
 
@@ -120,7 +132,7 @@ def build_sql_index(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build FAISS vector indexes for SAP and SQL docs.")
+    parser = argparse.ArgumentParser(description="Build FAISS vector indexes with OpenAI embeddings.")
     parser.add_argument(
         "--target",
         choices=["sap", "sql", "all"],
@@ -132,15 +144,86 @@ def main() -> None:
         action="store_true",
         help="Force rebuild even if index is fresh",
     )
+    parser.add_argument(
+        "--max-cost",
+        type=float,
+        default=None,
+        help="Maximum allowable estimated cost in USD (hard stop if exceeded)",
+    )
     args = parser.parse_args()
 
-    settings = get_settings()
+    emb_settings = get_embedding_settings()
+    k_settings = get_settings()
+
+    # Fail fast if no valid API key is configured
+    if not emb_settings.is_configured:
+        print("=" * 80)
+        print("                     KNOWLEDGE VECTOR INDEX BUILDER")
+        print("=" * 80)
+        print("Error: No valid API key configured for embeddings.")
+        print("Set OPENAI_API_KEY (or EMBEDDING_API_KEY) in .env before running build_index.")
+        print("=" * 80)
+        sys.exit(1)
+
+    print("=" * 80)
+    print("                     KNOWLEDGE VECTOR INDEX BUILDER")
+    print("=" * 80)
+    print(f"Embedding Model:    {emb_settings.embedding_model}")
+    print(f"Dimensions:         {emb_settings.embedding_dimensions or 'Model Default'}")
+    print(f"Provider Host:      {emb_settings.base_host}")
+    print(f"Target:             {args.target}")
+    print(f"Force Rebuild:      {args.rebuild}")
+    print("=" * 80)
+
+    # Collect chunks to evaluate estimated token counts and cost
+    chunks_to_build: list[DocChunk] = []
+    if args.target in ("sap", "all"):
+        chunks_to_build.extend(build_sap_chunks(k_settings))
+    if args.target in ("sql", "all"):
+        chunks_to_build.extend(build_sql_chunks(k_settings))
+
+    disk_cache = get_disk_cache()
+    model_name = emb_settings.embedding_model
+    dims = emb_settings.embedding_dimensions
+
+    cached_chunks = 0
+    uncached_tokens = 0
+    total_tokens = 0
+
+    for c in chunks_to_build:
+        tok = estimate_tokens(c.text)
+        total_tokens += tok
+        if not args.rebuild and disk_cache.get(model_name, dims, c.text) is not None:
+            cached_chunks += 1
+        else:
+            uncached_tokens += tok
+
+    price_per_m = emb_settings.embedding_price_per_m_tokens or 0.02
+    estimated_cost = (uncached_tokens / 1_000_000.0) * price_per_m
+
+    print(f"Total Chunks:       {len(chunks_to_build)}")
+    print(f"Cached Chunks:      {cached_chunks} (will skip provider calls)")
+    print(f"Uncached Tokens:    ~{uncached_tokens:,} tokens (estimated)")
+    print(f"Estimated Cost:     ${estimated_cost:.4f} USD (at ${price_per_m}/1M tokens)")
+
+    if args.max_cost is not None and estimated_cost > args.max_cost:
+        print(
+            f"Error: Estimated cost (${estimated_cost:.4f}) exceeds --max-cost (${args.max_cost:.4f}). "
+            "Aborting build."
+        )
+        sys.exit(1)
+
+    print("-" * 80)
 
     if args.target in ("sap", "all"):
-        build_sap_index(settings=settings, rebuild=args.rebuild)
+        build_sap_index(settings=k_settings, emb_settings=emb_settings, rebuild=args.rebuild)
 
     if args.target in ("sql", "all"):
-        build_sql_index(settings=settings, rebuild=args.rebuild)
+        build_sql_index(settings=k_settings, emb_settings=emb_settings, rebuild=args.rebuild)
+
+    print("=" * 80)
+    print("Index build completed successfully.")
+    print("=" * 80)
 
 
 if __name__ == "__main__":

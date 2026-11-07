@@ -285,6 +285,8 @@ class RunTrace(BaseModel):
     retrieved_chunks: dict[str, RetrievalHit] = Field(default_factory=dict)
     search_count: int = 0
     write_count: int = 0
+    embedding_calls_count: int = 0
+    embedding_tokens_count: int = 0
     cached_search_results: dict[str, Any] = Field(default_factory=dict)
     learned_saves: list[dict[str, Any]] = Field(default_factory=list)
 

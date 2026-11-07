@@ -33,6 +33,7 @@ from app.orchestrator.settings import OrchestratorSettings
 from app.parser.sql_parser import SqlParser
 from app.synthesizer.models import BusinessIntelligence
 
+from tests.support.fake_embedder import FakeEmbedder
 from tests.support.fakes import FakeModel
 
 
@@ -147,6 +148,7 @@ class TestTraceabilityBehaviors:
             orch_settings = OrchestratorSettings()
             fake_model = FakeModel()
             sim_index = get_similarity_index()
+            sim_index.embedder = FakeEmbedder(dimensions=1536, model="text-embedding-3-small")
             sim_index.clear()
 
             sql1 = "SELECT MARC.MATNR, MARA.MTART FROM [MM_MARC_ECC_EU_R1_MARC_S] MARC INNER JOIN [MM_MARA_ECC_EU_R1_MARA_S] MARA ON MARC.MATNR = MARA.MATNR WHERE MARC.ZACTIVE = 1"

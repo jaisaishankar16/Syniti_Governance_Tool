@@ -73,6 +73,7 @@ export const mockBusinessIntelligence: BusinessIntelligence = {
       sql: 1200,
       sap: 950,
       synthesizer: 2100,
+      embedding: 0,
       total: 4250,
     },
     estimated_cost_usd: 0.0035,

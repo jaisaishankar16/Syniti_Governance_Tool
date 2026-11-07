@@ -154,7 +154,10 @@ class ReadyResponse(BaseModel):
 
     status: Literal["ready", "not_ready"] = Field(description="Overall deployment readiness")
     checks: dict[str, bool] = Field(
-        description="Detailed subsystem check results (indexes_loaded, cache_healthy, llm_configured)"
+        description="Detailed subsystem check results (indexes_present, index_matches_embedding_config, llm_configured, embeddings_configured)"
+    )
+    message: str | None = Field(
+        default=None, description="Actionable hint when unready"
     )
 
 
@@ -175,6 +178,28 @@ class CacheClearResponse(BaseModel):
 
     cleared: bool = Field(description="Whether cache was cleared successfully")
     kind: str = Field(description="Target cache tier (all, l1, l2, l3)")
+
+
+class EmbeddingsSettingsView(BaseModel):
+    """Read-only diagnostics and configuration view of the OpenAI-compatible embeddings pipeline."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    provider_type: str = Field(description="Provider connection type ('direct' or 'gateway')")
+    base_host: str = Field(description="Host name of embeddings endpoint or 'same as LLM'")
+    embedding_model: str = Field(description="Active OpenAI-compatible embedding model")
+    dimensions: int | None = Field(
+        default=None, description="Configured vector dimensions or null for model default"
+    )
+    index_matches_config: bool = Field(
+        description="Whether on-disk FAISS indexes match the active configuration"
+    )
+    index_built_at: str | None = Field(default=None, description="ISO timestamp when index was built")
+    calibrated: bool = Field(description="Whether calibrated similarity thresholds exist for this model")
+    last_embedding_error_code: str | None = Field(
+        default=None, description="Last classified error code encountered by embedder"
+    )
+    pricing_configured: bool = Field(description="Whether token pricing is configured for embeddings")
 
 
 class LlmSettingsView(BaseModel):
@@ -220,6 +245,7 @@ class LlmSettingsView(BaseModel):
     last_error_at: str | None = Field(default=None, description="ISO timestamp of last failure")
     prompt_versions: dict[str, str] = Field(description="Active hash versions of system prompts")
     embedding_model: str = Field(description="Active sentence-transformer embedding model")
+    embeddings: EmbeddingsSettingsView = Field(description="Embeddings subsystem diagnostic view")
     knowledge_index_status: dict[str, Any] = Field(description="FAISS index status for SAP and SQL")
     cache_backend: dict[str, Any] = Field(description="Multi-tier cache parameters and TTLs")
     guardrail_modes: dict[str, Any] = Field(description="Active guardrail configuration")

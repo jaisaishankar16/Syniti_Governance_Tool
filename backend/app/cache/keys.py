@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-import functools
 import hashlib
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from app.knowledge.store import KnowledgeStore
@@ -22,16 +21,20 @@ REPO_ROOT = find_repo_root()
 KNOWLEDGE_DIR = REPO_ROOT / "knowledge"
 
 
-@functools.lru_cache(maxsize=1)
-def compute_knowledge_fingerprint(store: KnowledgeStore | None = None) -> str:
-    """Computes a stable sha256 fingerprint of the core knowledge base.
+def compute_knowledge_fingerprint(
+    store: KnowledgeStore | None = None,
+    embedding_settings: Any | None = None,
+) -> str:
+    """Computes a stable sha256 fingerprint of the core knowledge base and active embedding configuration.
 
     Includes:
       - /knowledge/sap_tables_prebuilt.json
       - /knowledge/sap_common_fields.json
       - /knowledge/governance_glossary.json
       - /knowledge/sql_keywords.json
-      - /knowledge/index/manifest.json (or index manifest files)
+      - /knowledge/naming_conventions.json
+      - All index manifests under /knowledge/index/
+      - Active embedding model, dimensions, and provider base-URL hash.
 
     Explicitly excludes:
       - /knowledge/learned/* (learned entries) to avoid cache churn on every incremental write-back.
@@ -46,10 +49,10 @@ def compute_knowledge_fingerprint(store: KnowledgeStore | None = None) -> str:
         KNOWLEDGE_DIR / "naming_conventions.json",
     ]
 
-    # Index manifests
+    # Index manifests (recursive to catch sap_docs/manifest.json, sql_docs/manifest.json)
     index_dir = KNOWLEDGE_DIR / "index"
     if index_dir.exists():
-        files_to_hash.extend(sorted(index_dir.glob("*manifest*.json")))
+        files_to_hash.extend(sorted(index_dir.rglob("*manifest*.json")))
 
     for p in files_to_hash:
         if p.is_file():
@@ -58,6 +61,20 @@ def compute_knowledge_fingerprint(store: KnowledgeStore | None = None) -> str:
                 hasher.update(p.read_bytes())
             except OSError:
                 continue
+
+    # Include embedding configuration
+    try:
+        if embedding_settings is None:
+            from app.embeddings.settings import get_embedding_settings
+
+            emb_s = get_embedding_settings()
+        else:
+            emb_s = embedding_settings
+
+        emb_tag = f"{emb_s.embedding_model}:{emb_s.embedding_dimensions}:{emb_s.base_url_hash}"
+        hasher.update(emb_tag.encode("utf-8"))
+    except Exception:  # noqa: BLE001, S110
+        pass
 
     return hasher.hexdigest()[:16]
 

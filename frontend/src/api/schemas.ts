@@ -13,6 +13,7 @@ export type HealthResponse = z.infer<typeof HealthResponseSchema>;
 export const ReadyResponseSchema = z.object({
   status: z.enum(['ready', 'not_ready']),
   checks: z.record(z.string(), z.boolean()),
+  message: z.string().nullable().optional(),
 });
 export type ReadyResponse = z.infer<typeof ReadyResponseSchema>;
 
@@ -100,6 +101,19 @@ export const LLMStatusResponseSchema = z.object({
 });
 export type LLMStatusResponse = z.infer<typeof LLMStatusResponseSchema>;
 
+export const EmbeddingsSettingsViewSchema = z.object({
+  provider_type: z.string(),
+  base_host: z.string(),
+  embedding_model: z.string(),
+  dimensions: z.number().int().nullable().optional(),
+  index_matches_config: z.boolean(),
+  index_built_at: z.string().nullable().optional(),
+  calibrated: z.boolean(),
+  last_embedding_error_code: z.string().nullable().optional(),
+  pricing_configured: z.boolean(),
+});
+export type EmbeddingsSettingsView = z.infer<typeof EmbeddingsSettingsViewSchema>;
+
 export const LlmSettingsViewSchema = z.object({
   model: z.string(),
   api_mode: z.string(),
@@ -125,6 +139,7 @@ export const LlmSettingsViewSchema = z.object({
   last_error_at: z.string().nullable().optional(),
   prompt_versions: z.record(z.string(), z.string()),
   embedding_model: z.string(),
+  embeddings: EmbeddingsSettingsViewSchema,
   knowledge_index_status: z.record(z.string(), z.unknown()),
   cache_backend: z.record(z.string(), z.unknown()),
   guardrail_modes: z.record(z.string(), z.unknown()),
@@ -205,6 +220,7 @@ export const TokenUsageBreakdownSchema = z.object({
   sql: z.number().int().optional().default(0),
   sap: z.number().int().optional().default(0),
   synthesizer: z.number().int().optional().default(0),
+  embedding: z.number().int().optional().default(0),
   total: z.number().int().optional().default(0),
 });
 export type TokenUsageBreakdown = z.infer<typeof TokenUsageBreakdownSchema>;
@@ -259,6 +275,7 @@ export const BusinessIntelligenceMetaSchema = z.object({
     sql: 0,
     sap: 0,
     synthesizer: 0,
+    embedding: 0,
     total: 0,
   }),
   estimated_cost_usd: z.number().nullable().optional(),

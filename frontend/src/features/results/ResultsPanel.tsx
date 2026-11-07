@@ -632,6 +632,7 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({ result }) => {
               <div>SQL Agent: {meta.token_usage.sql.toLocaleString()}</div>
               <div>SAP Agent: {meta.token_usage.sap.toLocaleString()}</div>
               <div>Synthesizer: {meta.token_usage.synthesizer.toLocaleString()}</div>
+              <div>Embedding: {(meta.token_usage.embedding ?? 0).toLocaleString()}</div>
               <div className="font-bold pt-1 border-t border-[#E5E7EB]">
                 Total Tokens: {meta.token_usage.total.toLocaleString()}
               </div>

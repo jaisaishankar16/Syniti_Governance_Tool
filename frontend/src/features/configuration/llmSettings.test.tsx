@@ -38,7 +38,18 @@ const mockSettings: LlmSettingsView = {
     sap_agent: 'v1.2.0',
     synthesizer: 'v2.0.0',
   },
-  embedding_model: 'all-MiniLM-L6-v2',
+  embedding_model: 'text-embedding-3-small',
+  embeddings: {
+    provider_type: 'direct',
+    base_host: 'api.openai.com',
+    embedding_model: 'text-embedding-3-small',
+    dimensions: 1536,
+    index_matches_config: true,
+    index_built_at: '2026-11-07T00:00:00Z',
+    calibrated: true,
+    last_embedding_error_code: null,
+    pricing_configured: false,
+  },
   knowledge_index_status: {
     sap_index_built: true,
     sql_index_built: true,
@@ -105,7 +116,7 @@ describe('LlmSettingsPage', () => {
     expect(screen.getByText('OpenAI-compatible')).toBeInTheDocument();
     expect(screen.getByText('https://gateway.internal')).toBeInTheDocument();
     expect(screen.getByText('CLOSED')).toBeInTheDocument();
-    expect(screen.getByText('all-MiniLM-L6-v2')).toBeInTheDocument();
+    expect(screen.getByText('text-embedding-3-small')).toBeInTheDocument();
 
     // Verify How to Change These Settings section
     expect(screen.getByText('How to Change These Settings')).toBeInTheDocument();

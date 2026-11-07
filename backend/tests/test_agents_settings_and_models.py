@@ -19,12 +19,16 @@ from app.agents.settings import (
 from pydantic import SecretStr, ValidationError
 
 
-def test_settings_switching_model_and_base_url():
+def test_settings_switching_model_and_base_url(monkeypatch: pytest.MonkeyPatch):
     """Switching LLM_MODEL, OPENAI_BASE_URL, or LLM_API_MODE builds appropriate model without code changes."""
+    monkeypatch.delenv("OPENAI_BASE_URL", raising=False)
+    monkeypatch.delenv("LLM_BASE_URL", raising=False)
     # 1. Default responses mode
     s1 = LLMSettings(
+        _env_file=None,
         llm_model="gpt-4o-mini",
         llm_api_mode="responses",
+        openai_base_url=None,
         openai_api_key=SecretStr("sk-test-fake-key-12345"),
     )
     m1 = build_model(s1)
@@ -32,8 +36,10 @@ def test_settings_switching_model_and_base_url():
 
     # 2. Chat completions mode explicitly
     s2 = LLMSettings(
+        _env_file=None,
         llm_model="gpt-4o",
         llm_api_mode="chat_completions",
+        openai_base_url=None,
         openai_api_key=SecretStr("sk-test-fake-key-12345"),
     )
     m2 = build_model(s2)
@@ -41,6 +47,7 @@ def test_settings_switching_model_and_base_url():
 
     # 3. Base URL sets default to chat_completions
     s3 = LLMSettings(
+        _env_file=None,
         llm_model="custom-local-model",
         openai_base_url="http://localhost:8000/v1",
         openai_api_key=SecretStr("sk-test-fake-key-12345"),

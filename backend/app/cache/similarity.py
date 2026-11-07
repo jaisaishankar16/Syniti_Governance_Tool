@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 import re
 import threading
 from typing import Any, Literal
@@ -10,8 +11,11 @@ from typing import Any, Literal
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.knowledge.settings import get_settings
-from app.knowledge.vector_index import get_embedding_model
+from app.embeddings.embedder import Embedder, get_embedder
+from app.embeddings.settings import EmbeddingSettings, get_embedding_settings
+from app.knowledge.calibration import get_model_calibration
+
+logger = logging.getLogger("app.cache.similarity")
 
 
 def mask_literals_and_aliases(sql: str) -> str:
@@ -47,19 +51,40 @@ class CachedQueryVector(BaseModel):
 
 
 class SimilarityCacheIndex:
-    """In-memory cosine similarity index for cached query analyses."""
+    """In-memory cosine similarity index namespaced by embedding model, dimensions, and base URL hash."""
 
-    def __init__(self, model_name: str | None = None) -> None:
-        cfg = get_settings()
-        self.model_name = model_name or cfg.embedding_model
-        self._entries: list[CachedQueryVector] = []
-        self._vectors: np.ndarray | None = None
+    def __init__(
+        self,
+        embedding_settings: EmbeddingSettings | None = None,
+        embedder: Embedder | None = None,
+    ) -> None:
+        self.embedding_settings = embedding_settings or get_embedding_settings()
+        self.embedder = embedder or get_embedder(self.embedding_settings)
+        # Namespaced storage: namespace -> (list[CachedQueryVector], np.ndarray | None)
+        self._namespaces: dict[str, tuple[list[CachedQueryVector], np.ndarray | None]] = {}
         self._lock = threading.Lock()
 
-    def _encode(self, text: str) -> np.ndarray:
-        model = get_embedding_model(self.model_name)
-        emb = model.encode([text], normalize_embeddings=True)
-        return np.asarray(emb[0], dtype=np.float32)
+    def _get_namespace(self) -> str:
+        s = self.embedding_settings
+        return f"{s.embedding_model}:{s.embedding_dimensions}:{s.base_url_hash}"
+
+    def _get_active_storage(self) -> tuple[list[CachedQueryVector], np.ndarray | None]:
+        ns = self._get_namespace()
+        if ns not in self._namespaces:
+            self._namespaces[ns] = ([], None)
+        return self._namespaces[ns]
+
+    def _encode(self, text: str) -> np.ndarray | None:
+        try:
+            vec = self.embedder.embed_query_sync(text)
+            arr = np.array(vec, dtype=np.float32)
+            norm = float(np.linalg.norm(arr))
+            if norm > 0.0:
+                arr = arr / norm
+            return arr
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("L3 embedding encoding failed: %s; skipping L3 similarity", exc)
+            return None
 
     def add(
         self,
@@ -68,9 +93,18 @@ class SimilarityCacheIndex:
         tables: list[str],
         analysis: Any,
     ) -> None:
-        """Indexes a query execution in the similarity cache."""
+        """Indexes a query execution in the similarity cache if calibrated."""
+        s = self.embedding_settings
+        calib = get_model_calibration(s.embedding_model, s.embedding_dimensions)
+        if calib is None:
+            logger.debug("Active embedding model is uncalibrated; skipping L3 caching")
+            return
+
         masked = mask_literals_and_aliases(normalized_sql)
         vec = self._encode(masked)
+        if vec is None:
+            return
+
         fp = compute_structure_fingerprint(normalized_sql, tables)
 
         payload_dict: dict[str, Any]
@@ -91,74 +125,95 @@ class SimilarityCacheIndex:
         )
 
         with self._lock:
-            # Check if key already exists
-            existing_idx = next((i for i, e in enumerate(self._entries) if e.key == key), None)
+            entries, vectors = self._get_active_storage()
+            existing_idx = next((i for i, e in enumerate(entries) if e.key == key), None)
             if existing_idx is not None:
-                self._entries[existing_idx] = entry
-                if self._vectors is not None:
-                    self._vectors[existing_idx] = vec
+                entries[existing_idx] = entry
+                if vectors is not None:
+                    vectors[existing_idx] = vec
             else:
-                self._entries.append(entry)
-                if self._vectors is None:
-                    self._vectors = np.expand_dims(vec, axis=0)
+                entries.append(entry)
+                if vectors is None:
+                    vectors = np.expand_dims(vec, axis=0)
                 else:
-                    self._vectors = np.vstack([self._vectors, np.expand_dims(vec, axis=0)])
+                    vectors = np.vstack([vectors, np.expand_dims(vec, axis=0)])
+            ns = self._get_namespace()
+            self._namespaces[ns] = (entries, vectors)
 
     def find_similar(
         self,
         normalized_sql: str,
         tables: list[str],
-        reuse_threshold: float = 0.97,
-        hint_threshold: float = 0.85,
+        reuse_threshold: float | None = None,
+        hint_threshold: float | None = None,
     ) -> tuple[Literal["similar_reused", "similar_hint", "miss"], dict[str, Any] | None, float]:
         """Performs cosine similarity search against cached queries.
 
-        Returns:
-          ("similar_reused", payload, score): if cosine >= reuse_threshold, tables match, and structure matches.
-          ("similar_hint", payload, score): if cosine >= hint_threshold (passed to agent as untrusted hint).
-          ("miss", None, score): if below hint_threshold or no candidates exist.
+        If uncalibrated, returns ("miss", None, 0.0) without error.
         """
+        s = self.embedding_settings
+        calib = get_model_calibration(s.embedding_model, s.embedding_dimensions)
+        if calib is None:
+            return "miss", None, 0.0
+
+        eff_reuse_threshold = reuse_threshold if reuse_threshold is not None else calib.l3_reuse_threshold
+        eff_hint_threshold = hint_threshold if hint_threshold is not None else calib.l3_hint_threshold
+
         with self._lock:
-            if not self._entries or self._vectors is None:
+            entries, vectors = self._get_active_storage()
+            if not entries or vectors is None:
                 return "miss", None, 0.0
 
             masked = mask_literals_and_aliases(normalized_sql)
             query_vec = self._encode(masked)
+            if query_vec is None:
+                return "miss", None, 0.0
 
-            # Cosine similarity (both vectors are L2 normalized)
-            scores = np.dot(self._vectors, query_vec)
+            scores = np.dot(vectors, query_vec)
             best_idx = int(np.argmax(scores))
             best_score = float(scores[best_idx])
-            best_entry = self._entries[best_idx]
+            best_entry = entries[best_idx]
 
         target_tables = sorted(t.strip().upper() for t in tables)
         fp = compute_structure_fingerprint(normalized_sql, tables)
 
-        # 1. Reuse evaluation
-        if best_score >= reuse_threshold:
-            # Must have identical SAP table set and structural fingerprint
+        # 1. Reuse evaluation (only when reuse threshold is configured)
+        if eff_reuse_threshold is not None and best_score >= eff_reuse_threshold:
             if target_tables == best_entry.tables and fp == best_entry.structure_fingerprint:
                 return "similar_reused", best_entry.analysis_payload, round(best_score, 4)
-
-            # If score is high but structure or tables differ, downgrade to hint
-            return "similar_hint", best_entry.analysis_payload, round(best_score, 4)
+            if eff_hint_threshold is not None and best_score >= eff_hint_threshold:
+                return "similar_hint", best_entry.analysis_payload, round(best_score, 4)
 
         # 2. Hint evaluation
-        if best_score >= hint_threshold:
+        if eff_hint_threshold is not None and best_score >= eff_hint_threshold:
             return "similar_hint", best_entry.analysis_payload, round(best_score, 4)
 
         return "miss", None, round(best_score, 4)
 
     def clear(self) -> None:
-        """Clears all indexed vectors."""
+        """Clears all indexed vectors across all namespaces."""
         with self._lock:
-            self._entries.clear()
-            self._vectors = None
+            self._namespaces.clear()
 
 
-_GLOBAL_SIMILARITY_INDEX = SimilarityCacheIndex()
+_GLOBAL_SIMILARITY_INDEX: SimilarityCacheIndex | None = None
 
 
-def get_similarity_index() -> SimilarityCacheIndex:
+def get_similarity_index(
+    settings: EmbeddingSettings | None = None,
+    embedder: Embedder | None = None,
+) -> SimilarityCacheIndex:
     """Returns the singleton L3 similarity cache index."""
+    global _GLOBAL_SIMILARITY_INDEX
+    if _GLOBAL_SIMILARITY_INDEX is None:
+        _GLOBAL_SIMILARITY_INDEX = SimilarityCacheIndex(
+            embedding_settings=settings,
+            embedder=embedder,
+        )
     return _GLOBAL_SIMILARITY_INDEX
+
+
+def reset_similarity_index() -> None:
+    """Resets the singleton similarity index."""
+    global _GLOBAL_SIMILARITY_INDEX
+    _GLOBAL_SIMILARITY_INDEX = None

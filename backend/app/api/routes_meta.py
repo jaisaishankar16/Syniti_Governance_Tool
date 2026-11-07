@@ -24,6 +24,7 @@ from app.api.errors import ErrorEnvelope
 from app.api.metrics import get_metrics_text
 from app.api.models import (
     ActivityItem,
+    EmbeddingsSettingsView,
     ExampleQueryItem,
     HealthResponse,
     LLMBudgetStatus,
@@ -38,9 +39,11 @@ from app.api.models import (
 from app.api.repositories import ActivityRepository, ProjectRepository
 from app.api.settings import ApiSettings
 from app.cache.backends import get_cache_backend
+from app.embeddings.settings import get_embedding_settings
 from app.guardrails.budget import get_budget_tracker
 from app.guardrails.circuit_breaker import get_circuit_breaker
 from app.guardrails.settings import get_guardrail_settings
+from app.knowledge.calibration import is_model_calibrated
 from app.knowledge.settings import get_settings as get_knowledge_settings
 from app.knowledge.vector_index import VectorIndex
 from app.orchestrator.settings import get_orchestrator_settings
@@ -118,33 +121,47 @@ async def readiness_check(
     Returns HTTP 503 if any check fails (including missing or unconfigured LLM API key).
     """
     k_settings = get_knowledge_settings()
+    emb_settings = get_embedding_settings()
+    llm_settings = get_llm_settings()
 
-    # Check 1: Vector indexes built and not stale
-    sap_idx = VectorIndex("sap", k_settings.sap_index_dir, k_settings.sap_pdf_path, k_settings)
-    sql_idx = VectorIndex("sql", k_settings.sql_index_dir, k_settings.sql_pdf_path, k_settings)
-    indexes_ok = sap_idx.is_built() and sql_idx.is_built()
+    # Check 1: Vector indexes present and matching embedding config
+    sap_idx = VectorIndex("sap_docs", k_settings.sap_index_dir, k_settings.sap_pdf_path, k_settings)
+    sql_idx = VectorIndex("sql_docs", k_settings.sql_index_dir, k_settings.sql_pdf_path, k_settings)
+
+    indexes_present = sap_idx.is_built() and sql_idx.is_built()
+    sap_stale, _ = sap_idx.is_stale() if sap_idx.is_built() else (True, "not built")
+    sql_stale, _ = sql_idx.is_stale() if sql_idx.is_built() else (True, "not built")
+    index_matches_embedding_config = indexes_present and (not sap_stale) and (not sql_stale)
 
     # Check 2: Cache backend connectivity
     cache = await get_cache_backend(settings.rate_limit_backend)
     cache_ok = await cache.ping()
 
     # Check 3: LLM Configuration
-    llm_settings = get_llm_settings()
     raw_key = llm_settings.openai_api_key.get_secret_value() if llm_settings.openai_api_key else ""
     llm_ok = is_valid_api_key(raw_key)
 
+    # Check 4: Embeddings Configuration
+    embeddings_ok = emb_settings.is_configured
+
     checks = {
-        "indexes_loaded": indexes_ok,
-        "cache_healthy": cache_ok,
+        "indexes_present": indexes_present,
+        "index_matches_embedding_config": index_matches_embedding_config,
         "llm_configured": llm_ok,
+        "embeddings_configured": embeddings_ok,
+        "cache_healthy": cache_ok,
     }
 
     all_ready = all(checks.values())
     if not all_ready:
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-        return ReadyResponse(status="not_ready", checks=checks)
+        msg = (
+            "Deployment not ready. If indexes are missing or stale, run: "
+            "python -m app.knowledge.build_index --target all"
+        )
+        return ReadyResponse(status="not_ready", checks=checks, message=msg)
 
-    return ReadyResponse(status="ready", checks=checks)
+    return ReadyResponse(status="ready", checks=checks, message=None)
 
 
 @router.get(
@@ -374,9 +391,40 @@ async def get_llm_settings_view() -> LlmSettingsView:
     _, synth_v = _load_prompt_template()
 
     # Index status
-    sap_idx = VectorIndex("sap", k_settings.sap_index_dir, k_settings.sap_pdf_path, k_settings)
-    sql_idx = VectorIndex("sql", k_settings.sql_index_dir, k_settings.sql_pdf_path, k_settings)
+    sap_idx = VectorIndex("sap_docs", k_settings.sap_index_dir, k_settings.sap_pdf_path, k_settings)
+    sql_idx = VectorIndex("sql_docs", k_settings.sql_index_dir, k_settings.sql_pdf_path, k_settings)
     v_path = getattr(k_settings, "verified_entries_path", None)
+
+    sap_built = sap_idx.is_built()
+    sql_built = sql_idx.is_built()
+    sap_stale, _ = sap_idx.is_stale() if sap_built else (True, "not built")
+    sql_stale, _ = sql_idx.is_stale() if sql_built else (True, "not built")
+    index_matches = sap_built and sql_built and (not sap_stale) and (not sql_stale)
+
+    built_at: str | None = None
+    if sap_built and sap_idx.manifest_path.exists():
+        try:
+            with open(sap_idx.manifest_path, "r", encoding="utf-8") as mf:  # noqa: ASYNC230
+                m_data = json.load(mf)
+                built_at = m_data.get("built_at")
+        except Exception:  # noqa: BLE001
+            built_at = None
+
+    emb_settings = get_embedding_settings()
+    is_calibrated = is_model_calibrated(emb_settings.embedding_model, emb_settings.embedding_dimensions)
+    emb_host = emb_settings.base_host if emb_settings.has_separate_credentials else "same as LLM"
+
+    embeddings_view = EmbeddingsSettingsView(
+        provider_type=emb_settings.provider_type,
+        base_host=emb_host,
+        embedding_model=emb_settings.embedding_model,
+        dimensions=emb_settings.embedding_dimensions,
+        index_matches_config=index_matches,
+        index_built_at=built_at,
+        calibrated=is_calibrated,
+        last_embedding_error_code=None,
+        pricing_configured=emb_settings.embedding_price_per_m_tokens is not None,
+    )
 
     last_err_code, last_err_at = get_failure_cache().get_status()
 
@@ -413,10 +461,11 @@ async def get_llm_settings_view() -> LlmSettingsView:
             "sap_agent": sap_v,
             "synthesizer": synth_v,
         },
-        embedding_model=k_settings.embedding_model,
+        embedding_model=emb_settings.embedding_model,
+        embeddings=embeddings_view,
         knowledge_index_status={
-            "sap_index_built": sap_idx.is_built(),
-            "sql_index_built": sql_idx.is_built(),
+            "sap_index_built": sap_built,
+            "sql_index_built": sql_built,
             "verified_entries_present": bool(v_path and v_path.exists()),
         },
         cache_backend={

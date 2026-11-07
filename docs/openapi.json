@@ -1442,6 +1442,88 @@
         "title": "CacheStats",
         "description": "Aggregate statistics and health metrics for the multi-tier caching system."
       },
+      "EmbeddingsSettingsView": {
+        "properties": {
+          "provider_type": {
+            "type": "string",
+            "title": "Provider Type",
+            "description": "Provider connection type ('direct' or 'gateway')"
+          },
+          "base_host": {
+            "type": "string",
+            "title": "Base Host",
+            "description": "Host name of embeddings endpoint or 'same as LLM'"
+          },
+          "embedding_model": {
+            "type": "string",
+            "title": "Embedding Model",
+            "description": "Active OpenAI-compatible embedding model"
+          },
+          "dimensions": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dimensions",
+            "description": "Configured vector dimensions or null for model default"
+          },
+          "index_matches_config": {
+            "type": "boolean",
+            "title": "Index Matches Config",
+            "description": "Whether on-disk FAISS indexes match the active configuration"
+          },
+          "index_built_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index Built At",
+            "description": "ISO timestamp when index was built"
+          },
+          "calibrated": {
+            "type": "boolean",
+            "title": "Calibrated",
+            "description": "Whether calibrated similarity thresholds exist for this model"
+          },
+          "last_embedding_error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Embedding Error Code",
+            "description": "Last classified error code encountered by embedder"
+          },
+          "pricing_configured": {
+            "type": "boolean",
+            "title": "Pricing Configured",
+            "description": "Whether token pricing is configured for embeddings"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "provider_type",
+          "base_host",
+          "embedding_model",
+          "index_matches_config",
+          "calibrated",
+          "pricing_configured"
+        ],
+        "title": "EmbeddingsSettingsView",
+        "description": "Read-only diagnostics and configuration view of the OpenAI-compatible embeddings pipeline."
+      },
       "ErrorDetail": {
         "properties": {
           "field": {
@@ -2260,6 +2342,10 @@
             "title": "Embedding Model",
             "description": "Active sentence-transformer embedding model"
           },
+          "embeddings": {
+            "$ref": "#/components/schemas/EmbeddingsSettingsView",
+            "description": "Embeddings subsystem diagnostic view"
+          },
           "knowledge_index_status": {
             "additionalProperties": true,
             "type": "object",
@@ -2302,6 +2388,7 @@
           "circuit_state",
           "prompt_versions",
           "embedding_model",
+          "embeddings",
           "knowledge_index_status",
           "cache_backend",
           "guardrail_modes",
@@ -2501,7 +2588,19 @@
             },
             "type": "object",
             "title": "Checks",
-            "description": "Detailed subsystem check results (indexes_loaded, cache_healthy, llm_configured)"
+            "description": "Detailed subsystem check results (indexes_present, index_matches_embedding_config, llm_configured, embeddings_configured)"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Actionable hint when unready"
           }
         },
         "additionalProperties": false,
@@ -2568,6 +2667,11 @@
             "title": "Synthesizer",
             "default": 0
           },
+          "embedding": {
+            "type": "integer",
+            "title": "Embedding",
+            "default": 0
+          },
           "total": {
             "type": "integer",
             "title": "Total",
@@ -2602,13 +2706,6 @@
           "type": {
             "type": "string",
             "title": "Error Type"
-          },
-          "input": {
-            "title": "Input"
-          },
-          "ctx": {
-            "type": "object",
-            "title": "Context"
           }
         },
         "type": "object",

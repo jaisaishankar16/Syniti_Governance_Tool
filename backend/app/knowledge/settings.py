@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import os
+import warnings
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -32,7 +34,6 @@ class KnowledgeSettings(BaseSettings):
 
     # Base directory paths
     knowledge_dir: Path = Field(default_factory=find_default_knowledge_dir)
-    embedding_model: str = "all-MiniLM-L6-v2"
     top_k: int = 5
     min_score_sap: float = 0.25
     min_score_sql: float = 0.25
@@ -43,6 +44,25 @@ class KnowledgeSettings(BaseSettings):
     other_dialect_penalty: float = 0.75
     auto_rebuild: bool = False
     custom_learned_dir: Path | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def check_deprecated_embedding_model(cls, data: object) -> object:
+        if isinstance(data, dict) and "embedding_model" in data or os.environ.get("KNOW_EMBEDDING_MODEL"):
+            warnings.warn(
+                "KNOW_EMBEDDING_MODEL is deprecated and ignored; use EMBEDDING_MODEL instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        return data
+
+    @property
+    def calibration_path(self) -> Path:
+        return self.knowledge_dir / "calibration" / "embedding_calibration.json"
+
+    @property
+    def eval_queries_path(self) -> Path:
+        return self.knowledge_dir / "eval" / "retrieval_queries.json"
 
     @property
     def sap_prebuilt_path(self) -> Path:

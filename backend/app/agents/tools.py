@@ -16,6 +16,7 @@ from app.guardrails.tool_policy import check_learned_write_allowed, validate_too
 from app.knowledge.models import (
     Evidence,
     LearnedSapEntry,
+    MatchType,
     RetrievalHit,
     SapLookupResult,
     SapSearchResult,
@@ -188,9 +189,35 @@ def _search_sap_catalog(
             )
             return cached_copy
 
+    from app.embeddings.settings import get_embedding_settings
+
+    emb_settings = get_embedding_settings()
+    if deps.run_trace.embedding_calls_count >= emb_settings.embedding_max_calls_per_request:
+        duration = (time.perf_counter() - start_t) * 1000
+        reason = f"Exceeded per-request embedding call limit of {emb_settings.embedding_max_calls_per_request}"
+        deps.run_trace.tool_calls.append(
+            ToolCallRecord(
+                name="search_sap_catalog",
+                args_summary=args_summary,
+                duration_ms=round(duration, 2),
+                ok=False,
+                error=reason,
+            )
+        )
+        return SapSearchResult(
+            query=query,
+            exact_match_found=False,
+            hits=[],
+            warning=f"Semantic search unavailable: {reason}",
+            semantic_search_unavailable=True,
+            unavailable_reason="EMBEDDING_MAX_CALLS_EXCEEDED",
+        )
+
     try:
         deps.run_trace.search_count += 1
         res = deps.sap_retriever.search(query, k=k)
+        if not res.exact_match_found:
+            deps.run_trace.embedding_calls_count += 1
 
         # Truncate hit text to max_retrieved_chars and register chunk_id
         max_chars = deps.settings.max_retrieved_chars
@@ -205,7 +232,7 @@ def _search_sap_catalog(
                 name="search_sap_catalog",
                 args_summary=args_summary,
                 duration_ms=round(duration, 2),
-                ok=True,
+                ok=not res.semantic_search_unavailable,
             )
         )
         return res
@@ -226,6 +253,8 @@ def _search_sap_catalog(
             exact_match_found=False,
             hits=[],
             warning=f"Search failed: {exc}",
+            semantic_search_unavailable=True,
+            unavailable_reason=type(exc).__name__,
         )
 
 
@@ -281,6 +310,40 @@ def _save_learned_sap_knowledge(
         return SaveResult(saved=False, action="rejected", reason=reason)
 
     chunk = deps.run_trace.retrieved_chunks[chunk_id]
+
+    # Semantic hit calibration check
+    if chunk.match_type == MatchType.semantic:
+        if not getattr(chunk, "calibrated", True):
+            reason = "Learned write-back from semantic hit refused: embedding model is uncalibrated"
+            deps.run_trace.tool_calls.append(
+                ToolCallRecord(
+                    name="save_learned_sap_knowledge",
+                    args_summary=args_summary,
+                    duration_ms=round((time.perf_counter() - start_t) * 1000, 2),
+                    ok=False,
+                    error=reason,
+                )
+            )
+            return SaveResult(saved=False, action="rejected", reason=reason)
+
+        from app.embeddings.settings import get_embedding_settings
+        from app.knowledge.calibration import get_model_calibration
+
+        emb_s = get_embedding_settings()
+        calib = get_model_calibration(emb_s.embedding_model, emb_s.embedding_dimensions)
+        min_score = calib.write_back_min_score if calib is not None else 0.75
+        if chunk.score < min_score:
+            reason = f"Learned write-back refused: score {chunk.score} below write_back_min_score ({min_score})"
+            deps.run_trace.tool_calls.append(
+                ToolCallRecord(
+                    name="save_learned_sap_knowledge",
+                    args_summary=args_summary,
+                    duration_ms=round((time.perf_counter() - start_t) * 1000, 2),
+                    ok=False,
+                    error=reason,
+                )
+            )
+            return SaveResult(saved=False, action="rejected", reason=reason)
 
     # Guardrail policy check (write-cap, prior search, lexical grounding, expansion ratio)
     guard_settings = get_guardrail_settings()
@@ -503,8 +566,25 @@ def _search_sql_docs(
             )
             return [h.model_copy() for h in cached]
 
+    from app.embeddings.settings import get_embedding_settings
+
+    emb_settings = get_embedding_settings()
+    if deps.run_trace.embedding_calls_count >= emb_settings.embedding_max_calls_per_request:
+        duration = (time.perf_counter() - start_t) * 1000
+        deps.run_trace.tool_calls.append(
+            ToolCallRecord(
+                name="search_sql_docs",
+                args_summary=args_summary,
+                duration_ms=round(duration, 2),
+                ok=False,
+                error=f"Exceeded per-request embedding call limit of {emb_settings.embedding_max_calls_per_request}",
+            )
+        )
+        return []
+
     try:
         deps.run_trace.search_count += 1
+        deps.run_trace.embedding_calls_count += 1
         hits = deps.sql_retriever.search(query, k=k, dialect="tsql")
 
         max_chars = deps.settings.max_retrieved_chars

@@ -752,6 +752,57 @@ export interface components {
             estimated_cost_saved_usd: number;
         };
         /**
+         * EmbeddingsSettingsView
+         * @description Read-only diagnostics and configuration view of the OpenAI-compatible embeddings pipeline.
+         */
+        EmbeddingsSettingsView: {
+            /**
+             * Provider Type
+             * @description Provider connection type ('direct' or 'gateway')
+             */
+            provider_type: string;
+            /**
+             * Base Host
+             * @description Host name of embeddings endpoint or 'same as LLM'
+             */
+            base_host: string;
+            /**
+             * Embedding Model
+             * @description Active OpenAI-compatible embedding model
+             */
+            embedding_model: string;
+            /**
+             * Dimensions
+             * @description Configured vector dimensions or null for model default
+             */
+            dimensions?: number | null;
+            /**
+             * Index Matches Config
+             * @description Whether on-disk FAISS indexes match the active configuration
+             */
+            index_matches_config: boolean;
+            /**
+             * Index Built At
+             * @description ISO timestamp when index was built
+             */
+            index_built_at?: string | null;
+            /**
+             * Calibrated
+             * @description Whether calibrated similarity thresholds exist for this model
+             */
+            calibrated: boolean;
+            /**
+             * Last Embedding Error Code
+             * @description Last classified error code encountered by embedder
+             */
+            last_embedding_error_code?: string | null;
+            /**
+             * Pricing Configured
+             * @description Whether token pricing is configured for embeddings
+             */
+            pricing_configured: boolean;
+        };
+        /**
          * ErrorDetail
          * @description Specific field or contextual validation issue.
          */
@@ -1257,6 +1308,8 @@ export interface components {
              * @description Active sentence-transformer embedding model
              */
             embedding_model: string;
+            /** @description Embeddings subsystem diagnostic view */
+            embeddings: components["schemas"]["EmbeddingsSettingsView"];
             /**
              * Knowledge Index Status
              * @description FAISS index status for SAP and SQL
@@ -1410,11 +1463,16 @@ export interface components {
             status: "ready" | "not_ready";
             /**
              * Checks
-             * @description Detailed subsystem check results (indexes_loaded, cache_healthy, llm_configured)
+             * @description Detailed subsystem check results (indexes_present, index_matches_embedding_config, llm_configured, embeddings_configured)
              */
             checks: {
                 [key: string]: boolean;
             };
+            /**
+             * Message
+             * @description Actionable hint when unready
+             */
+            message?: string | null;
         };
         /**
          * RiskSummary
@@ -1459,6 +1517,11 @@ export interface components {
              */
             synthesizer: number;
             /**
+             * Embedding
+             * @default 0
+             */
+            embedding: number;
+            /**
              * Total
              * @default 0
              */
@@ -1472,10 +1535,6 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
-            /** Input */
-            input?: unknown;
-            /** Context */
-            ctx?: Record<string, never>;
         };
         /**
          * ValidationSummary

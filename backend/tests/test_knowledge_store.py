@@ -237,7 +237,14 @@ def test_stale_manifest_raises_stale_index_error(tmp_path: Path):
     with open(manifest_file, "r", encoding="utf-8") as f:
         manifest_data = json.load(f)
 
-    # Invalidate embedding model in manifest
+    # Invalidate embedding model in manifest (v2 schema)
+    manifest_data["schema_version"] = 2
+    manifest_data["provider"] = "openai_compatible"
+    manifest_data["dimensions"] = 1536
+    manifest_data["base_url_hash"] = "default"
+    manifest_data["normalized"] = True
+    manifest_data["chunk_id_scheme"] = "deterministic_v1"
+    manifest_data.pop("dim", None)
     manifest_data["embedding_model"] = "obsolete-model-v0"
     with open(manifest_file, "w", encoding="utf-8") as f:
         json.dump(manifest_data, f)

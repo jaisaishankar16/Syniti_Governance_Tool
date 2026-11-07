@@ -49,6 +49,13 @@ def test_env_example_contains_all_core_settings():
     missing_api = required_api_keys - keys
     assert not missing_api, f"env/.env.example missing required API settings: {missing_api}"
 
+    required_embedding_keys = {
+        "EMBEDDING_MODEL",
+    }
+
+    missing_embedding = required_embedding_keys - keys
+    assert not missing_embedding, f"env/.env.example missing required embedding settings: {missing_embedding}"
+
 
 def test_env_example_has_no_secrets():
     """Ensures env/.env.example contains only placeholders, never actual keys or tokens."""

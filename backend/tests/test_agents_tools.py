@@ -85,7 +85,7 @@ def test_search_cap_and_deduplication(test_deps: AgentDeps):
 def test_hit_text_truncated(test_deps: AgentDeps):
     """Retrieved hit text is truncated to MAX_RETRIEVED_CHARS (50 in test)."""
     wrapped = _wrap(test_deps)
-    res = search_sap_catalog(wrapped, "material", k=2)
+    res = search_sap_catalog(wrapped, "MARA", k=2)
     assert len(res.hits) > 0
     for h in res.hits:
         assert len(h.text) <= test_deps.settings.max_retrieved_chars

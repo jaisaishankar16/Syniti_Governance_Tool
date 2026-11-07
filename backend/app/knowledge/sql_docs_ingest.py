@@ -7,13 +7,9 @@ from typing import Any
 
 import pdfplumber
 
+from app.embeddings.embedder import estimate_tokens
 from app.knowledge.models import DocChunk, SqlChunkMetadata, SqlDialect
 from app.knowledge.settings import KnowledgeSettings, get_settings
-
-
-def estimate_tokens(text: str) -> int:
-    """Rough token estimation based on word and punctuation tokens."""
-    return len(re.findall(r"\w+|[^\w\s]", text))
 
 
 def detect_dialects(text: str) -> list[SqlDialect]:
@@ -295,11 +291,13 @@ class SqlDocsIngest:
                     if body_end >= start_c:
                         p_end = pdf_p
 
+                prefix = f"Chapter: {ch_title} > Section: {s_title}\n\n"
+                prefix_tokens = estimate_tokens(prefix)
                 tokens = estimate_tokens(sec_body)
-                if tokens <= 900:
+                if tokens + prefix_tokens <= 900:
                     chunk_counter += 1
                     chunk_id = f"sql_chunk_{chunk_counter:04d}"
-                    chunk_text = f"Chapter: {ch_title} > Section: {s_title}\n\n{sec_body}"
+                    chunk_text = f"{prefix}{sec_body}"
                     metadata = SqlChunkMetadata(
                         type="sql",
                         chapter=ch_title,
@@ -319,14 +317,34 @@ class SqlDocsIngest:
                         )
                     )
                 else:
-                    # Split oversized section at paragraph boundaries with ~80 token overlap
-                    paras = re.split(r"\n\s*\n", sec_body)
+                    # Split oversized section at paragraph boundaries
+                    raw_paras = re.split(r"\n\s*\n", sec_body)
+                    paras: list[str] = []
+                    for raw_p in raw_paras:
+                        if estimate_tokens(raw_p) > 500:
+                            lines = raw_p.split("\n")
+                            sub_block: list[str] = []
+                            sub_tok = 0
+                            for line in lines:
+                                l_tok = estimate_tokens(line)
+                                if sub_tok + l_tok > 400 and sub_block:
+                                    paras.append("\n".join(sub_block))
+                                    sub_block = [line]
+                                    sub_tok = l_tok
+                                else:
+                                    sub_block.append(line)
+                                    sub_tok += l_tok
+                            if sub_block:
+                                paras.append("\n".join(sub_block))
+                        else:
+                            paras.append(raw_p)
+
                     cur_paras: list[str] = []
                     cur_tokens = 0
                     part_num = 1
                     for p in paras:
                         p_tok = estimate_tokens(p)
-                        if cur_tokens + p_tok > 750 and cur_paras:
+                        if cur_tokens + p_tok > 500 and cur_paras:
                             part_text = "\n\n".join(cur_paras)
                             chunk_counter += 1
                             chunk_id = f"sql_chunk_{chunk_counter:04d}"
@@ -350,9 +368,8 @@ class SqlDocsIngest:
                                 )
                             )
                             part_num += 1
-                            overlap = cur_paras[-1:]
-                            cur_paras = overlap + [p]
-                            cur_tokens = sum(estimate_tokens(x) for x in cur_paras)
+                            cur_paras = [p]
+                            cur_tokens = p_tok
                         else:
                             cur_paras.append(p)
                             cur_tokens += p_tok
