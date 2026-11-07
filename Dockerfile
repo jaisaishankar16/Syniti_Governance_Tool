@@ -55,11 +55,10 @@ COPY --from=builder /opt/venv /opt/venv
 COPY backend /app/backend
 COPY knowledge /app/knowledge
 
-# Build knowledge indexes and pre-cache sentence-transformer model weights at build time
-RUN python -m app.knowledge.build_index
-
-# Set up writable directories for learned knowledge and logs
-RUN mkdir -p /app/knowledge/learned /app/logs /tmp && \
+# Set up writable directories for knowledge indexes, learned knowledge and logs
+# Note: Knowledge indexes are built explicitly via one-off command:
+# docker compose run --rm backend python -m app.knowledge.build_index --target all
+RUN mkdir -p /app/knowledge/index /app/knowledge/learned /app/logs /tmp && \
     chown -R appuser:appgroup /app /tmp
 
 USER appuser

@@ -48,6 +48,7 @@ services:
     ports:
       - "127.0.0.1:${PORT:-8000}:8000"
     volumes:
+      - knowledge_indexes:/app/knowledge/index
       - learned_knowledge:/app/knowledge/learned
       - backend_logs:/app/logs
       - activity_data:/app/data
@@ -77,6 +78,8 @@ services:
         condition: service_healthy
 
 volumes:
+  knowledge_indexes:
+    name: syniti_knowledge_indexes
   redis_data:
     name: syniti_redis_data
   learned_knowledge:
